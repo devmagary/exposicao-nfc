@@ -38,8 +38,12 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
 | Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 1 e uma demo interativa por estação |
 | Sensores | Catálogo dos 37 sensores com busca, filtros e ligação G-V-S/GPIO |
-| Materiais | Lista prioritária do Material novo (20 itens) com checklist persistente + complementares do Material Sugestão (13 itens) |
+| Materiais | Os 33 itens em três visões: **por mesa** (uma caixa por estação + caixa de sala), **por bloco** (como no Material Sugestão) e **por origem** (20 prioritários + 13 complementares), com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
+
+### Guia de materiais e montagem
+
+O arquivo [`GUIA-MATERIAIS-E-MONTAGEM.md`](GUIA-MATERIAIS-E-MONTAGEM.md) transforma o Material Sugestão no roteiro atual: lista atualizada, como separar as caixas, as três tags físicas da Estação 2 e o passo a passo de montagem (com o plano B) de cada mesa.
 
 ### Demos interativas
 
@@ -137,8 +141,8 @@ node tests/run-tests.js
 node tests/run-e2e.js
 ```
 
-- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 13 materiais, cartões, roleta), regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
-- `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, checklist persistente, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
+- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 13 materiais, separação por mesa/bloco, cartões, tags físicas, roleta), regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
+- `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, filtros de materiais, checklist persistente, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
 - O E2E usa o `WebSocket` nativo do Node 22+; para abrir o site, o Node não é necessário.
 - Variável opcional `CHROME_PATH` para apontar outro navegador Chromium. Em ambientes onde o Chromium é bloqueado por sandbox de sistema, rode o E2E em uma máquina normal ou abra o site diretamente para a revisão visual.
 
