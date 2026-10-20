@@ -85,14 +85,14 @@
     return VOLTAS * 360 - anguloSetor(indice, total);
   }
 
-  /* Texto para colar/levar à papelaria: separado por mesa, porque é assim
-     que o material é distribuído na exposição. */
+  /* Texto para colar/levar à papelaria: um manual por estação, com o material
+     de uso comum separado no começo. */
   function textoMateriais(prioritarios, extras, estacoes) {
     const listaPrioritarios = prioritarios || [];
     const listaExtras = extras || [];
     const listaEstacoes = (estacoes || []).slice().sort(function (a, b) { return a.numero - b.numero; });
     const tudo = listaPrioritarios.concat(listaExtras);
-    const linhas = ["MATERIAIS — FEIRA MUNDO MAKER", ""];
+    const linhas = ["MATERIAIS E MONTAGEM — FEIRA MUNDO MAKER", ""];
 
     function adicionar(itens) {
       itens.forEach(function (material) {
@@ -100,24 +100,26 @@
       });
     }
 
-    linhas.push("CAIXA DE SALA (as cinco mesas)");
+    linhas.push("MATERIAL DE USO COMUM (as cinco estações)");
     adicionar(tudo.filter(function (material) { return material.sala === true; }));
 
     listaEstacoes.forEach(function (estacao) {
       const itens = tudo.filter(function (material) {
         return !material.sala && Array.isArray(material.estacoes) && material.estacoes.indexOf(estacao.id) !== -1;
       });
-      linhas.push("", "MESA " + estacao.numero + " — " + estacao.nome);
+      linhas.push("", "ESTAÇÃO " + estacao.numero + " — " + estacao.nome.toUpperCase());
+      linhas.push("Para que serve: " + estacao.resumo);
+      linhas.push("Materiais da estação:");
       if (itens.length) adicionar(itens);
-      else linhas.push("(usa só o material de sala)");
+      else linhas.push("(usa apenas o material de uso comum)");
+      linhas.push("Como montar:");
+      (estacao.montagem || []).forEach(function (passo, indice) {
+        linhas.push((indice + 1) + ". " + passo);
+      });
     });
-
-    linhas.push("", "Guarde também na caixa de sala os itens finos marcados em mais de uma mesa:",
-      "eles aparecem em cada mesa, mas o estoque é compartilhado.");
 
     linhas.push("", "Total: " + tudo.length + " itens (" + listaPrioritarios.length + " prioritários + " +
       listaExtras.length + " complementares).");
-    linhas.push("Base: Material novo (prioritários) + Material Sugestão (complementares).");
     return linhas.join("\n");
   }
 

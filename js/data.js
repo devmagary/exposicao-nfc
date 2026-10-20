@@ -78,13 +78,15 @@
           "Marque os pinos 35, 36 e 37 com hachura vermelha e deixe post-its para os visitantes alertarem."
         ],
         materiais: [
-          "Cartolina branca",
           "Papel cartão preto",
           "Papel cartão vermelho",
           "Papel cartão amarelo",
           "EVA colorido",
           "Fita adesiva colorida",
-          "Post-its coloridos"
+          "Post-its coloridos",
+          "Palitos de churrasco",
+          "Papel cartão colorido",
+          "Velcro"
         ],
         demo: "gvs",
         dica:
@@ -103,24 +105,25 @@
         resumo:
           "O leitor PN532 e os cartões: esta é a estação com o kit físico. Encostar uma tag de verdade acende o LED e mostra o acesso — mesmo sem internet.",
         visitante: [
-          "Escolhe um cartão de papel com um UID e encosta no leitor PN532 gigante (com velcro).",
+          "Escolhe um cartão de papel com o UID real e encosta no leitor PN532 gigante (com velcro).",
           "Puxa uma das três respostas do envelope: LIBERADO, NEGADO ou BLOQUEADO.",
           "Encosta uma tag de verdade no leitor e vê o LED acender na hora; o painel da Estação 5 registra o mesmo acesso."
         ],
         montagem: [
           "Monte um leitor PN532 gigante de papelão com o desenho da placa vermelha.",
-          "Recorte cartões de papel cartão e escreva UIDs diferentes em cada um.",
+          "Recorte cartões de papel cartão e escreva o UID real de cada tag.",
           "Cole um envelope atrás do leitor com as três respostas.",
-          "Encha uma bexiga e escreva: “Isto é o campo magnético que o leitor cria”.",
+          "Faça um cartaz com o desenho do campo magnético: é ele que “acorda” a tag.",
           "Esta é a estação que recebe o ESP32 + PN532 reais; as demais usam as simulações de papel."
         ],
         materiais: [
-          "Cartolina branca",
-          "Papel cartão amarelo",
+          "Papelão",
+          "Papel alumínio",
           "Etiquetas adesivas brancas",
-          "Bexigas",
-          "Velcro",
-          "Papel alumínio"
+          "Barbante / lã em 4 cores",
+          "Papel cartão colorido",
+          "EVA colorido",
+          "Velcro"
         ],
         demo: "nfc",
         dica:
@@ -149,12 +152,10 @@
           "Combine azul + verde para obter ciano e vermelho + amarelo para obter laranja."
         ],
         materiais: [
-          "Cartolina branca",
           "Kit de guache",
           "Pincéis escolares",
           "Papel celofane",
-          "Lanterna",
-          "Fita dupla face"
+          "Lanterna"
         ],
         demo: "roleta",
         dica:
@@ -170,25 +171,23 @@
         icone: "box",
         frase: "Mete a mão e descobre.",
         resumo:
-          "Seis furos, saquinhos surpresa e 37 sensores: o visitante tira um, lê a etiqueta e descobre se ele é digital, analógico ou especial.",
+          "Seis furos e 37 sensores: o visitante tira um sensor de papel, lê a etiqueta e descobre se ele é digital, analógico ou especial.",
         visitante: [
-          "Mete a mão na caixa e tira um saquinho com um “sensor de papel”.",
+          "Mete a mão na caixa e tira um “sensor de papel”.",
           "Lê a etiqueta e tenta adivinhar: digital, analógico ou especial?",
-          "Cola o saquinho na coluna certa do painel — no fim, a equipe confere."
+          "Cola o sensor na coluna certa do painel — no fim, a equipe confere."
         ],
         montagem: [
           "Faça seis furos redondos em uma caixa de papelão.",
-          "Monte saquinhos zip com um sensor de papel (desenho + etiqueta) em cada.",
+          "Recorte os sensores de papel com desenho e etiqueta; deixe-os soltos dentro da caixa.",
           "Crie um painel com três colunas: Digitais, Analógicos e Especiais.",
-          "Use velcro para colar e descolar os saquinhos."
+          "Use velcro para colar e descolar os sensores."
         ],
         materiais: [
           "Papelão",
-          "Sacos plásticos zip",
           "Etiquetas adesivas brancas",
           "Papel cartão colorido",
-          "Velcro",
-          "Ímãs pequenos"
+          "Estilete (uso do professor)"
         ],
         demo: "caixa",
         dica:
@@ -221,9 +220,7 @@
           "TNT ou tecido",
           "Barbante de algodão",
           "Pregadores de madeira",
-          "Cartolina branca",
-          "Post-its coloridos",
-          "Fita crepe"
+          "Post-its coloridos"
         ],
         demo: "timeline",
         dica:
@@ -237,78 +234,40 @@
        cartazes, ferramentas). O resto é consumido por estação.
        --------------------------------------------------------------------- */
     materiais: {
-      /* Como separar as compras na hora de montar */
-      blocos: [
-        {
-          id: "A",
-          nome: "Bases e painéis",
-          titulo: "Bloco A — Bases e painéis",
-          descricao: "O que vira parede, quadro e os cartazes das cinco mesas. Fica pronto antes da ajuda do professor."
-        },
-        {
-          id: "B",
-          nome: "Escrita e identificação",
-          titulo: "Bloco B — Escrita e identificação",
-          descricao: "Canetas, etiquetas e post-its: o material que as equipes usam no dia para escrever UIDs, nomes e respostas."
-        },
-        {
-          id: "C",
-          nome: "Simulações interativas",
-          titulo: "Bloco C — Simulações interativas (o coração da exposição)",
-          descricao: "Tudo o que o visitante pega, encaixa, acende ou aperta. É o material que precisa estar separado por mesa."
-        },
-        {
-          id: "D",
-          nome: "Acabamento",
-          titulo: "Bloco D — Acabamento e montagem",
-          descricao: "Cola, fita, tesoura e estilete. Fica com o professor durante a montagem."
-        }
-      ],
-
-      /* Itens justos: papelão, velcro, zip, pregadores e alumínio */
-      conferir: {
-        titulo: "Itens que saem da lista do Material novo",
-        resumo:
-          "A lista prioritária do Material novo não traz papelão, velcro, sacos zip, pregadores nem papel alumínio — mas as mecânicas das Estações 1, 2, 4 e 5 dependem deles. São 5 itens de baixo custo que precisam entrar na compra junto com os 20 prioritários.",
-        ids: ["e01", "e05", "e06", "e08", "e09", "e12"]
-      },
-
       prioritarios: [
-        { id: "p01", item: "Cartolina branca", qtd: "5 a 6 folhas", uso: "Fundo dos cartazes das 5 estações.", grupo: "papel", bloco: "A", sala: true },
-        { id: "p02", item: "Papel cartão preto", qtd: "2 folhas", uso: "Linha GND e contraste dos painéis.", grupo: "papel", bloco: "A", estacoes: ["cerebro"] },
-        { id: "p03", item: "Papel cartão vermelho", qtd: "2 folhas", uso: "Linha VCC (3,3 V / 5 V).", grupo: "papel", bloco: "A", estacoes: ["cerebro"] },
-        { id: "p04", item: "Papel cartão amarelo", qtd: "3 folhas", uso: "Linha S (sinal) e fileira de GPIOs.", grupo: "papel", bloco: "A", estacoes: ["cerebro"] },
-        { id: "p05", item: "Papel metro marrom (kraft)", qtd: "4 metros", uso: "Forrar a parede/quadro como cenário único.", grupo: "papel", bloco: "A", sala: true },
-        { id: "p06", item: "EVA colorido (vermelho, preto e amarelo)", qtd: "3 folhas", uso: "Mapa de pinos em relevo na mesa 1 e camada de acabamento dos cartões NFC na mesa 2.", grupo: "papel", bloco: "A", estacoes: ["cerebro", "toque"] },
-        { id: "p07", item: "Canetinhas hidrográficas (12 cores)", qtd: "1 estojo", uso: "Diagramas, UIDs, setas e detalhes.", grupo: "escrita", bloco: "B", sala: true },
-        { id: "p08", item: "Pincel marcador permanente preto (grosso)", qtd: "2 unidades", uso: "Títulos grandes dos cartazes.", grupo: "escrita", bloco: "B", sala: true },
-        { id: "p09", item: "Lápis de cor / giz de cera", qtd: "1 caixa", uso: "Sombreamento e detalhes dos desenhos.", grupo: "escrita", bloco: "B", sala: true },
-        { id: "p10", item: "Etiquetas adesivas brancas", qtd: "1 cartela", uso: "Nome e função dos sensores de papel.", grupo: "escrita", bloco: "B", estacoes: ["toque", "caixa"] },
-        { id: "p11", item: "Post-its coloridos", qtd: "3 blocos", uso: "Quiz dos pinos proibidos e “e se a internet cair?”.", grupo: "escrita", bloco: "B", estacoes: ["cerebro", "memoria"] },
-        { id: "p12", item: "Fita crepe", qtd: "2 rolos", uso: "Prender cartazes sem estragar a parede.", grupo: "montagem", bloco: "D", sala: true },
-        { id: "p13", item: "Papel celofane colorido (verde, vermelho, azul)", qtd: "1 unidade de cada", uso: "Lanterna + celofane para acender o “LED de papel”.", grupo: "simulacao", bloco: "C", estacoes: ["semaforo"] },
-        { id: "p14", item: "Kit de guache", qtd: "1 kit", uso: "Pintura dos painéis e da roleta de seis setores.", grupo: "simulacao", bloco: "D", estacoes: ["semaforo"] },
-        { id: "p15", item: "Pincéis para guache escolar", qtd: "3 pincéis", uso: "Pintura dos cartazes e das cores da roleta.", grupo: "simulacao", bloco: "D", estacoes: ["semaforo"] },
-        { id: "p16", item: "Fita dupla face", qtd: "2 rolos", uso: "Colar EVA, papelão e elementos 3D.", grupo: "montagem", bloco: "D", sala: true },
-        { id: "p17", item: "Cola branca / cola quente", qtd: "1 de cada", uso: "Montagem geral da exposição.", grupo: "montagem", bloco: "D", sala: true },
-        { id: "p18", item: "Tesouras sem ponta", qtd: "5 unidades", uso: "Uma por equipe, com segurança.", grupo: "montagem", bloco: "D", sala: true },
-        { id: "p19", item: "Estilete (uso do professor)", qtd: "1 unidade", uso: "Furos da caixa e recortes precisos.", grupo: "montagem", bloco: "D", estacoes: ["caixa"] },
-        { id: "p20", item: "Barbante de algodão (grosso)", qtd: "1 rolo", uso: "Varal da linha do tempo e cartões pendurados.", grupo: "montagem", bloco: "C", estacoes: ["memoria"] }
+        { id: "p01", item: "Cartolina branca", qtd: "5 a 6 folhas", uso: "Fundo dos cartazes das 5 estações.", grupo: "papel", sala: true },
+        { id: "p02", item: "Papel cartão preto", qtd: "2 folhas", uso: "Linha GND e contraste dos painéis.", grupo: "papel", estacoes: ["cerebro"] },
+        { id: "p03", item: "Papel cartão vermelho", qtd: "2 folhas", uso: "Linha VCC (3,3 V / 5 V).", grupo: "papel", estacoes: ["cerebro"] },
+        { id: "p04", item: "Papel cartão amarelo", qtd: "3 folhas", uso: "Linha S (sinal) e fileira de GPIOs.", grupo: "papel", estacoes: ["cerebro"] },
+        { id: "p05", item: "Papel metro marrom (kraft)", qtd: "4 metros", uso: "Forrar a parede/quadro como cenário único.", grupo: "papel", sala: true },
+        { id: "p06", item: "EVA colorido (vermelho, preto e amarelo)", qtd: "3 folhas", uso: "Mapa de pinos em relevo na mesa 1 e camada de acabamento dos cartões NFC na mesa 2.", grupo: "papel", estacoes: ["cerebro", "toque"] },
+        { id: "p07", item: "Canetinhas hidrográficas (12 cores)", qtd: "1 estojo", uso: "Diagramas, UIDs, setas e detalhes.", grupo: "escrita", sala: true },
+        { id: "p08", item: "Pincel marcador permanente preto (grosso)", qtd: "2 unidades", uso: "Títulos grandes dos cartazes.", grupo: "escrita", sala: true },
+        { id: "p09", item: "Lápis de cor / giz de cera", qtd: "1 caixa", uso: "Sombreamento e detalhes dos desenhos.", grupo: "escrita", sala: true },
+        { id: "p10", item: "Etiquetas adesivas brancas", qtd: "1 cartela", uso: "Nome e função dos sensores de papel.", grupo: "escrita", estacoes: ["toque", "caixa"] },
+        { id: "p11", item: "Post-its coloridos", qtd: "3 blocos", uso: "Quiz dos pinos proibidos e “e se a internet cair?”.", grupo: "escrita", estacoes: ["cerebro", "memoria"] },
+        { id: "p12", item: "Fita crepe", qtd: "2 rolos", uso: "Prender cartazes sem estragar a parede.", grupo: "montagem", sala: true },
+        { id: "p13", item: "Papel celofane colorido (verde, vermelho, azul)", qtd: "1 unidade de cada", uso: "Lanterna + celofane para acender o “LED de papel”.", grupo: "simulacao", estacoes: ["semaforo"] },
+        { id: "p14", item: "Kit de guache", qtd: "1 kit", uso: "Pintura dos painéis e da roleta de seis setores.", grupo: "simulacao", estacoes: ["semaforo"] },
+        { id: "p15", item: "Pincéis para guache escolar", qtd: "3 pincéis", uso: "Pintura dos cartazes e das cores da roleta.", grupo: "simulacao", estacoes: ["semaforo"] },
+        { id: "p16", item: "Fita dupla face", qtd: "2 rolos", uso: "Colar EVA, papelão e elementos 3D.", grupo: "montagem", sala: true },
+        { id: "p17", item: "Cola branca / cola quente", qtd: "1 de cada", uso: "Montagem geral da exposição.", grupo: "montagem", sala: true },
+        { id: "p18", item: "Tesouras sem ponta", qtd: "5 unidades", uso: "Uma por equipe, com segurança.", grupo: "montagem", sala: true },
+        { id: "p19", item: "Estilete (uso do professor)", qtd: "1 unidade", uso: "Furos da caixa e recortes precisos.", grupo: "montagem", estacoes: ["caixa"] },
+        { id: "p20", item: "Barbante de algodão (grosso)", qtd: "1 rolo", uso: "Varal da linha do tempo e cartões pendurados.", grupo: "montagem", estacoes: ["memoria"] }
       ],
       extras: [
-        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Suportes em “L” dos cartazes, leitor gigante da mesa 2 e a caixa furada da mesa 4.", grupo: "estrutura", bloco: "A", estacoes: ["toque", "caixa"], aviso: "A mecânica das Estações 2 e 4 usa papelão." },
-        { id: "e02", item: "Fita adesiva colorida (preta, vermelha e amarela)", qtd: "1 rolo de cada", uso: "Reproduzir o padrão G-V-S na parede ou no quadro.", grupo: "simulacao", bloco: "A", estacoes: ["cerebro"] },
-        { id: "e03", item: "Barbante / lã em 4 cores", qtd: "1 novelo de cada", uso: "Representar os fios jumper (SDA, SCL, VCC, GND).", grupo: "simulacao", bloco: "C", estacoes: ["toque"] },
-        { id: "e04", item: "Palitos de churrasco", qtd: "1 pacote", uso: "Fazer “pinos” de papel para o mapa de EVA.", grupo: "simulacao", bloco: "C", estacoes: ["cerebro"] },
-        { id: "e05", item: "Papel cartão colorido (colorset)", qtd: "1 bloco", uso: "Recortar os cartões NFC com os UIDs reais e os sensores em miniatura.", grupo: "papel", bloco: "C", estacoes: ["cerebro", "toque", "caixa"] },
-        { id: "e06", item: "Velcro adesivo", qtd: "1 metro", uso: "Colar e descolar cartões e sensores nos painéis.", grupo: "montagem", bloco: "C", estacoes: ["cerebro", "toque"], aviso: "A mecânica das Estações 1 e 2 usa velcro." },
-        { id: "e07", item: "Ímãs pequenos de geladeira", qtd: "10 unidades", uso: "Prender cartões e simular chave magnética (Hall/Reed).", grupo: "simulacao", bloco: "C", sala: true },
-        { id: "e08", item: "Sacos plásticos zip pequenos", qtd: "20 unidades", uso: "Embalar os sensores de papel da Caixa dos Sentidos.", grupo: "estrutura", bloco: "C", estacoes: ["caixa"], aviso: "A mecânica da Estação 4 usa saquinhos zip." },
-        { id: "e09", item: "Papel alumínio", qtd: "1 rolo", uso: "Simular blindagem/antena do leitor NFC.", grupo: "simulacao", bloco: "C", estacoes: ["toque"] },
-        { id: "e10", item: "Bexigas (balões)", qtd: "1 pacote", uso: "Demonstração lúdica do campo eletromagnético do NFC.", grupo: "simulacao", bloco: "C", estacoes: ["toque"] },
-        { id: "e11", item: "Lanterna pequena de LED (ou flash do celular)", qtd: "3 unidades", uso: "Iluminar o “LED de papel” por trás da cartolina.", grupo: "simulacao", bloco: "C", estacoes: ["semaforo"] },
-        { id: "e12", item: "Pregadores de roupa de madeira", qtd: "20 unidades", uso: "Prender os cartões no varal da linha do tempo.", grupo: "montagem", bloco: "C", estacoes: ["memoria"], aviso: "A mecânica da Estação 5 usa pregadores." },
-        { id: "e13", item: "Saco de TNT ou tecido", qtd: "1 metro", uso: "Cortina de fundo para destacar o notebook do Painel Web.", grupo: "estrutura", bloco: "C", estacoes: ["memoria"] }
+        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Suportes em “L” dos cartazes, leitor gigante da mesa 2 e a caixa furada da mesa 4.", grupo: "estrutura", estacoes: ["toque", "caixa"], aviso: "A mecânica das Estações 2 e 4 usa papelão." },
+        { id: "e02", item: "Fita adesiva colorida (preta, vermelha e amarela)", qtd: "1 rolo de cada", uso: "Reproduzir o padrão G-V-S na parede ou no quadro.", grupo: "simulacao", estacoes: ["cerebro"] },
+        { id: "e03", item: "Barbante / lã em 4 cores", qtd: "1 novelo de cada", uso: "Representar os fios jumper (SDA, SCL, VCC, GND).", grupo: "simulacao", estacoes: ["toque"] },
+        { id: "e04", item: "Palitos de churrasco", qtd: "1 pacote", uso: "Fazer “pinos” de papel para o mapa de EVA.", grupo: "simulacao", estacoes: ["cerebro"] },
+        { id: "e05", item: "Papel cartão colorido (colorset)", qtd: "1 bloco", uso: "Recortar os cartões NFC com os UIDs reais e os sensores em miniatura.", grupo: "papel", estacoes: ["cerebro", "toque", "caixa"] },
+        { id: "e06", item: "Velcro adesivo", qtd: "1 metro", uso: "Colar e descolar cartões e sensores nos painéis.", grupo: "montagem", estacoes: ["cerebro", "toque"], aviso: "A mecânica das Estações 1 e 2 usa velcro." },
+        { id: "e07", item: "Ímãs pequenos de geladeira", qtd: "10 unidades", uso: "Prender cartões e simular chave magnética (Hall/Reed).", grupo: "simulacao", sala: true },
+        { id: "e09", item: "Papel alumínio", qtd: "1 rolo", uso: "Simular blindagem/antena do leitor NFC.", grupo: "simulacao", estacoes: ["toque"] },
+        { id: "e11", item: "Lanterna pequena de LED (ou flash do celular)", qtd: "3 unidades", uso: "Iluminar o “LED de papel” por trás da cartolina.", grupo: "simulacao", estacoes: ["semaforo"] },
+        { id: "e12", item: "Pregadores de roupa de madeira", qtd: "20 unidades", uso: "Prender os cartões no varal da linha do tempo.", grupo: "montagem", estacoes: ["memoria"], aviso: "A mecânica da Estação 5 usa pregadores." },
+        { id: "e13", item: "Saco de TNT ou tecido", qtd: "1 metro", uso: "Cortina de fundo para destacar o notebook do Painel Web.", grupo: "estrutura", estacoes: ["memoria"] }
       ]
     },
 
