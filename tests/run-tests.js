@@ -73,7 +73,7 @@ const extras = dados.materiais.extras;
 garantir(Array.isArray(prioritarios), "materiais.prioritarios deve ser uma lista.");
 garantir(Array.isArray(extras), "materiais.extras deve ser uma lista.");
 iguais(prioritarios.length, 20, "a lista prioritária deve ter 20 itens (Material novo).");
-iguais(extras.length, 13, "a lista complementar deve ter 13 itens (Material Sugestão).");
+iguais(extras.length, 11, "a lista complementar deve ter 11 itens (sem zip e sem bexigas).");
 
 const idsMateriais = prioritarios.concat(extras).map(function (material) { return material.id; });
 garantir(new Set(idsMateriais).size === idsMateriais.length, "ids de material duplicados.");
@@ -100,8 +100,12 @@ garantir(materialPorNome("EVA").qtd.indexOf("3") !== -1, "EVA deve ter 3 folhas.
 const extrasTexto = extras.map(function (material) { return material.item; }).join(" | ");
 garantir(/papel[aã]o/i.test(extrasTexto), "os complementares devem citar papelão.");
 garantir(/velcro/i.test(extrasTexto), "os complementares devem citar velcro.");
-garantir(/zip/i.test(extrasTexto), "os complementares devem citar sacos zip.");
 garantir(/pregadores/i.test(extrasTexto), "os complementares devem citar pregadores.");
+garantir(!/zip/i.test(extrasTexto), "a lista não deve ter sacos zip.");
+garantir(!/bexiga|bal[aã]o/i.test(extrasTexto), "a lista não deve ter bexigas/balões.");
+const todoConteudo = JSON.stringify(dados);
+garantir(!/sacos?\s+pl[aá]sticos?\s+zip|saquinhos?\s+zip/i.test(todoConteudo), "nenhuma estação deve usar saquinhos zip.");
+garantir(!/bexiga|bal[aã]o/i.test(todoConteudo), "nenhuma estação deve usar bexigas/balões.");
 
 /* --------------------------------------------------------------------------
    Dados: sensores
@@ -208,33 +212,31 @@ const textoMateriais = logic.textoMateriais(prioritarios, extras, dados.estacoes
 const todosMateriais = prioritarios.concat(extras);
 garantir(textoMateriais.indexOf("Cartolina branca") !== -1, "textoMateriais deve citar a cartolina.");
 const linhasTextoMateriais = textoMateriais.split("\n").filter(function (linha) { return linha.indexOf("[ ] ") === 0; });
-garantir(linhasTextoMateriais.length >= 33, "textoMateriais deve listar todos os 33 itens.");
+garantir(linhasTextoMateriais.length >= 31, "textoMateriais deve listar todos os 31 itens.");
 iguais(logic.contarLinhasMateriais(textoMateriais), linhasTextoMateriais.length, "contarLinhasMateriais deve bater com as linhas de item.");
 todosMateriais.forEach(function (material) {
   garantir(textoMateriais.indexOf("[ ] " + material.item + " —") !== -1, "textoMateriais omitiu: " + material.item);
 });
-garantir(linhasTextoMateriais.join("\n").indexOf("Bexigas") !== -1, "textoMateriais deve incluir os complementares (bexigas).");
-garantir(textoMateriais.indexOf("CAIXA DE SALA") !== -1, "textoMateriais deve abrir pela caixa de sala.");
-["MESA 1", "MESA 2", "MESA 3", "MESA 4", "MESA 5"].forEach(function (rotulo) {
-  garantir(textoMateriais.indexOf(rotulo + " —") !== -1, "textoMateriais deve ter a seção " + rotulo + ".");
+garantir(textoMateriais.indexOf("MATERIAL DE USO COMUM") !== -1, "textoMateriais deve abrir pelo material de uso comum.");
+garantir(textoMateriais.indexOf("Para que serve:") !== -1, "textoMateriais deve dizer para que cada estação serve.");
+garantir(textoMateriais.indexOf("Como montar:") !== -1, "textoMateriais deve trazer o manual de montagem.");
+["1", "2", "3", "4", "5"].forEach(function (numero) {
+  garantir(textoMateriais.indexOf("ESTAÇÃO " + numero + " —") !== -1, "textoMateriais deve ter a estação " + numero + ".");
 });
-garantir(textoMateriais.indexOf("ESP32-S3") === -1, "textoMateriais é de papelaria: não deve listar o kit físico.");
-garantir(textoMateriais.indexOf("Guarde também na caixa de sala") !== -1, "textoMateriais deve ter a nota dos itens compartilhados.");
+garantir(!/zip|bexiga|bal[aã]o/i.test(textoMateriais), "o guia não deve citar zip nem bexigas.");
 
 /* --------------------------------------------------------------------------
-   Materiais: separação por mesa e por bloco
+   Materiais: uma caixa por estação, sem menus de bloco/origem
    -------------------------------------------------------------------------- */
 const idsMateriaisSala = todosMateriais.filter(function (material) { return material.sala === true; });
-garantir(idsMateriaisSala.length >= 8, "a caixa de sala deve ter pelo menos 8 itens.");
+garantir(idsMateriaisSala.length >= 8, "o material de uso comum deve ter pelo menos 8 itens.");
 const idsEstacoesConhecidas = dados.estacoes.map(function (estacao) { return estacao.id; });
 todosMateriais.forEach(function (material) {
-  garantir(material.bloco && dados.materiais.blocos.some(function (bloco) { return bloco.id === material.bloco; }),
-    "material sem bloco válido: " + material.item);
   if (material.sala) {
-    garantir(!material.estacoes, "material de sala não deve apontar para uma estação só: " + material.item);
+    garantir(!material.estacoes, "material de uso comum não deve apontar para uma estação só: " + material.item);
     return;
   }
-  garantir(Array.isArray(material.estacoes) && material.estacoes.length > 0, "material sem mesa: " + material.item);
+  garantir(Array.isArray(material.estacoes) && material.estacoes.length > 0, "material sem estação: " + material.item);
   material.estacoes.forEach(function (id) {
     garantir(idsEstacoesConhecidas.indexOf(id) !== -1, "material " + material.item + " aponta para estação inexistente: " + id);
   });
@@ -243,18 +245,18 @@ todosMateriais.forEach(function (material) {
   const itens = todosMateriais.filter(function (material) {
     return !material.sala && material.estacoes.indexOf(id) !== -1;
   });
-  garantir(itens.length >= 2, "a mesa " + id + " deve ter pelo menos 2 materiais associados.");
+  garantir(itens.length >= 4, "a estação " + id + " deve ter pelo menos 4 materiais próprios.");
 });
-["toque", "caixa"].forEach(function (id) {
-  const itens = todosMateriais.filter(function (material) {
-    return !material.sala && material.estacoes.indexOf(id) !== -1;
-  });
-  garantir(itens.length >= 3, "a mesa " + id + " deve ter pelo menos 3 materiais exclusivos.");
+garantir(!dados.materiais.blocos, "os blocos devem sair da interface e dos dados.");
+garantir(!dados.materiais.conferir, "a lista paralela de conferência deve sair dos dados.");
+
+/* Cada estação tem um manual completo: resumo, materiais, montagem e visita */
+dados.estacoes.forEach(function (estacao) {
+  garantir(estacao.resumo && estacao.resumo.length > 40, "estação " + estacao.numero + " sem propósito.");
+  garantir(Array.isArray(estacao.montagem) && estacao.montagem.length >= 3, "estação " + estacao.numero + " sem manual de montagem.");
+  garantir(Array.isArray(estacao.materiais) && estacao.materiais.length >= 3, "estação " + estacao.numero + " sem lista de materiais.");
+  garantir(Array.isArray(estacao.visitante) && estacao.visitante.length >= 2, "estação " + estacao.numero + " sem roteiro do visitante.");
 });
-iguais(dados.materiais.blocos.length, 4, "devem existir 4 blocos de material.");
-iguais(JSON.stringify(dados.materiais.conferir.ids.sort()),
-  JSON.stringify(["e01", "e05", "e06", "e08", "e09", "e12"]),
-  "a conferência deve listar exatamente papelão, colorset, velcro, zip, alumínio e pregadores.");
 
 /* Tags físicas da Estação 2: três resultados distintos, sem expor UID real */
 garantir(Array.isArray(dados.tagsFisicas) && dados.tagsFisicas.length === 3, "tagsFisicas deve ter 3 tags.");

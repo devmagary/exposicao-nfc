@@ -265,7 +265,7 @@ const EXPRESSAO_PRONTO = "(() => document.readyState === 'complete' && " +
   "document.querySelectorAll('#deck-abas .deck-aba').length === 5 && " +
   "document.querySelectorAll('#sensores-grade .sensor-card').length === 37 && " +
   "document.querySelectorAll('#deck-palco .demo').length === 5 && " +
-  "document.querySelector('#materiais-marcados') !== null)()";
+  "document.querySelectorAll('#materiais-app .manual-estacao').length === 5)()";
 
 async function esperarApp() {
   await esperar(EXPRESSAO_PRONTO, 15000);
@@ -353,19 +353,17 @@ async function principal() {
         "abas: document.querySelectorAll('#deck-abas .deck-aba').length," +
         "slides: document.querySelectorAll('#deck-palco .estacao-slide').length," +
         "sensores: document.querySelectorAll('#sensores-grade .sensor-card').length," +
-        "prioritarios: document.querySelectorAll('#materiais-app [data-bloco-material] input[data-material-id^=\"p\"]').length," +
-        "extras: document.querySelectorAll('#materiais-app [data-bloco-material] input[data-material-id^=\"e\"]').length," +
+        "itensComuns: document.querySelectorAll('#materiais-app .materiais-comuns .material-item').length," +
         "selos: document.querySelectorAll('#selos .selo').length," +
         "demos: document.querySelectorAll('#deck-palco .demo').length," +
         "comCabecalho: document.querySelectorAll('#deck-palco .demo .demo-cabeca').length," +
         "heroSvg: Boolean(document.querySelector('#hero-arte svg'))," +
         "plantaSvg: Boolean(document.querySelector('#planta-arte svg'))," +
         "kitBloco: Boolean(document.querySelector('#kit-app .kit-ao-vivo'))," +
-        "secoesMateriais: document.querySelectorAll('#materiais-app .materiais-secao').length," +
-        "caixasEstacoes: document.querySelectorAll('#materiais-app [data-caixa-estacao]').length," +
-        "caixaNfc: Boolean(document.querySelector('#materiais-app [data-caixa-estacao=\"toque\"] .caixa-nfc'))," +
-        "blocosMaterial: document.querySelectorAll('#materiais-app [data-bloco-material]').length," +
-        "etiquetasMesa: document.querySelectorAll('#materiais-app .material-tag:not(.material-tag--bloco):not(.material-tag--sala)').length," +
+        "manuais: document.querySelectorAll('#materiais-app .manual-estacao').length," +
+        "kitManual: Boolean(document.querySelector('#material-toque .manual-kit'))," +
+        "semFiltros: document.querySelectorAll('#materiais-app [data-materiais-filtro]').length === 0," +
+        "textoMateriais: (document.querySelector('#materiais-app') || {}).textContent || ''," +
         "textoAoVivo: (document.querySelector('#aba-estacao-2') || {}).textContent || ''," +
         "textoEspelho: (document.querySelector('#aba-estacao-5') || {}).textContent || ''" +
       "})");
@@ -373,19 +371,17 @@ async function principal() {
       garantir(info.abas === 5, "esperava 5 abas, achei " + info.abas);
       garantir(info.slides === 5, "esperava 5 slides, achei " + info.slides);
       garantir(info.sensores === 37, "esperava 37 cards de sensores, achei " + info.sensores);
-      garantir(info.prioritarios === 20, "esperava 20 materiais prioritários, achei " + info.prioritarios);
-      garantir(info.extras === 13, "esperava 13 materiais extras, achei " + info.extras);
+      garantir(info.itensComuns === 10, "esperava 10 itens de uso comum, achei " + info.itensComuns);
       garantir(info.selos === 5, "esperava 5 selos, achei " + info.selos);
       garantir(info.demos === 5, "esperava 5 demos, achei " + info.demos);
       garantir(info.comCabecalho === 5, "as 5 demos devem ter .demo-cabeca.");
       garantir(info.heroSvg, "a arte da capa não foi renderizada.");
       garantir(info.plantaSvg, "a planta não foi renderizada.");
       garantir(info.kitBloco, "o bloco do kit ao vivo não foi renderizado.");
-      garantir(info.secoesMateriais === 3, "materiais deveria ter 3 visões (mesa, bloco, origem), achei " + info.secoesMateriais);
-      garantir(info.caixasEstacoes === 6, "esperava 5 caixas de estação + a de sala, achei " + info.caixasEstacoes);
-      garantir(info.caixaNfc, "a caixa da Estação 2 deve avisar do kit físico (NFC).");
-      garantir(info.blocosMaterial === 4, "esperava 4 blocos de material, achei " + info.blocosMaterial);
-      garantir(info.etiquetasMesa > 0, "os materiais devem ter etiquetas de mesa.");
+      garantir(info.manuais === 5, "materiais deveria ter 5 manuais de estação, achei " + info.manuais);
+      garantir(info.kitManual, "o manual da Estação 2 deve avisar do kit físico (NFC).");
+      garantir(info.semFiltros, "a página de materiais não deve ter menus de filtro.");
+      garantir(!/zip|bexiga|bal[aã]o/i.test(info.textoMateriais), "a página não deve citar zip nem bexigas.");
       garantir(/AO VIVO/.test(info.textoAoVivo), "a Estação 2 deve ter o selo AO VIVO.");
       garantir(/PAINEL/.test(info.textoEspelho), "a Estação 5 deve ter o selo PAINEL.");
     });
@@ -462,32 +458,24 @@ async function principal() {
       garantir(/offline|Flash|sincroniza/i.test(texto), "a simulação não menciona o modo offline.");
     });
 
-    await teste("Filtros de materiais alternam entre mesa, bloco e origem", async function () {
-      const visiveis = async function () {
-        return avaliar("[...document.querySelectorAll('#materiais-app .materiais-secao')]" +
-          ".filter(function (secao) { return !secao.hidden; })" +
-          ".map(function (secao) { return secao.getAttribute('data-secao'); }).join(',')");
-      };
-      await avaliar("document.querySelector('[data-materiais-filtro=\"todos\"]').click(); true");
-      garantir((await visiveis()) === "mesas,blocos,origem", "no filtro Tudo as 3 visões devem aparecer.");
-      await avaliar("document.querySelector('[data-materiais-filtro=\"mesas\"]').click(); true");
-      garantir((await visiveis()) === "mesas", "o filtro Por mesa deve mostrar só a visão de mesas.");
-      await avaliar("document.querySelector('[data-materiais-filtro=\"blocos\"]').click(); true");
-      garantir((await visiveis()) === "blocos", "o filtro Por bloco deve mostrar só a visão de blocos.");
-      const aberta = await avaliar("(() => { const caixa = document.querySelector('[data-caixa-estacao=\"toque\"]'); caixa.open = true; " +
-        "return caixa.querySelectorAll('.caixa-roteiro ol').length; })()");
-      garantir(aberta === 2, "a caixa da Estação 2 deve abrir com as listas de visitante e montagem.");
-      await avaliar("document.querySelector('[data-materiais-filtro=\"todos\"]').click(); true");
-    });
-
-    await teste("Checklist persiste após recarregar a página", async function () {
-      await avaliar("document.querySelector('input[data-material-id=\"p01\"]').click(); true");
-      await esperar("document.querySelector('#materiais-marcados').textContent.trim() === '1'", 4000);
-      await recarregar();
-      const marcado = await avaliar("document.querySelector('input[data-material-id=\"p01\"]').checked");
-      const contagem = await avaliar("document.querySelector('#materiais-marcados').textContent.trim()");
-      garantir(marcado === true, "o material p01 deveria continuar marcado após recarregar.");
-      garantir(contagem === "1", "a contagem deveria continuar 1 após recarregar, achei " + contagem);
+    await teste("Cada estação tem material, montagem e propósito no mesmo manual", async function () {
+      const manuais = await avaliar("(() => [...document.querySelectorAll('#materiais-app .manual-estacao')].map(function (manual) {" +
+        "return {" +
+        "  id: manual.id," +
+        "  itens: manual.querySelectorAll('.manual-lista .material-item').length," +
+        "  passos: manual.querySelectorAll('.manual-passos')[0] ? manual.querySelectorAll('.manual-passos')[0].children.length : 0," +
+        "  proposito: Boolean(manual.querySelector('.manual-proposito'))," +
+        "  dica: Boolean(manual.querySelector('.manual-dica'))" +
+        "}; }))()");
+      garantir(manuais.length === 5, "esperava 5 manuais, achei " + manuais.length);
+      manuais.forEach(function (manual) {
+        garantir(manual.itens >= 4, manual.id + " deve ter pelo menos 4 materiais próprios.");
+        garantir(manual.passos >= 3, manual.id + " deve ter um manual de montagem com pelo menos 3 passos.");
+        garantir(manual.proposito, manual.id + " deve explicar para que serve.");
+        garantir(manual.dica, manual.id + " deve ter a dica da equipe.");
+      });
+      const semMenus = await avaliar("document.querySelectorAll('#materiais-app .materiais-filtros, #materiais-app [data-secao]').length === 0");
+      garantir(semMenus, "a página não deve ter os menus de bloco/estação/lista.");
     });
 
     await teste("Passaporte libera o certificado e salva o nome", async function () {
@@ -529,10 +517,12 @@ async function principal() {
       await capturar("estacao-2-desktop.png");
 
       await irPara("materiais");
-      await avaliar("(() => { document.querySelectorAll('#materiais-app .caixa-estacao').forEach(function (caixa) { caixa.open = true; }); " +
-        "document.querySelector('#materiais-app').scrollIntoView({ block: 'start' }); return true; })()");
+      await avaliar("document.querySelector('#materiais-app .materiais-comuns').scrollIntoView({ block: 'start' }); true");
       await pausa(300);
       await capturar("materiais-desktop.png");
+      await avaliar("document.querySelector('#material-toque').scrollIntoView({ block: 'start' }); true");
+      await pausa(250);
+      await capturar("materiais-estacao-2.png");
 
       await irPara("passaporte");
       await capturar("certificado-desktop.png");
