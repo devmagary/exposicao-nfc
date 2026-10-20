@@ -793,6 +793,13 @@
     const prioritarios = dados.materiais.prioritarios || [];
     const extras = dados.materiais.extras || [];
 
+    const todos = todosMateriais();
+    const blocos = dados.materiais.blocos || [];
+    const conferir = dados.materiais.conferir || {};
+    const itensConferir = (conferir.ids || []).map(function (id) {
+      return todos.find(function (material) { return material.id === id; });
+    }).filter(Boolean);
+
     app.innerHTML =
       '<div class="materiais-topo">' +
         '<div class="materiais-progresso">' +
@@ -807,29 +814,82 @@
       '</div>' +
       '<div class="materiais-filtros" role="group" aria-label="Filtrar materiais">' +
         '<button class="filtro" type="button" data-materiais-filtro="todos" aria-pressed="true">Tudo</button>' +
+        '<button class="filtro" type="button" data-materiais-filtro="mesas" aria-pressed="false">Por mesa</button>' +
+        '<button class="filtro" type="button" data-materiais-filtro="blocos" aria-pressed="false">Por bloco</button>' +
         '<button class="filtro" type="button" data-materiais-filtro="prioritarios" aria-pressed="false">Prioritários</button>' +
         '<button class="filtro" type="button" data-materiais-filtro="extras" aria-pressed="false">Complementares</button>' +
       '</div>' +
-      '<section class="materiais-grupo" data-bloco="prioritarios" aria-labelledby="materiais-prioritarios-titulo">' +
+      '<p class="materiais-total"><strong>' + todos.length + ' itens no total:</strong> ' + prioritarios.length +
+        ' prioritários do Material novo + ' + extras.length + ' complementares do Material Sugestão. ' +
+        'A mesma lista aparece de dois jeitos: por mesa (para separar caixas) e por bloco (para comprar e montar).</p>' +
+
+      /* ---- Visão 1: por mesa ---- */
+      '<section class="materiais-secao" data-secao="mesas" aria-labelledby="materiais-mesas-titulo">' +
         '<div class="materiais-grupo-cabeca">' +
-          '<h3 id="materiais-prioritarios-titulo">Prioritários — Material novo</h3>' +
-          '<span class="tag tag--ativo">' + prioritarios.length + ' itens</span>' +
+          '<h3 id="materiais-mesas-titulo">Material de cada mesa</h3>' +
+          '<span class="tag tag--ativo">5 caixas + a sala</span>' +
         '</div>' +
-        '<div class="materiais-grade">' + prioritarios.map(function (material) {
-          return montarMaterial(material, false);
-        }).join("") + '</div>' +
+        '<p class="materiais-guia">Separe um caixa por mesa e deixe o resto na caixa da sala, que fica com o professor. A Estação 2 é a única que também recebe o kit físico.</p>' +
+        '<details class="caixa-estacao caixa-estacao--sala" data-caixa-estacao="sala">' +
+          '<summary>' +
+            '<span class="caixa-num" aria-hidden="true">⌂</span>' +
+            '<span class="caixa-titulo">Material de sala (as cinco mesas)</span>' +
+            '<span class="caixa-meta">' + materiaisDaSala().length + ' itens</span>' +
+          '</summary>' +
+          '<div class="materiais-grade caixa-grade">' + materiaisDaSala().map(function (material) {
+            return montarMaterial(material, material.id.indexOf("p") !== 0);
+          }).join("") + '</div>' +
+        '</details>' +
+        (dados.estacoes || []).map(montarCaixaEstacao).join("") +
       '</section>' +
-      '<section class="materiais-grupo" data-bloco="extras" aria-labelledby="materiais-extras-titulo">' +
+
+      /* ---- Visão 2: por bloco ---- */
+      '<section class="materiais-secao" data-secao="blocos" aria-labelledby="materiais-blocos-titulo">' +
         '<div class="materiais-grupo-cabeca">' +
-          '<h3 id="materiais-extras-titulo">Complementares — Material Sugestão</h3>' +
-          '<span class="tag tag--extra">' + extras.length + ' itens · opcionais</span>' +
-          '<span class="chip" id="extras-contagem">0 de ' + extras.length + ' marcados</span>' +
+          '<h3 id="materiais-blocos-titulo">Os mesmos itens, por bloco</h3>' +
+          '<span class="tag tag--extra">como no Material Sugestão</span>' +
         '</div>' +
-        '<div class="materiais-grade">' + extras.map(function (material) {
-          return montarMaterial(material, true);
-        }).join("") + '</div>' +
+        blocos.map(function (bloco) {
+          const itens = todos.filter(function (material) { return material.bloco === bloco.id; });
+          return '<div class="materiais-bloco" data-bloco-material="' + esc(bloco.id) + '">' +
+            '<h4>' + esc(bloco.titulo) + '</h4>' +
+            '<p class="materiais-bloco-desc">' + esc(bloco.descricao) + '</p>' +
+            '<div class="materiais-grade">' + itens.map(function (material) {
+              return montarMaterial(material, material.id.indexOf("p") !== 0);
+            }).join("") + '</div>' +
+          '</div>';
+        }).join("") +
       '</section>' +
-      '<p class="materiais-nota"><strong>Atenção:</strong> a lista prioritária não inclui papelão, velcro, sacos zip e pregadores, mas a mecânica do roteiro usa esses itens. Separe-os ou adapte a atividade.</p>';
+
+      /* ---- Visão 3: origem da lista ---- */
+      '<section class="materiais-secao" data-secao="origem" aria-labelledby="materiais-origem-titulo">' +
+        '<div class="materiais-grupo-cabeca">' +
+          '<h3 id="materiais-origem-titulo">De onde vem cada item</h3>' +
+          '<span class="chip" id="extras-contagem">0 de ' + extras.length + ' marcados nos complementares</span>' +
+        '</div>' +
+        '<div class="materiais-origem">' +
+          '<div class="materiais-grupo" data-bloco="prioritarios">' +
+            '<h4>Prioritários — Material novo <span class="tag tag--ativo">' + prioritarios.length + '</span></h4>' +
+            '<ul class="materiais-lista-simples">' + prioritarios.map(function (material) {
+              return "<li>" + esc(material.item) + " — " + esc(material.qtd) + "</li>";
+            }).join("") + '</ul>' +
+          '</div>' +
+          '<div class="materiais-grupo" data-bloco="extras">' +
+            '<h4>Complementares — Material Sugestão <span class="tag tag--extra">' + extras.length + '</span></h4>' +
+            '<ul class="materiais-lista-simples">' + extras.map(function (material) {
+              return "<li>" + esc(material.item) + " — " + esc(material.qtd) + "</li>";
+            }).join("") + '</ul>' +
+          '</div>' +
+        '</div>' +
+        '<div class="materiais-conferir">' +
+          '<h4>' + esc(conferir.titulo || "Itens a conferir") + '</h4>' +
+          '<p>' + esc(conferir.resumo || "") + '</p>' +
+          '<ul>' + itensConferir.map(function (material) {
+            return "<li><strong>" + esc(material.item) + "</strong> — " + esc(material.qtd) + " · " +
+              (material.estacoes || []).map(function (id) { return "mesa " + numeroEstacao(id); }).join(", ") + "</li>";
+          }).join("") + '</ul>' +
+        '</div>' +
+      '</section>';
 
     $$("[data-materiais-filtro]", app).forEach(function (botao) {
       botao.addEventListener("click", function () {
@@ -837,9 +897,9 @@
         $$("[data-materiais-filtro]", app).forEach(function (outro) {
           outro.setAttribute("aria-pressed", outro === botao ? "true" : "false");
         });
-        $$("[data-bloco]", app).forEach(function (bloco) {
-          const nome = bloco.getAttribute("data-bloco");
-          bloco.hidden = estado.materiaisFiltro !== "todos" && estado.materiaisFiltro !== nome;
+        $$("[data-secao]", app).forEach(function (secao) {
+          const nome = secao.getAttribute("data-secao");
+          secao.hidden = estado.materiaisFiltro !== "todos" && estado.materiaisFiltro !== nome;
         });
       });
     });
@@ -884,9 +944,83 @@
         '<strong>' + esc(material.item) + '</strong>' +
         '<span class="material-qtd">' + esc(material.qtd) + '</span>' +
         '<span class="material-uso">' + esc(material.uso) + '</span>' +
+        etiquetasMaterial(material) +
         aviso +
       '</span>' +
     '</label>';
+  }
+
+  /* Etiquetas de bloco e de mesa em cada material (como separar a compra) */
+  function etiquetasMaterial(material) {
+    const partes = [];
+    const blocos = (dados.materiais.blocos || []);
+    const bloco = blocos.find(function (item) { return item.id === material.bloco; });
+    if (bloco) {
+      partes.push('<span class="material-tag material-tag--bloco">Bloco ' + esc(bloco.id) + '</span>');
+    }
+    if (material.sala) {
+      partes.push('<span class="material-tag material-tag--sala">Todas as mesas</span>');
+    } else if (Array.isArray(material.estacoes) && material.estacoes.length) {
+      material.estacoes.forEach(function (id) {
+        const numero = numeroEstacao(id);
+        if (numero) partes.push('<span class="material-tag">Mesa ' + numero + '</span>');
+      });
+    }
+    return partes.length ? '<span class="material-tags">' + partes.join("") + '</span>' : "";
+  }
+
+  function numeroEstacao(id) {
+    const estacao = (dados.estacoes || []).find(function (item) { return item.id === id; });
+    return estacao ? estacao.numero : 0;
+  }
+
+  /* Todos os materiais em ordem, com prioridade para os prioritários */
+  function todosMateriais() {
+    return (dados.materiais.prioritarios || []).concat(dados.materiais.extras || []);
+  }
+
+  function materiaisDaEstacao(id) {
+    return todosMateriais().filter(function (material) {
+      return !material.sala && Array.isArray(material.estacoes) && material.estacoes.indexOf(id) !== -1;
+    });
+  }
+
+  function materiaisDaSala() {
+    return todosMateriais().filter(function (material) { return material.sala === true; });
+  }
+
+  /* Bloco de uma estação no painel de materiais: a "caixa" dela */
+  function montarCaixaEstacao(estacao) {
+    const itens = materiaisDaEstacao(estacao.id);
+    const prioritarios = itens.filter(function (material) { return material.id.indexOf("p") === 0; }).length;
+    const nfc = estacao.id === dados.kitAoVivo.aoVivo
+      ? '<p class="caixa-nfc"><strong>+ Kit físico (não é compra):</strong> ESP32-S3, PN532, tags NFC, cabo e o tablet que espelha o painel na mesa 5.</p>'
+      : "";
+    return '<details class="caixa-estacao" data-caixa-estacao="' + esc(estacao.id) + '" style="--cor:' + corEstacao(estacao) + '">' +
+      '<summary>' +
+        '<span class="caixa-num">' + esc(estacao.numero) + '</span>' +
+        '<span class="caixa-titulo">' + esc(estacao.nome) + '</span>' +
+        '<span class="caixa-meta">' + (itens.length ? itens.length + ' itens · ' + prioritarios + ' prioritários' : "usa só os materiais de sala") + '</span>' +
+      '</summary>' +
+      nfc +
+      (itens.length
+        ? '<div class="materiais-grade caixa-grade">' + itens.map(function (material) {
+            return montarMaterial(material, material.id.indexOf("p") !== 0);
+          }).join("") + '</div>'
+        : '<p class="caixa-vazia">Nenhum item exclusivo: esta mesa usa apenas o material de sala e o que a Estação 2 empresta.</p>') +
+      '<div class="caixa-roteiro">' +
+        '<h4>O que o visitante faz</h4>' +
+        '<ol>' + (estacao.visitante || []).map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + '</ol>' +
+        '<h4>Como montar</h4>' +
+        '<ol>' + (estacao.montagem || []).map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + '</ol>' +
+        '<p class="caixa-dica"><strong>Dica da equipe:</strong> ' + esc(estacao.dica) + '</p>' +
+      '</div>' +
+    '</details>';
+  }
+
+  function corEstacao(estacao) {
+    const mapa = { cyan: "var(--cyan, #22d3ee)", emerald: "#10b981", amber: "#f59e0b", rose: "#f43f5e", violet: "#8b5cf6" };
+    return mapa[estacao.cor] || "var(--primario)";
   }
 
   function atualizarProgressoMateriais() {
@@ -913,8 +1047,8 @@
 
   function copiarListaMateriais() {
     const texto = logic.textoMateriais
-      ? logic.textoMateriais(dados.materiais.prioritarios)
-      : (dados.materiais.prioritarios || []).map(function (material) {
+      ? logic.textoMateriais(dados.materiais.prioritarios, dados.materiais.extras, dados.estacoes)
+      : todosMateriais().map(function (material) {
           return "[ ] " + material.item + " — " + material.qtd;
         }).join("\n");
 

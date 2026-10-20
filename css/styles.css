@@ -1015,6 +1015,111 @@ li { list-style: none; }
 .materiais-grupo-cabeca h3 { font-size: 1.05rem; }
 .materiais-grupo-cabeca .tag { font-size: 0.68rem; }
 
+/* ---------------------------------------------------------------
+   Materiais: visões por mesa, por bloco e por origem
+   --------------------------------------------------------------- */
+.materiais-total { color: var(--muted); font-size: 0.88rem; margin: -8px 0 22px; max-width: 78ch; }
+.materiais-total strong { color: var(--texto); }
+.materiais-guia { color: var(--muted); font-size: 0.86rem; margin: -6px 0 14px; max-width: 78ch; }
+
+.materiais-secao { margin-top: 34px; }
+.materiais-secao[hidden] { display: none; }
+.materiais-secao:first-of-type { margin-top: 0; }
+
+.caixa-estacao {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--cor, var(--primario));
+  border-radius: var(--raio-sm);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.caixa-estacao--sala { border-left-color: var(--primario); }
+.caixa-estacao summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+}
+.caixa-estacao summary::-webkit-details-marker { display: none; }
+.caixa-estacao summary::after {
+  content: "+";
+  margin-left: auto;
+  font-family: var(--fonte-mono);
+  color: var(--muted);
+}
+.caixa-estacao[open] summary::after { content: "–"; }
+.caixa-estacao summary:focus-visible { outline: 3px solid var(--primario); outline-offset: -3px; }
+.caixa-num {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--cor, var(--primario)) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cor, var(--primario)) 45%, transparent);
+  color: var(--texto);
+  font-family: var(--fonte-mono);
+  font-size: 0.8rem;
+}
+.caixa-titulo { font-size: 0.98rem; }
+.caixa-meta { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+.caixa-estacao summary::after { order: 9; }
+.caixa-estacao .caixa-grade { padding: 0 16px 16px; }
+.caixa-estacao .caixa-roteiro { padding: 0 16px 18px; border-top: 1px dashed var(--border); margin: 0 16px 16px; padding-top: 14px; }
+.caixa-roteiro h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 12px 0 6px; }
+.caixa-roteiro h4:first-child { margin-top: 0; }
+.caixa-roteiro ol { margin: 0 0 0 18px; padding: 0; display: grid; gap: 4px; font-size: 0.86rem; color: var(--texto-suave, var(--texto)); }
+.caixa-dica { margin-top: 12px; font-size: 0.84rem; color: var(--muted); border-left: 2px solid var(--cor, var(--primario)); padding-left: 10px; }
+.caixa-nfc {
+  margin: 0 16px 12px;
+  padding: 10px 12px;
+  border-radius: var(--raio-sm);
+  border: 1px dashed color-mix(in srgb, var(--emerald) 45%, var(--border));
+  background: color-mix(in srgb, var(--emerald) 7%, transparent);
+  font-size: 0.84rem;
+}
+.caixa-vazia { padding: 0 16px 16px; color: var(--muted); font-size: 0.86rem; }
+
+.materiais-bloco { margin-top: 22px; }
+.materiais-bloco h4 { font-size: 0.95rem; margin-bottom: 4px; }
+.materiais-bloco-desc { color: var(--muted); font-size: 0.82rem; margin-bottom: 10px; max-width: 78ch; }
+
+.materiais-origem { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.materiais-origem h4 { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; margin-bottom: 10px; }
+.materiais-lista-simples { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 0.84rem; color: var(--muted); }
+.materiais-lista-simples li { padding-left: 14px; position: relative; }
+.materiais-lista-simples li::before { content: "·"; position: absolute; left: 2px; color: var(--primario); }
+
+.materiais-conferir {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-radius: var(--raio-sm);
+  border: 1px dashed color-mix(in srgb, var(--amber) 55%, var(--border));
+  background: color-mix(in srgb, var(--amber) 7%, transparent);
+}
+.materiais-conferir h4 { font-size: 0.95rem; margin-bottom: 6px; }
+.materiais-conferir p { font-size: 0.86rem; color: var(--texto-suave, var(--texto)); margin-bottom: 10px; max-width: 78ch; }
+.materiais-conferir ul { margin: 0 0 0 18px; padding: 0; display: grid; gap: 4px; font-size: 0.84rem; color: var(--muted); }
+.materiais-conferir strong { color: var(--texto); }
+
+/* Etiquetas de bloco e mesa dentro de cada material */
+.material-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.material-tag {
+  font-family: var(--fonte-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.material-tag--bloco { border-color: color-mix(in srgb, var(--cyan) 45%, var(--border)); color: var(--texto); }
+.material-tag--sala { border-color: color-mix(in srgb, var(--amber) 45%, var(--border)); color: var(--texto); }
+
 .materiais-grade {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
