@@ -85,14 +85,48 @@
     return VOLTAS * 360 - anguloSetor(indice, total);
   }
 
-  function textoMateriais(prioritarios) {
-    const linhas = ["LISTA PRIORITÁRIA — FEIRA MUNDO MAKER", ""];
-    (prioritarios || []).forEach(function (material, indice) {
-      const numero = String(indice + 1).padStart(2, "0");
-      linhas.push("[ ] " + numero + ". " + material.item + " — " + material.qtd + " — " + material.uso);
+  /* Texto para colar/levar à papelaria: separado por mesa, porque é assim
+     que o material é distribuído na exposição. */
+  function textoMateriais(prioritarios, extras, estacoes) {
+    const listaPrioritarios = prioritarios || [];
+    const listaExtras = extras || [];
+    const listaEstacoes = (estacoes || []).slice().sort(function (a, b) { return a.numero - b.numero; });
+    const tudo = listaPrioritarios.concat(listaExtras);
+    const linhas = ["MATERIAIS — FEIRA MUNDO MAKER", ""];
+
+    function adicionar(itens) {
+      itens.forEach(function (material) {
+        linhas.push("[ ] " + material.item + " — " + material.qtd);
+      });
+    }
+
+    linhas.push("CAIXA DE SALA (as cinco mesas)");
+    adicionar(tudo.filter(function (material) { return material.sala === true; }));
+
+    listaEstacoes.forEach(function (estacao) {
+      const itens = tudo.filter(function (material) {
+        return !material.sala && Array.isArray(material.estacoes) && material.estacoes.indexOf(estacao.id) !== -1;
+      });
+      linhas.push("", "MESA " + estacao.numero + " — " + estacao.nome);
+      if (itens.length) adicionar(itens);
+      else linhas.push("(usa só o material de sala)");
     });
-    linhas.push("", "Base: Material novo (lista prioritária).");
+
+    linhas.push("", "Guarde também na caixa de sala os itens finos marcados em mais de uma mesa:",
+      "eles aparecem em cada mesa, mas o estoque é compartilhado.");
+
+    linhas.push("", "Total: " + tudo.length + " itens (" + listaPrioritarios.length + " prioritários + " +
+      listaExtras.length + " complementares).");
+    linhas.push("Base: Material novo (prioritários) + Material Sugestão (complementares).");
     return linhas.join("\n");
+  }
+
+  /* Conta quantas linhas de item saíram em `textoMateriais`, para os testes
+     e para conferir que todos os itens aparecem pelo menos uma vez. */
+  function contarLinhasMateriais(texto) {
+    return String(texto || "").split("\n").filter(function (linha) {
+      return linha.indexOf("[ ] ") === 0;
+    }).length;
   }
 
   const api = {
@@ -108,7 +142,8 @@
     sortearSemRepeticao: sortearSemRepeticao,
     anguloSetor: anguloSetor,
     rotacaoParaSetor: rotacaoParaSetor,
-    textoMateriais: textoMateriais
+    textoMateriais: textoMateriais,
+    contarLinhasMateriais: contarLinhasMateriais
   };
 
   root.FEIRA = root.FEIRA || {};
