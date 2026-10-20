@@ -1,0 +1,1332 @@
+/* ==========================================================================
+   MUNDO MAKER — FEIRA DE EXPOSIÇÃO
+   Estilos das ilustrações SVG (arte.css).
+   Complementa styles.css; todas as classes têm prefixo próprio (arte-*, pinos-*,
+   planta-* e roleta-*). Cores de superfície e texto vêm das variáveis do tema.
+   ========================================================================== */
+
+:root {
+  --arte-papel: #e7eef8;
+  --arte-contorno: #94a3b8;
+  --arte-tinta: #0f172a;
+  --arte-pino: #c9a227;
+  --arte-fio-papel-g: #0f172a;
+  --arte-fio-papel-v: #dc2626;
+  --arte-fio-papel-s: #b45309;
+  --arte-fio-l-g: #475569;
+  --arte-fio-l-v: #ef4444;
+  --arte-fio-l-s: #fbbf24;
+  --arte-kraft-a: #9a6a3d;
+  --arte-kraft-b: #7d522c;
+  --arte-kraft-borda: #4a2f18;
+  --arte-kraft-tinta: #2a1a0e;
+  --arte-tela: #0b1220;
+  --arte-hachura: #f87171;
+  --arte-aviso: #fca5a5;
+}
+
+[data-tema="claro"] {
+  --arte-papel: #ffffff;
+  --arte-contorno: #64748b;
+  --arte-pino: #b45309;
+  --arte-fio-l-g: #1e293b;
+  --arte-fio-l-v: #dc2626;
+  --arte-fio-l-s: #d97706;
+  --arte-kraft-a: #d8ad7c;
+  --arte-kraft-b: #bb8a56;
+  --arte-kraft-borda: #8a5a2e;
+  --arte-kraft-tinta: #2a1a0e;
+  --arte-tela: #0f172a;
+  --arte-hachura: #dc2626;
+  --arte-aviso: #b91c1c;
+}
+
+/* --------------------------------------------------------------------------
+   Base e tipografia
+   -------------------------------------------------------------------------- */
+.arte-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.arte-svg text {
+  font-family: var(--fonte);
+}
+
+.arte-rotulo {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: var(--texto);
+}
+
+.arte-sub {
+  font-family: var(--fonte);
+  font-weight: 500;
+  fill: var(--muted);
+}
+
+.arte-mono {
+  font-family: var(--fonte-mono);
+  fill: var(--muted);
+}
+
+.arte-texto {
+  font-family: var(--fonte);
+  fill: var(--texto-suave);
+}
+
+.arte-tinta {
+  font-family: var(--fonte);
+  fill: var(--arte-tinta);
+}
+
+.arte-mono-tinta {
+  font-family: var(--fonte-mono);
+  fill: var(--arte-tinta);
+}
+
+.arte-selo {
+  font-family: var(--fonte-mono);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  fill: var(--primario);
+}
+
+.arte-selo-papel {
+  font-family: var(--fonte-mono);
+  font-weight: 700;
+  fill: var(--arte-tinta);
+}
+
+.arte-papel {
+  fill: var(--arte-papel);
+}
+
+.arte-contorno {
+  stroke: var(--arte-contorno);
+  stroke-width: 1.2;
+}
+
+.arte-contorno-forte {
+  stroke: var(--arte-contorno);
+  stroke-width: 2;
+}
+
+.arte-alerta {
+  font-family: var(--fonte-mono);
+  fill: var(--arte-aviso);
+}
+
+.arte-icone {
+  display: inline-block;
+  flex: 0 0 auto;
+  vertical-align: -0.15em;
+}
+
+/* --------------------------------------------------------------------------
+   Animações suaves
+   -------------------------------------------------------------------------- */
+@keyframes arte-dash {
+  to { stroke-dashoffset: -160; }
+}
+
+@keyframes arte-flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes arte-pulsar {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+@keyframes arte-onda {
+  0% { opacity: 0.7; }
+  70% { opacity: 0.3; }
+  100% { opacity: 0; }
+}
+
+@keyframes arte-brilho {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.7; }
+}
+
+.arte-trilha {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 6 8;
+  opacity: 0.7;
+  animation: arte-dash 4.5s linear infinite;
+}
+
+.arte-trilha--forte {
+  stroke-width: 2.8;
+  opacity: 0.85;
+}
+
+.arte-flutua {
+  animation: arte-flutuar 7s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.arte-pulsa {
+  animation: arte-pulsar 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.arte-brilho {
+  animation: arte-brilho 3s ease-in-out infinite;
+}
+
+.arte-onda {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.5;
+  animation: arte-onda 2.8s ease-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   CAPA (hero)
+   -------------------------------------------------------------------------- */
+.arte-hero {
+  max-height: 640px;
+}
+
+.arte-ponto-grade {
+  fill: var(--border);
+}
+
+.arte-placa-stop-a { stop-color: var(--surface-3); }
+.arte-placa-stop-b { stop-color: var(--surface); }
+
+.arte-glow-stop-a { stop-color: var(--primario); stop-opacity: 0.22; }
+.arte-glow-stop-b { stop-color: var(--primario); stop-opacity: 0.08; }
+.arte-glow-stop-c { stop-color: var(--primario); stop-opacity: 0; }
+
+.arte-orbita {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.4;
+  stroke-dasharray: 2 9;
+}
+
+.arte-placa-borda {
+  stroke: var(--border-forte);
+  stroke-width: 2;
+}
+
+.arte-antenna {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.arte-pino {
+  fill: var(--arte-pino);
+}
+
+.arte-furo-placa {
+  fill: var(--muted-2);
+  opacity: 0.75;
+}
+
+.arte-usb {
+  fill: var(--muted-2);
+}
+
+.arte-shield {
+  fill: var(--surface-3);
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+
+.arte-chip-nome {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: var(--texto);
+}
+
+.arte-fio {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.arte-fio-g { stroke: var(--arte-fio-l-g); }
+.arte-fio-v { stroke: var(--arte-fio-l-v); }
+.arte-fio-s { stroke: var(--arte-fio-l-s); }
+
+.arte-no-caixa {
+  fill: var(--surface);
+  fill-opacity: 0.92;
+}
+
+.arte-no-borda {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.55;
+  stroke-width: 1.6;
+}
+
+.arte-no-num-fundo {
+  fill: currentColor;
+}
+
+.arte-no-num {
+  font-family: var(--fonte-display);
+  font-weight: 800;
+  fill: #06111f;
+}
+
+.arte-no-led {
+  fill: currentColor;
+}
+
+.arte-paporte-faixa {
+  fill: var(--primario);
+  opacity: 0.85;
+}
+
+.arte-paporte-foto {
+  fill: var(--surface-3);
+  stroke: var(--arte-contorno);
+  stroke-width: 1;
+}
+
+.arte-paporte-linha {
+  fill: var(--muted-2);
+  opacity: 0.7;
+}
+
+.arte-selo1 { fill: none; stroke: var(--amber); stroke-width: 2; }
+.arte-selo2 { fill: none; stroke: var(--emerald); stroke-width: 2; }
+.arte-selo3 { fill: none; stroke: var(--primario); stroke-width: 2; }
+
+.arte-componente-corpo {
+  fill: var(--surface-3);
+  stroke: var(--border-forte);
+  stroke-width: 1.6;
+}
+
+.arte-ldr {
+  fill: var(--surface-3);
+  stroke: var(--muted);
+  stroke-width: 1.6;
+}
+
+.arte-ldr-traco {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.arte-led-glow {
+  fill: currentColor;
+  opacity: 0.25;
+}
+
+.arte-led-bulbo {
+  fill: currentColor;
+}
+
+.arte-led-brilho-ponto {
+  fill: #ffffff;
+  opacity: 0.8;
+}
+
+.arte-led-perna {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.arte-nuvem {
+  fill: var(--surface-3);
+  stroke: var(--border-forte);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+.arte-nuvem-partes,
+.arte-nuvem-hero .arte-nuvem-parte {
+  fill: var(--surface-3);
+}
+
+/* --------------------------------------------------------------------------
+   PLANTA
+   -------------------------------------------------------------------------- */
+.arte-planta {
+  overflow: visible;
+}
+
+.planta-piso {
+  fill: var(--surface-2);
+  fill-opacity: 0.28;
+}
+
+.planta-grade-linha {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.planta-parede {
+  fill: none;
+  stroke: var(--border-forte);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.planta-fluxo {
+  fill: none;
+  stroke: var(--primario);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 12 10;
+  opacity: 0.9;
+  animation: arte-dash 22s linear infinite;
+}
+
+.planta-setas {
+  fill: var(--primario);
+  opacity: 0.9;
+}
+
+.planta-fluxo-rotulo {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: var(--primario);
+}
+
+.planta-fluxo-sub {
+  font-family: var(--fonte-mono);
+  fill: var(--muted);
+}
+
+.arte-kraft-stop-a { stop-color: var(--arte-kraft-a); }
+.arte-kraft-stop-b { stop-color: var(--arte-kraft-b); }
+
+.planta-kraft-borda {
+  fill: none;
+  stroke: var(--arte-kraft-borda);
+  stroke-width: 2;
+}
+
+.planta-kraft-rotulo {
+  font-family: var(--fonte-mono);
+  font-weight: 700;
+  fill: var(--arte-kraft-tinta);
+}
+
+.planta-fita {
+  fill: #f8fafc;
+  opacity: 0.22;
+}
+
+.planta-mesa {
+  cursor: pointer;
+  outline: none;
+}
+
+.planta-corpo {
+  fill: var(--surface-2);
+  stroke: color-mix(in srgb, var(--cor, var(--primario)) 45%, var(--border));
+  stroke-width: 2;
+}
+
+.planta-faixa {
+  fill: var(--cor, var(--primario));
+  opacity: 0.85;
+}
+
+.planta-halo {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 4;
+}
+
+.planta-brilho {
+  fill: var(--cor, var(--primario));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.planta-mesa:hover .planta-corpo { stroke: var(--cor, var(--primario)); }
+.planta-mesa:hover .planta-brilho { opacity: 0.07; }
+
+.planta-mesa:focus .planta-halo,
+.planta-mesa:focus-visible .planta-halo,
+.planta-mesa.selecionada .planta-halo {
+  stroke: var(--cor, var(--primario));
+  stroke-width: 4;
+}
+
+.planta-mesa.selecionada .planta-corpo {
+  stroke: var(--cor, var(--primario));
+  stroke-width: 2.5;
+}
+
+.planta-mesa.selecionada .planta-brilho { opacity: 0.12; }
+
+.planta-mesa:focus-visible .planta-badge,
+.planta-mesa.selecionada .planta-badge {
+  filter: brightness(1.15);
+}
+
+.planta-badge { fill: var(--cor, var(--primario)); }
+
+.planta-num {
+  font-family: var(--fonte-display);
+  font-weight: 800;
+  fill: #0b1220;
+}
+
+.planta-nome {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: var(--texto);
+}
+
+.planta-sub {
+  font-family: var(--fonte);
+  fill: var(--muted);
+}
+
+.planta-hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
+/* pictogramas dentro das mesas */
+.planta-papel { fill: var(--arte-papel); }
+.planta-papel-borda { stroke: var(--arte-contorno); stroke-width: 1.2; }
+.planta-papel-cabeca { fill: var(--primario); opacity: 0.15; }
+
+.planta-letra-papel {
+  font-family: var(--fonte-display);
+  font-weight: 800;
+  fill: var(--arte-tinta);
+}
+
+.planta-fio-papel { fill: none; stroke-width: 4.5; stroke-linecap: round; }
+.planta-fio-g { stroke: var(--arte-fio-papel-g); }
+.planta-fio-v { stroke: var(--arte-fio-papel-v); }
+.planta-fio-s { stroke: var(--arte-fio-papel-s); }
+
+.planta-pino-papel {
+  fill: #ffffff;
+  stroke: var(--arte-contorno);
+  stroke-width: 1;
+}
+
+.planta-leitor {
+  fill: #b91c1c;
+  stroke: #7f1d1d;
+  stroke-width: 2;
+}
+
+.planta-antena {
+  fill: none;
+  stroke: #fca5a5;
+  stroke-width: 1.4;
+  opacity: 0.8;
+}
+
+.planta-furo-leitor { fill: #7f1d1d; }
+.planta-chip-leitor { fill: #7f1d1d; }
+
+.planta-chip-cartao {
+  fill: #d4a017;
+  stroke: #a16207;
+  stroke-width: 1;
+}
+
+.planta-traco-cartao { fill: #94a3b8; }
+
+.planta-onda {
+  fill: none;
+  stroke: var(--emerald);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.5;
+  animation: arte-onda 2.8s ease-out infinite;
+}
+
+.planta-roleta-aro {
+  fill: var(--surface);
+  stroke: var(--border-forte);
+  stroke-width: 2;
+}
+
+.planta-fatia {
+  stroke: rgba(7, 13, 25, 0.25);
+  stroke-width: 1.5;
+}
+
+.planta-roleta-hub {
+  fill: var(--surface-3);
+  stroke: var(--border-forte);
+  stroke-width: 1.5;
+}
+
+.planta-roleta-seta { fill: var(--texto); }
+
+.planta-caixa {
+  fill: #b07a45;
+  stroke: #7c5327;
+  stroke-width: 1.8;
+}
+
+.planta-caixa-tampa { fill: #c08a55; }
+.planta-caixa-fita { fill: #f8fafc; opacity: 0.25; }
+.planta-furo-caixa { fill: #2b1a0c; }
+
+.planta-saquinho {
+  fill: color-mix(in srgb, var(--surface-3) 60%, transparent);
+  stroke: var(--border-forte);
+  stroke-width: 1.2;
+}
+
+.planta-sensor-papel {
+  fill: var(--arte-papel);
+  stroke: var(--arte-contorno);
+  stroke-width: 1;
+}
+
+.planta-notebook-corpo {
+  fill: var(--surface-3);
+  stroke: var(--border-forte);
+  stroke-width: 1.5;
+}
+
+.planta-notebook-tela { fill: var(--arte-tela); }
+.planta-tela-linha { fill: #64748b; }
+.planta-tela-ponto-ok { fill: var(--emerald); }
+.planta-tela-ponto-erro { fill: var(--rose); }
+
+.planta-notebook-base {
+  fill: var(--surface-2);
+  stroke: var(--border-forte);
+  stroke-width: 1.2;
+}
+
+.planta-varal { fill: none; stroke: #a16207; stroke-width: 1.6; }
+.planta-prego { fill: #a16207; }
+
+.planta-entrada-seta {
+  fill: none;
+  stroke: var(--emerald);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.planta-entrada-ponta { fill: var(--emerald); }
+
+.planta-entrada-rotulo {
+  font-family: var(--fonte-mono);
+  font-weight: 700;
+  fill: var(--emerald);
+}
+
+.planta-passaporte {
+  fill: var(--arte-papel);
+  stroke: var(--arte-contorno);
+  stroke-width: 1.2;
+}
+
+.planta-passaporte-foto {
+  fill: var(--surface-3);
+  stroke: var(--arte-contorno);
+  stroke-width: 1;
+}
+
+.planta-passaporte-linha { fill: var(--muted-2); }
+
+/* --------------------------------------------------------------------------
+   CENAS — base compartilhada
+   -------------------------------------------------------------------------- */
+.arte-cena {
+  overflow: visible;
+}
+
+.arte-cena-moldura {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 7;
+  opacity: 0.85;
+}
+
+.arte-cena-marca { fill: currentColor; }
+
+.arte-cena-tag { fill: var(--muted); }
+
+.arte-cena-regua {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.arte-expansao {
+  fill: var(--surface-2);
+  fill-opacity: 0.35;
+  stroke: currentColor;
+  stroke-opacity: 0.3;
+  stroke-width: 1.6;
+  stroke-dasharray: 7 6;
+}
+
+.arte-placa-cena {
+  fill: var(--surface);
+  stroke: var(--border-forte);
+  stroke-width: 2;
+}
+
+.arte-gvs-g { fill: var(--arte-fio-l-g); }
+.arte-gvs-v { fill: var(--arte-fio-l-v); }
+.arte-gvs-s { fill: var(--arte-fio-l-s); }
+.arte-gvs-letra-clara { fill: #f8fafc; }
+.arte-gvs-letra-escura { fill: #1f1300; }
+
+.arte-hachura {
+  stroke: var(--arte-hachura);
+  stroke-width: 2;
+  opacity: 0.55;
+}
+
+.arte-proibido {
+  stroke: var(--arte-hachura);
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
+}
+
+.arte-etiqueta {
+  fill: var(--surface);
+  fill-opacity: 0.9;
+}
+
+.arte-proibido-simbolo {
+  fill: none;
+  stroke: var(--arte-hachura);
+  stroke-width: 2.2;
+}
+
+.arte-proibido-traco {
+  fill: none;
+  stroke: var(--arte-hachura);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.arte-traco-papel { fill: var(--muted-2); }
+.arte-postit { fill: #fbbf24; stroke: #d97706; stroke-width: 1.3; }
+.arte-postit--rosa { fill: #fecdd3; stroke: #e11d48; }
+
+/* cena 2 — toque */
+.arte-balao { fill: #c53048; stroke: #8c1f33; stroke-width: 2; }
+.arte-balao-brilho { fill: #ffffff; opacity: 0.14; }
+.arte-balao-texto { font-family: var(--fonte); fill: #ffe9ee; }
+.arte-balao-no { fill: #8c1f33; }
+.arte-balao-fio { fill: none; stroke: #8c1f33; stroke-width: 1.6; }
+
+.arte-leitor-pn532 { fill: #b91c1c; stroke: #7f1d1d; stroke-width: 3; }
+.arte-antena-pn532 { fill: none; stroke: #fca5a5; stroke-width: 2; opacity: 0.7; }
+.arte-furo-pn532 { fill: #7f1d1d; }
+.arte-chip-pn532 { fill: #7f1d1d; stroke: #fca5a5; stroke-width: 1; }
+.arte-pad-chip { fill: #d4a017; }
+
+.arte-pn532-nome {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: #fee2e2;
+}
+
+.arte-led-verde { fill: #4ade80; }
+
+.arte-chip-cartao {
+  fill: #d4a017;
+  stroke: #a16207;
+  stroke-width: 1;
+}
+
+.arte-traco-cartao { fill: #94a3b8; }
+
+.arte-envelope { fill: #f6e7c8; stroke: #b08a52; stroke-width: 2; }
+.arte-envelope-flap { fill: #efdcb6; stroke: #b08a52; stroke-width: 1.4; stroke-linejoin: round; }
+.arte-envelope-dobra { fill: none; stroke: #c9a978; stroke-width: 1.2; }
+
+/* cena 3 — semáforo */
+.arte-roleta-aro-cena { fill: none; stroke: var(--border-forte); stroke-width: 5; }
+
+.arte-fatia-cena {
+  stroke: rgba(7, 13, 25, 0.3);
+  stroke-width: 2;
+}
+
+.arte-roleta-hub-cena {
+  fill: var(--surface);
+  stroke: var(--border-forte);
+  stroke-width: 2;
+}
+
+.arte-roleta-hub-miolo {
+  fill: var(--surface-3);
+  stroke: var(--border);
+  stroke-width: 1.2;
+}
+
+.arte-roleta-ponteiro-cena { fill: var(--texto); }
+
+.arte-rasgo {
+  fill: none;
+  stroke: var(--muted-2);
+  stroke-width: 1.6;
+  opacity: 0.5;
+}
+
+.arte-led-glow-cena { fill: #67e8f9; opacity: 0.3; }
+.arte-led-domo { stroke: rgba(255, 255, 255, 0.35); stroke-width: 1.5; }
+.arte-led-reflexo { fill: #ffffff; opacity: 0.28; }
+.arte-perna-led { fill: none; stroke-width: 5; stroke-linecap: round; }
+.arte-pino-led { fill: var(--arte-pino); }
+
+.arte-poster {
+  fill: var(--surface-2);
+  stroke: var(--border-forte);
+  stroke-width: 1.5;
+}
+
+.arte-poster-titulo { font-family: var(--fonte-mono); fill: var(--muted); }
+
+.arte-cartolina { fill: #c9a06a; stroke: #8b5e34; stroke-width: 2; }
+.arte-cartolina-linha { stroke: #8b5e34; stroke-width: 1.4; opacity: 0.6; }
+.arte-luz-celofane { fill: #fef3c7; opacity: 0.18; }
+.arte-celular { fill: #1f2937; stroke: #475569; stroke-width: 2; }
+.arte-flash-celular { fill: #fde68a; }
+.arte-furo-cartolina { fill: #090f1a; stroke: #8b5e34; stroke-width: 2; }
+.arte-furo-aro { fill: none; stroke: #d6b07a; stroke-width: 2; }
+
+/* cena 4 — caixa */
+.arte-caixa-corpo { fill: #b07a45; stroke: #7c5327; stroke-width: 3; }
+.arte-caixa-tampa { fill: #c08a55; stroke: #7c5327; stroke-width: 2; }
+.arte-caixa-fita { fill: #f8fafc; opacity: 0.2; }
+
+.arte-caixa-rotulo {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: #3b2416;
+}
+
+.arte-furo-caixa-cena { fill: #2b1a0c; stroke: #1f1206; stroke-width: 2; }
+.arte-furo-interno { fill: #120a04; stroke: #7c5327; stroke-width: 1; stroke-dasharray: 4 3; opacity: 0.9; }
+
+.arte-velcro { fill: #e2c89a; stroke: #8b5e34; stroke-width: 1.4; }
+.arte-velcro-traco { fill: none; stroke: #8b5e34; stroke-width: 1.8; }
+
+.arte-saquinho-cena {
+  fill: color-mix(in srgb, var(--surface-3) 60%, transparent);
+  stroke: var(--border-forte);
+  stroke-width: 1.6;
+}
+
+.arte-zip { fill: none; stroke: var(--muted-2); stroke-width: 2; stroke-dasharray: 4 3; }
+
+.arte-sensor-cena {
+  fill: var(--surface-3);
+  stroke: var(--muted-2);
+  stroke-width: 1;
+}
+
+.arte-sensor-traco { fill: var(--muted); }
+
+.arte-painel {
+  fill: var(--surface-2);
+  stroke: var(--border-forte);
+  stroke-width: 1.6;
+}
+
+.arte-painel-divisoria { stroke: var(--border); stroke-width: 1; }
+
+.arte-coluna-titulo {
+  font-family: var(--fonte-mono);
+  font-weight: 700;
+}
+
+.arte-coluna-digital { fill: var(--emerald); }
+.arte-coluna-analogico { fill: var(--cyan); }
+.arte-coluna-especial { fill: var(--amber); }
+
+.arte-painel-chip { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.arte-painel-ponto { opacity: 0.9; }
+.arte-painel-traco { fill: var(--muted-2); }
+
+/* cena 5 — memória */
+.arte-postit--grande { fill: #fbbf24; }
+.arte-postit-dobra { fill: #d97706; opacity: 0.45; }
+
+.arte-notebook-corpo {
+  fill: var(--surface-3);
+  stroke: var(--border-forte);
+  stroke-width: 2;
+}
+
+.arte-tela { fill: var(--arte-tela); }
+.arte-tela-texto { font-family: var(--fonte); fill: #e2e8f0; }
+.arte-tela-regua { stroke: rgba(148, 163, 184, 0.4); stroke-width: 1; }
+.arte-tela-barra { fill: rgba(148, 163, 184, 0.25); }
+
+.arte-notebook-base {
+  fill: var(--surface-2);
+  stroke: var(--border-forte);
+  stroke-width: 1.4;
+}
+
+.arte-teclado {
+  fill: none;
+  stroke: var(--muted-2);
+  stroke-width: 1.4;
+  opacity: 0.6;
+}
+
+.arte-varal { fill: none; stroke: #a16207; stroke-width: 2; }
+.arte-prego { fill: #a16207; }
+
+.arte-icone-cartao {
+  fill: var(--surface-3);
+  stroke: #64748b;
+  stroke-width: 1;
+}
+
+.arte-icone-flash {
+  fill: var(--surface-3);
+  stroke: #64748b;
+  stroke-width: 1;
+}
+
+.arte-traco-nfc {
+  fill: none;
+  stroke: #64748b;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.arte-traco-check {
+  fill: none;
+  stroke: #059669;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.arte-nuvem-partes-cena,
+.arte-nuvem-parte-cena {
+  fill: var(--surface-2);
+}
+
+.arte-seta {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 4;
+}
+
+.arte-chip-flash {
+  fill: var(--surface);
+  stroke: var(--border-forte);
+  stroke-width: 1.8;
+}
+
+.arte-generica-brilho { fill-opacity: 0.9; }
+
+/* --------------------------------------------------------------------------
+   ROLETA
+   -------------------------------------------------------------------------- */
+.arte-roleta {
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+.arte-roleta [data-roleta-rotor] {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.roleta-aro {
+  fill: none;
+  stroke: var(--border-forte);
+  stroke-width: 10;
+}
+
+.roleta-setor {
+  stroke: rgba(7, 13, 25, 0.3);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.roleta-rotulo {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  pointer-events: none;
+  user-select: none;
+}
+
+.roleta-parafuso {
+  fill: var(--surface-3);
+  stroke: var(--border-forte);
+  stroke-width: 2;
+}
+
+.roleta-ponteiro-corpo { fill: var(--texto); }
+.roleta-ponteiro-pino { fill: var(--texto); }
+
+.roleta-hub {
+  fill: var(--surface);
+  stroke: var(--border-forte);
+  stroke-width: 3;
+}
+
+.roleta-hub-miolo {
+  fill: var(--surface-3);
+  stroke: var(--border);
+  stroke-width: 1.4;
+}
+
+.roleta-hub-cruz {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* --------------------------------------------------------------------------
+   MAPA DE PINOS (HTML)
+   -------------------------------------------------------------------------- */
+.arte-mapa {
+  display: grid;
+  gap: 14px;
+}
+
+.pinos-mapa {
+  --pino-g: #475569;
+  --pino-v: #ef4444;
+  --pino-s: #fbbf24;
+  --pino-especial: #60a5fa;
+}
+
+[data-tema="claro"] .pinos-mapa {
+  --pino-g: #1e293b;
+  --pino-v: #b91c1c;
+  --pino-s: #b45309;
+  --pino-especial: #1d4ed8;
+}
+
+.pinos-placa {
+  border: 1px solid var(--border-forte);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+}
+
+.pinos-placa-cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.pinos-placa-titulo {
+  font-family: var(--fonte-mono);
+  font-size: 0.71rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.pinos-placa-selo {
+  font-family: var(--fonte-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--primario);
+  border: 1px solid color-mix(in srgb, var(--primario) 45%, transparent);
+  background: color-mix(in srgb, var(--primario) 10%, transparent);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.pinos-barras {
+  display: grid;
+  gap: 8px;
+}
+
+.pinos-barra--g { --pino: var(--pino-g); }
+.pinos-barra--v { --pino: var(--pino-v); }
+.pinos-barra--s { --pino: var(--pino-s); }
+
+.pinos-barra {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.pinos-barra-letra {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-family: var(--fonte-mono);
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: #f8fafc;
+  background: var(--pino);
+  flex: 0 0 auto;
+}
+
+.pinos-barra--s .pinos-barra-letra { color: #1f1300; }
+
+.pinos-barra-nome {
+  font-family: var(--fonte-mono);
+  font-size: 0.66rem;
+  color: var(--muted);
+  flex: 0 0 auto;
+  min-width: 38px;
+}
+
+.pinos-barra-linha {
+  flex: 1 1 40px;
+  height: 8px;
+  min-width: 20px;
+  border-radius: 999px;
+  background: var(--pino);
+  opacity: 0.9;
+}
+
+.pinos-pads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.pinos-pad {
+  font-family: var(--fonte-mono);
+  font-size: 0.61rem;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--pino) 45%, transparent);
+  color: var(--texto-suave);
+  background: color-mix(in srgb, var(--pino) 12%, transparent);
+}
+
+.pinos-proibidos {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--erro) 45%, transparent);
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--erro) 12%, transparent) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.pinos-proibidos-simbolo {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--erro);
+  border: 2px solid var(--erro);
+  font-weight: 800;
+  font-size: 0.8rem;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.pinos-proibidos strong {
+  display: block;
+  font-family: var(--fonte-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--erro);
+}
+
+.pinos-proibidos div span {
+  display: block;
+  font-size: 0.69rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.pinos-legendas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pinos-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.pinos-card-titulo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.pinos-contagem {
+  font-family: var(--fonte-mono);
+  font-size: 0.61rem;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.pinos-card-nota {
+  margin: 0 0 10px;
+  font-size: 0.69rem;
+  line-height: 1.4;
+  color: var(--muted-2);
+}
+
+.pinos-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pinos-chip {
+  font-family: var(--fonte-mono);
+  font-size: 0.65rem;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--texto-suave);
+  line-height: 1.3;
+}
+
+.pinos-card--seguro .pinos-chip {
+  color: var(--emerald);
+  border-color: color-mix(in srgb, var(--emerald) 40%, transparent);
+  background: color-mix(in srgb, var(--emerald) 10%, transparent);
+}
+
+.pinos-card--proibido {
+  border-color: color-mix(in srgb, var(--erro) 45%, transparent);
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--erro) 9%, transparent) 0 7px,
+    transparent 7px 14px
+  );
+}
+
+.pinos-card--proibido .pinos-card-titulo,
+.pinos-card--proibido .pinos-card-nota { color: var(--erro); }
+
+.pinos-card--proibido .pinos-chip {
+  color: var(--erro);
+  border-color: color-mix(in srgb, var(--erro) 45%, transparent);
+  background: color-mix(in srgb, var(--erro) 10%, transparent);
+}
+
+.pinos-card--strapping .pinos-chip {
+  color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 45%, transparent);
+  background: color-mix(in srgb, var(--amber) 10%, transparent);
+}
+
+.pinos-card--especial { border-color: color-mix(in srgb, var(--pino-especial) 32%, var(--border)); }
+
+.pinos-card--especial .pinos-chip {
+  color: var(--pino-especial);
+  border-color: color-mix(in srgb, var(--pino-especial) 40%, transparent);
+  background: color-mix(in srgb, var(--pino-especial) 10%, transparent);
+}
+
+.pinos-especiais {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pinos-especiais li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.71rem;
+  color: var(--muted);
+}
+
+.pinos-uso { line-height: 1.35; }
+
+/* --------------------------------------------------------------------------
+   Responsivo
+   -------------------------------------------------------------------------- */
+@media (max-width: 620px) {
+  .pinos-legendas { grid-template-columns: minmax(0, 1fr); }
+  .pinos-barra-nome { min-width: 32px; }
+  .pinos-placa { padding: 12px; }
+}
+
+@media (max-width: 430px) {
+  .pinos-pads { justify-content: flex-start; }
+  .pinos-barra-linha { flex-basis: 100%; order: 4; }
+}
+
+/* --------------------------------------------------------------------------
+   Movimento reduzido
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .arte-trilha,
+  .arte-flutua,
+  .arte-pulsa,
+  .arte-onda,
+  .arte-brilho,
+  .planta-fluxo,
+  .planta-onda {
+    animation: none !important;
+  }
+
+  .arte-flutua { transform: none; }
+  .arte-pulsa { opacity: 0.5; transform: none; }
+  .arte-brilho { opacity: 0.45; }
+  .arte-onda,
+  .planta-onda { opacity: 0.35; }
+  .arte-trilha { stroke-dashoffset: 0; opacity: 0.6; }
+}

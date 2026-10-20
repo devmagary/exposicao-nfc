@@ -1,0 +1,232 @@
+/* ==========================================================================
+   IMPRESSÃO — lista de materiais, planta e certificado
+   O app adiciona .modo-impressao-* ao <body> antes de chamar window.print().
+   ========================================================================== */
+
+@media print {
+  @page { margin: 14mm; }
+
+  :root,
+  [data-tema="claro"] {
+    --bg: #ffffff;
+    --bg-alt: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #ffffff;
+    --surface-3: #f1f5f9;
+    --border: #cbd5e1;
+    --border-forte: #94a3b8;
+    --texto: #0f172a;
+    --texto-suave: #1e293b;
+    --muted: #334155;
+    --muted-2: #475569;
+    --primario: #0e7490;
+    --cyan: #0e7490;
+    --emerald: #047857;
+    --amber: #b45309;
+    --rose: #be123c;
+    --violet: #6d28d9;
+
+    /* Arte sempre em versão clara na impressão */
+    --arte-papel: #ffffff;
+    --arte-contorno: #64748b;
+    --arte-tinta: #0f172a;
+    --arte-pino: #b45309;
+    --arte-fio-papel-g: #0f172a;
+    --arte-fio-papel-v: #dc2626;
+    --arte-fio-papel-s: #b45309;
+    --arte-fio-l-g: #1e293b;
+    --arte-fio-l-v: #dc2626;
+    --arte-fio-l-s: #d97706;
+    --arte-kraft-a: #d8ad7c;
+    --arte-kraft-b: #bb8a56;
+    --arte-kraft-borda: #8a5a2e;
+    --arte-kraft-tinta: #2a1a0e;
+    --arte-tela: #0f172a;
+    --arte-hachura: #dc2626;
+    --arte-aviso: #b91c1c;
+  }
+
+  html { scroll-behavior: auto; }
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #0f172a;
+    font-size: 11pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  * { box-shadow: none !important; text-shadow: none !important; }
+
+  .site-header,
+  .barra-progresso,
+  .pular,
+  .toast,
+  .noscript,
+  .rodape,
+  .hero-acoes,
+  .hero-chips,
+  .hero-meta,
+  .hero-palco,
+  .planta-acoes,
+  .deck-acoes,
+  .deck-abas,
+  .deck-rodape,
+  .demo,
+  .estacao-dica,
+  .sensores-controles,
+  .campo-busca,
+  .materiais-acoes,
+  .materiais-filtros,
+  .passaporte-rodape,
+  .certificado-form,
+  .certificado-acoes,
+  .dialog,
+  .botao-texto,
+  .ponto-vivo,
+  .aviso--interativo { display: none !important; }
+
+  .container { width: 100%; max-width: none; margin: 0; }
+  .secao { padding: 0; }
+  .secao--alt { background: #ffffff; border: 0; }
+  .secao-cabeca { margin-bottom: 16px; }
+  .secao-cabeca h2 { font-size: 20pt; }
+  .secao-sub { font-size: 10pt; color: #334155; }
+  .eyebrow { color: #0e7490; }
+
+  /* ---- Lista de materiais ---- */
+  .materiais-topo {
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .materiais-progresso p { color: #334155; }
+  .progresso { border-color: #94a3b8; }
+  .materiais-grupo { margin-top: 14px; break-inside: auto; }
+  .materiais-grupo-cabeca { margin-bottom: 8px; break-after: avoid; }
+  .materiais-grade { display: block; column-count: 2; column-gap: 10px; }
+  .material-card {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    padding: 8px 10px;
+    break-inside: avoid;
+    gap: 8px;
+    margin: 0 0 7px;
+  }
+  .material-check { border: 1.5px solid #475569; width: 14px; height: 14px; margin-top: 2px; }
+  .material-card input:checked + .material-check { background: #047857; border-color: #047857; }
+  .material-check::after { border-color: #ffffff; width: 7px; height: 4px; }
+  .material-corpo strong { font-size: 10pt; }
+  .material-qtd { background: #e2e8f0; color: #0f172a; font-size: 8pt; }
+  .material-uso, .material-aviso { font-size: 8.5pt; color: #334155; }
+  .materiais-nota { border: 1px dashed #b45309; background: #fff7ed; color: #78350f; font-size: 9pt; }
+
+  /* ---- Planta ---- */
+  .planta-grid { display: block; }
+  .planta-info { display: none; }
+  .planta-palco { border: 0; padding: 0; }
+  .planta-arte svg { width: 100%; max-height: 165mm; }
+  .planta-legenda { border-top: 1px solid #cbd5e1; padding-top: 8px; }
+  .planta-legenda li { color: #334155; font-size: 9pt; }
+  .nota-pequena { color: #475569; font-size: 8.5pt; }
+
+  /* ---- Estações (se a pessoa imprimir a página inteira) ---- */
+  .estacao-slide { display: block; }
+  .estacao-visual { border: 0; padding: 0 0 10px; background: none; }
+  .estacao-cena { min-height: 0; }
+  .estacao-cena svg { max-height: 70mm; }
+  .estacao-conteudo { padding: 0 0 16px; }
+  .estacao-conteudo h3 { font-size: 16pt; }
+  .estacao-abas { display: none; }
+  .estacao-slide { break-inside: avoid; }
+  .estacao-selo { border: 1px solid #94a3b8; color: #0f172a; background: #f1f5f9; }
+  .tabela-scroll { overflow: visible; border: 1px solid #cbd5e1; }
+  .tabela-resumo { min-width: 0; font-size: 9pt; }
+  .tabela-resumo th { background: #f1f5f9; color: #0f172a; }
+  .tabela-resumo td:first-child { color: #0f172a; }
+
+  /* ---- Sensores ---- */
+  .sensores-grade { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .sensor-card { border: 1px solid #cbd5e1; background: #ffffff; break-inside: avoid; padding: 8px 10px; }
+  .sensor-desc, .sensor-ideia { font-size: 8.5pt; color: #334155; }
+  .sensor-ligacao li { border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; }
+
+  /* ---- Kit ao vivo ---- */
+  .kit-app { margin-top: 0; }
+  .kit-ao-vivo {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    padding: 12px;
+    break-inside: auto;
+  }
+  .kit-cabeca h3 { font-size: 15pt; }
+  .kit-resumo { color: #334155; font-size: 9pt; }
+  .kit-selos .tag { border: 1px solid #94a3b8; background: #ffffff; color: #0f172a; }
+  .kit-aviso { border: 1px solid #b45309; background: #fffbeb; color: #78350f; font-size: 8.5pt; }
+  .kit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .kit-bloco { border: 1px solid #cbd5e1; background: #f8fafc; padding: 10px; break-inside: avoid; }
+  .kit-bloco h4 { color: #0f172a; font-size: 8.5pt; }
+  .kit-lista li { color: #334155; font-size: 8.5pt; }
+  .kit-lista li::before { background: #047857; }
+  .kit-passos li::before { background: #ecfdf5; border-color: #047857; color: #047857; }
+  .kit-plano-b { border-style: dashed; border-color: #b45309; background: #fffbeb; }
+  .kit-plano-b .kit-lista li::before { background: #b45309; }
+  .kit-acoes { display: none; }
+
+  /* ---- Passaporte / certificado ---- */
+  .passaporte-grid { display: block; }
+  .passaporte-card { border: 1px solid #cbd5e1; background: #ffffff; }
+  .selo { border: 1px dashed #94a3b8; background: #f8fafc; color: #334155; }
+  .selo.conquistado { border: 1px solid #047857; background: #ecfdf5; color: #065f46; }
+  .certificado-card { border: 1px solid #cbd5e1; background: #ffffff; }
+  .certificado-preview {
+    border: 1px solid #b45309;
+    background: #fffbeb;
+    color: #0f172a;
+  }
+  .certificado-nome { border-bottom: 1px dashed #b45309; }
+  .certificado-preview p, .certificado-preview .certificado-assinatura { color: #334155; }
+
+  /* ---- Modos específicos ---- */
+  body.modo-impressao-materiais #inicio,
+  body.modo-impressao-materiais #visao-geral,
+  body.modo-impressao-materiais #planta,
+  body.modo-impressao-materiais #estacoes,
+  body.modo-impressao-materiais #sensores,
+  body.modo-impressao-materiais #passaporte { display: none !important; }
+
+  body.modo-impressao-planta #inicio,
+  body.modo-impressao-planta #visao-geral,
+  body.modo-impressao-planta #estacoes,
+  body.modo-impressao-planta #sensores,
+  body.modo-impressao-planta #materiais,
+  body.modo-impressao-planta #passaporte { display: none !important; }
+
+  body.modo-impressao-kit #inicio,
+  body.modo-impressao-kit #planta,
+  body.modo-impressao-kit #estacoes,
+  body.modo-impressao-kit #sensores,
+  body.modo-impressao-kit #materiais,
+  body.modo-impressao-kit #passaporte { display: none !important; }
+  body.modo-impressao-kit #visao-geral .secao-cabeca,
+  body.modo-impressao-kit #visao-geral .passos,
+  body.modo-impressao-kit #visao-geral .callouts,
+  body.modo-impressao-kit #visao-geral .fatos { display: none !important; }
+  body.modo-impressao-kit #visao-geral { padding: 0; }
+
+  body.modo-impressao-certificado #inicio,
+  body.modo-impressao-certificado #visao-geral,
+  body.modo-impressao-certificado #planta,
+  body.modo-impressao-certificado #estacoes,
+  body.modo-impressao-certificado #sensores,
+  body.modo-impressao-certificado #materiais { display: none !important; }
+  body.modo-impressao-certificado #passaporte .secao-cabeca,
+  body.modo-impressao-certificado #passaporte .passaporte-card { display: none !important; }
+  body.modo-impressao-certificado .passaporte-grid { display: block; }
+  body.modo-impressao-certificado .certificado-card { border: 0; padding: 0; }
+  body.modo-impressao-certificado .certificado-preview { min-height: 120mm; justify-content: center; }
+
+  /* Evita títulos órfãos */
+  h1, h2, h3, h4 { break-after: avoid; }
+  .passaporte-card, .certificado-card { break-inside: avoid; }
+}

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="escuro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Prévia interativa da Feira de Exposição Mundo Maker: as 5 estações de ESP32-S3, NFC e 37 sensores, a planta da sala, os materiais e o passaporte com selos.">
+  <meta name="theme-color" content="#070d19">
+  <title>Mundo Maker — Feira de Exposição (prévia interativa)</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/arte.css">
+  <link rel="stylesheet" href="css/demos.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+  <script>
+    /* Evita piscar o tema errado antes do CSS carregar. */
+    (function () {
+      try {
+        var tema = localStorage.getItem("feira:v1:tema");
+        if (tema === "claro" || tema === "escuro") {
+          document.documentElement.setAttribute("data-tema", tema);
+        }
+      } catch (erro) { /* armazenamento indisponível: mantém o padrão */ }
+    })();
+  </script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <div class="barra-progresso" id="barra-progresso" aria-hidden="true"><span></span></div>
+
+  <header class="site-header" id="topo">
+    <div class="container header-inner">
+      <a class="marca" href="#inicio" aria-label="Mundo Maker — início">
+        <span class="marca-icone" aria-hidden="true">
+          <svg viewBox="0 0 32 32" role="presentation" focusable="false">
+            <rect x="4" y="4" width="24" height="24" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M11 16h10M16 11v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="3.2" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="marca-texto"><strong>Mundo Maker</strong><small>Feira de Exposição</small></span>
+      </a>
+
+      <nav class="nav-desktop" aria-label="Navegação principal">
+        <a class="nav-link" href="#inicio">Início</a>
+        <a class="nav-link" href="#visao-geral">A feira</a>
+        <a class="nav-link" href="#planta">Planta</a>
+        <a class="nav-link" href="#estacoes">Estações</a>
+        <a class="nav-link" href="#sensores">Sensores</a>
+        <a class="nav-link" href="#materiais">Materiais</a>
+        <a class="nav-link" href="#passaporte">Passaporte</a>
+      </nav>
+
+      <div class="header-acoes">
+        <button class="icon-btn" id="tema-botao" type="button" aria-label="Alternar tema claro e escuro" aria-pressed="false" title="Alternar tema">
+          <span class="tema-icone" aria-hidden="true">
+            <svg class="icone-lua" viewBox="0 0 24 24" focusable="false"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5 8.5 8.5 0 1 0 20.5 14.6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            <svg class="icone-sol" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+        </button>
+        <a class="btn btn--mini btn--primario header-tour" href="#estacoes" data-tour>Ver o tour</a>
+        <button class="icon-btn menu-botao" id="menu-botao" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav class="nav-mobile" id="menu-mobile" aria-label="Menu principal (celular)" hidden>
+      <a class="nav-link" href="#inicio">Início</a>
+      <a class="nav-link" href="#visao-geral">A feira</a>
+      <a class="nav-link" href="#planta">Planta</a>
+      <a class="nav-link" href="#estacoes">Estações</a>
+      <a class="nav-link" href="#sensores">Sensores</a>
+      <a class="nav-link" href="#materiais">Materiais</a>
+      <a class="nav-link" href="#passaporte">Passaporte</a>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <!-- ================= CAPA ================= -->
+    <section class="hero" id="inicio" aria-labelledby="hero-titulo">
+      <div class="hero-fundo" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="ponto-vivo" aria-hidden="true"></span> Prévia interativa · <span data-meta="creditos">Projeto ProSUB · Thauan</span></p>
+          <h1 id="hero-titulo">Mundo Maker <span class="destaque">Feira de Exposição</span></h1>
+          <p class="hero-sub">
+            Um passeio visual e interativo pelas <strong>5 estações</strong> de ESP32-S3, NFC e 37 sensores.
+            Veja como a sala vai ficar, o que cada equipe preparou e experimente as interações antes da montagem.
+          </p>
+          <div class="hero-acoes">
+            <a class="btn btn--primario" href="#planta">
+              <span>Entrar na exposição</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a class="btn btn--fantasma" href="#estacoes">Explorar as estações</a>
+          </div>
+          <ul class="hero-chips" aria-label="Números da exposição">
+            <li class="chip">5 estações</li>
+            <li class="chip">5 equipes</li>
+            <li class="chip">37 sensores</li>
+            <li class="chip">passaporte com selos</li>
+          </ul>
+          <p class="hero-meta">
+            <span data-meta="escola">Nossa escola</span> · <span data-meta="data">Data a definir</span>
+          </p>
+        </div>
+
+        <div class="hero-palco">
+          <div class="hero-arte" id="hero-arte" role="img" aria-label="Ilustração de um chip ESP32 ao centro, cercado pelas cinco estações da feira, com ondas de NFC e trilhas de circuito."></div>
+          <p class="hero-legenda">Ilustração da experiência — as cores identificam as cinco estações.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VISÃO GERAL ================= -->
+    <section class="secao" id="visao-geral" aria-labelledby="visao-titulo">
+      <div class="container">
+        <header class="secao-cabeca">
+          <p class="eyebrow">A visita</p>
+          <h2 id="visao-titulo">Como a feira funciona</h2>
+          <p class="secao-sub">A entrada, o passaporte e o caminho em U pelas cinco estações. Cada equipe recebe o visitante e conduz a interação.</p>
+        </header>
+
+        <ol class="passos" id="fluxo">
+          <li class="passo">
+            <span class="passo-num" aria-hidden="true">1</span>
+            <h3>Entrada</h3>
+            <p>O visitante recebe o <strong>passaporte da exposição</strong>, uma folha A4 dobrada para coletar um selo em cada estação.</p>
+          </li>
+          <li class="passo">
+            <span class="passo-num" aria-hidden="true">2</span>
+            <h3>Circulação em U</h3>
+            <p>As mesas ficam nas laterais e no centro, com um corredor livre. O percurso passa pelas estações 1, 3 e 5 e depois 2 e 4.</p>
+          </li>
+          <li class="passo">
+            <span class="passo-num" aria-hidden="true">3</span>
+            <h3>Interações e selos</h3>
+            <p>Em cada mesa, o cartaz de título em suporte “L” e o “elevador” da equipe recebem o visitante, apresentam a mecânica e carimbam o passaporte.</p>
+          </li>
+          <li class="passo">
+            <span class="passo-num" aria-hidden="true">4</span>
+            <h3>Certificado</h3>
+            <p>Quem completa as cinco estações recebe o <strong>Certificado de Explorador de Tecnologia</strong>.</p>
+          </li>
+        </ol>
+
+        <div class="callouts">
+          <div class="callout callout--ouro">
+            <span class="callout-selo" aria-hidden="true">★</span>
+            <div>
+              <h3>Dica de ouro</h3>
+              <p>O kit físico (ESP32-S3 + PN532) fica na <strong>Estação 2 — O Toque Mágico</strong>. A <strong>Estação 5</strong> espelha o painel web desse mesmo ESP32 em um tablet, sem precisar de um segundo kit. As outras equipes usam simulações de papel e EVA.</p>
+            </div>
+          </div>
+          <div class="callout callout--fonte">
+            <span class="callout-selo" aria-hidden="true">i</span>
+            <div>
+              <h3>Prioridade dos materiais</h3>
+              <p>As quantidades oficiais são as do <strong>Material novo</strong> (20 itens). Os itens do Material Sugestão que não estão nessa lista aparecem como <strong>complementares</strong> na seção de materiais.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fatos" aria-label="Resumo em números">
+          <div class="fato"><strong>5</strong><span>estações</span></div>
+          <div class="fato"><strong>5</strong><span>equipes</span></div>
+          <div class="fato"><strong>37</strong><span>sensores</span></div>
+          <div class="fato"><strong>20</strong><span>itens prioritários</span></div>
+        </div>
+
+        <div id="kit-app" class="kit-app"></div>
+      </div>
+    </section>
+
+    <!-- ================= PLANTA ================= -->
+    <section class="secao secao--alt" id="planta" aria-labelledby="planta-titulo">
+      <div class="container">
+        <header class="secao-cabeca secao-cabeca--linha">
+          <div>
+            <p class="eyebrow">Planta da sala</p>
+            <h2 id="planta-titulo">Vista de cima da exposição</h2>
+            <p class="secao-sub">A parede/quadro com papel kraft, as cinco mesas e o espaço de circulação. Clique em uma estação para ver o resumo.</p>
+          </div>
+          <div class="planta-acoes">
+            <button class="btn btn--fantasma btn--mini" type="button" id="planta-ampliar">Ampliar planta</button>
+            <button class="btn btn--fantasma btn--mini" type="button" id="planta-imprimir">Imprimir planta</button>
+            <button class="btn btn--fantasma btn--mini" type="button" id="planta-baixar">Baixar SVG</button>
+          </div>
+        </header>
+
+        <div class="planta-grid">
+          <div class="planta-palco card">
+            <div id="planta-arte" class="planta-arte"></div>
+            <ul class="planta-legenda" aria-label="Legenda da planta">
+              <li><span class="legenda-cor legenda-kraft" aria-hidden="true"></span> parede / quadro com kraft</li>
+              <li><span class="legenda-cor legenda-mesa" aria-hidden="true"></span> mesa da equipe</li>
+              <li><span class="legenda-cor legenda-fluxo" aria-hidden="true"></span> circulação em U</li>
+              <li><span class="legenda-cor legenda-entrada" aria-hidden="true"></span> entrada</li>
+            </ul>
+          </div>
+          <aside class="planta-info card" id="planta-info" aria-live="polite">
+            <p class="planta-info-vazio">Selecione uma estação na planta para ver os detalhes.</p>
+          </aside>
+        </div>
+        <p class="nota-pequena">A planta é uma referência visual do Material Sugestão, não uma planta métrica. Ajuste as distâncias ao espaço real da escola.</p>
+      </div>
+    </section>
+
+    <!-- ================= ESTAÇÕES ================= -->
+    <section class="secao" id="estacoes" aria-labelledby="estacoes-titulo">
+      <div class="container">
+        <header class="secao-cabeca secao-cabeca--linha">
+          <div>
+            <p class="eyebrow">As cinco equipes</p>
+            <h2 id="estacoes-titulo">Conheça cada estação</h2>
+            <p class="secao-sub">Navegue pelas estações, veja como montar e experimente a interação que o visitante vai fazer.</p>
+          </div>
+          <div class="deck-acoes">
+            <button class="btn btn--fantasma btn--mini" type="button" id="deck-anterior" aria-label="Estação anterior">← Anterior</button>
+            <button class="btn btn--fantasma btn--mini" type="button" id="deck-proxima" aria-label="Próxima estação">Próxima →</button>
+            <button class="btn btn--fantasma btn--mini" type="button" id="deck-tela-cheia" aria-pressed="false">Tela cheia</button>
+          </div>
+        </header>
+
+        <div class="deck" id="deck">
+          <div class="deck-abas" id="deck-abas" role="tablist" aria-label="Estações da feira"></div>
+          <div class="deck-palco" id="deck-palco"></div>
+          <p class="sr-only" id="deck-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="resumo-wrap">
+          <h3 class="subtitulo">Todas as estações em resumo</h3>
+          <div class="tabela-scroll">
+            <table class="tabela-resumo" id="estacoes-resumo">
+              <caption class="sr-only">Equipes, estações, temas e o que o visitante faz</caption>
+              <thead>
+                <tr><th scope="col">Equipe</th><th scope="col">Estação</th><th scope="col">Tema</th><th scope="col">O que o visitante faz</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SENSORES ================= -->
+    <section class="secao secao--alt" id="sensores" aria-labelledby="sensores-titulo">
+      <div class="container">
+        <header class="secao-cabeca">
+          <p class="eyebrow">Estação 4 · Caixa dos Sentidos</p>
+          <h2 id="sensores-titulo">Os 37 sensores do kit</h2>
+          <p class="secao-sub">Busque, filtre e descubra como cada sensor se liga na placa de expansão. A ligação segue o padrão G-V-S.</p>
+        </header>
+        <div class="aviso aviso--perigo" role="note">
+          <strong>⛔ Pinos proibidos:</strong> IO35, IO36 e IO37 são ligados à PSRAM no ESP32-S3 N16R8. Nunca ligue nada neles.
+        </div>
+        <div id="sensores-app"></div>
+      </div>
+    </section>
+
+    <!-- ================= MATERIAIS ================= -->
+    <section class="secao" id="materiais" aria-labelledby="materiais-titulo">
+      <div class="container">
+        <header class="secao-cabeca">
+          <p class="eyebrow">Lista de material</p>
+          <h2 id="materiais-titulo">O que comprar e o que reaproveitar</h2>
+          <p class="secao-sub">A lista prioritária vem do <strong>Material novo</strong>. Os itens do roteiro que não estão nela ficam separados como complementares — alguns são usados nas mecânicas.</p>
+        </header>
+        <div id="materiais-app"></div>
+      </div>
+    </section>
+
+    <!-- ================= PASSAPORTE ================= -->
+    <section class="secao secao--alt" id="passaporte" aria-labelledby="passaporte-titulo">
+      <div class="container">
+        <header class="secao-cabeca">
+          <p class="eyebrow">Experiência do visitante</p>
+          <h2 id="passaporte-titulo">O passaporte da exposição</h2>
+          <p class="secao-sub">Na entrada, cada visitante recebe um passaporte de papel. Aqui você pode simular: colete os cinco selos explorando as estações e desbloqueie o certificado.</p>
+        </header>
+        <div id="passaporte-app"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= RODAPÉ ================= -->
+  <footer class="rodape">
+    <div class="container rodape-grid">
+      <div>
+        <p class="rodape-marca"><strong>Mundo Maker</strong> — Feira de Exposição</p>
+        <p class="rodape-texto">Prévia interativa para os alunos conhecerem a exposição antes da montagem. Feita com HTML, CSS e SVG, sem dependências externas.</p>
+      </div>
+      <div>
+        <p class="rodape-titulo">Fontes</p>
+        <ul class="rodape-lista">
+          <li>Material Sugestão (roteiro e estações)</li>
+          <li>Material novo (lista prioritária)</li>
+          <li>Guias do projeto ESP32-S3</li>
+        </ul>
+      </div>
+      <div>
+        <p class="rodape-titulo">Atalhos</p>
+        <ul class="rodape-lista">
+          <li><a href="#planta">Planta da sala</a></li>
+          <li><a href="#estacoes">Estações</a></li>
+          <li><a href="#materiais">Materiais</a></li>
+          <li><a href="#passaporte">Passaporte</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container rodape-base">
+      <p><span data-meta="creditos">Projeto ProSUB · Thauan</span> · <span data-meta="escola">Nossa escola</span> · <span data-meta="data">Data a definir</span></p>
+      <p><a href="#inicio">Voltar ao topo ↑</a></p>
+    </div>
+  </footer>
+
+  <noscript>
+    <div class="noscript">
+      <p><strong>Ative o JavaScript para ver o tour interativo.</strong> O site é uma prévia da feira: cinco estações, uma planta da sala, 37 sensores e a lista de materiais. Sem JavaScript, você ainda pode ler o resumo abaixo.</p>
+      <p>1. O Cérebro (ESP32-S3) · 2. O Toque Mágico (NFC) · 3. O Semáforo Falante (LED RGB) · 4. A Caixa dos Sentidos (37 sensores) · 5. A Memória que Não Esquece (Flash e Painel Web).</p>
+    </div>
+  </noscript>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog class="dialog" id="planta-dialog" aria-labelledby="planta-dialog-titulo">
+    <div class="dialog-cabeca">
+      <h2 id="planta-dialog-titulo">Planta ampliada</h2>
+      <button class="icon-btn" type="button" id="planta-fechar" aria-label="Fechar planta ampliada">✕</button>
+    </div>
+    <div class="dialog-corpo" id="planta-ampliada"></div>
+  </dialog>
+
+  <script src="js/data.js" defer></script>
+  <script src="js/logic.js" defer></script>
+  <script src="js/art.js" defer></script>
+  <script src="js/interactions.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>

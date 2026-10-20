@@ -1,0 +1,478 @@
+/* ==========================================================================
+   FEIRA DE EXPOSIÇÃO — MUNDO MAKER
+   Fonte única de conteúdo. Edite aqui textos, quantidades e dados das demos.
+   Fontes: Material Sugestão.docx, Material novo.pdf e guias do ESP32-S3.
+   ========================================================================== */
+(function (root) {
+  "use strict";
+
+  const data = {
+    meta: {
+      titulo: "Mundo Maker",
+      subtitulo: "Feira de Exposição — ESP32-S3, NFC e 37 sensores",
+      escola: "Nossa escola",
+      data: "Data a definir",
+      creditos: "Projeto ProSUB · Thauan",
+      aviso:
+        "Prévia interativa baseada no Material Sugestão e na lista prioritária do Material novo. As ilustrações são uma referência de montagem, não fotos reais."
+    },
+
+    /* ---------------------------------------------------------------------
+       KIT AO VIVO — decisão da feira
+       Uma única placa ESP32-S3 + PN532 fica na Estação 2; a Estação 5
+       espelha o painel web dessa mesma placa em um tablet.
+       --------------------------------------------------------------------- */
+    kitAoVivo: {
+      aoVivo: "toque",
+      espelho: "memoria",
+      titulo: "Kit ao vivo: uma placa, duas estações",
+      resumo:
+        "O ESP32-S3 com PN532 fica na Estação 2. A Estação 5 mostra o painel web da mesma placa em um tablet — sem precisar de um segundo kit.",
+      aviso:
+        "As demos do site são simulações. Na feira, o hardware real fica na Estação 2.",
+      passos: [
+        "Leve o ESP32-S3 + PN532 para a Estação 2 e conecte o PN532 em I2C: SDA IO8, SCL IO9, 3,3 V e chaves 1 ON / 2 OFF.",
+        "Leia o UID real de cada tag e cadastre no painel: uma ativa (LIBERADO), uma bloqueada (BLOQUEADO) e uma desconhecida (NEGADO).",
+        "Deixe o LED RGB (GPIO 48) visível e teste as três leituras. O relé/fechadura é opcional.",
+        "Na Estação 5, abra o painel do mesmo ESP32 em um tablet na mesma rede (IP ou nfc.local) e mantenha a sessão autenticada.",
+        "Faça um ensaio: encoste a tag na Estação 2 e confirme o registro aparecendo na Estação 5."
+      ],
+      cuidados: [
+        "Troque as senhas padrão do painel e do AP antes da feira; não divulgue credenciais no site.",
+        "Use somente dados de demonstração; não cadastre alunos reais.",
+        "Tags comuns têm UID fixo: atualize as etiquetas dos cartões de papel para os UIDs reais das tags.",
+        "No firmware, negado e bloqueado acendem vermelho; o painel usa etiqueta amarela para bloqueado.",
+        "Se usar relé/fechadura, use fonte externa de 5 V e supervisão; nada de 110/220 V na mesa."
+      ],
+      planoB: [
+        "Sem tablet ou rede, a Estação 5 continua com o varal de papel e o kit fica só na Estação 2.",
+        "Se o Wi-Fi da escola isolar dispositivos, use um roteador portátil ou o modo AP do ESP32.",
+        "Se o PN532 falhar, o LED vermelho piscando indica falha de I2C; confira os fios e as chaves antes de abrir a feira."
+      ]
+    },
+
+    /* ---------------------------------------------------------------------
+       AS 5 ESTAÇÕES
+       --------------------------------------------------------------------- */
+    estacoes: [
+      {
+        id: "cerebro",
+        numero: 1,
+        equipe: "Equipe 1",
+        nome: "O Cérebro",
+        tema: "ESP32-S3 + placa de expansão",
+        cor: "cyan",
+        icone: "chip",
+        frase: "Onde tudo começa.",
+        resumo:
+          "O cérebro da exposição: o ESP32-S3 e a placa de expansão que organiza todos os sinais em três linhas coloridas.",
+        visitante: [
+          "Observa o cartaz com o ESP32-S3 no centro e a placa de expansão ao redor.",
+          "Recebe um “sensor de papel” e descobre em qual linha ele encaixa: G (GND), V (3,3 V) ou S (sinal).",
+          "Encontra a área hachurada de vermelho com os pinos 35, 36 e 37 marcados como proibidos (PSRAM)."
+        ],
+        montagem: [
+          "Desenhe o ESP32-S3 no centro de uma cartolina e a placa de expansão ao redor.",
+          "Use fita preta, vermelha e amarela para reproduzir as linhas G-V-S.",
+          "Cole a resposta certa atrás de cada “sensor de papel” com velcro.",
+          "Marque os pinos 35, 36 e 37 com hachura vermelha e deixe post-its para os visitantes alertarem."
+        ],
+        materiais: [
+          "Cartolina branca",
+          "Papel cartão preto",
+          "Papel cartão vermelho",
+          "Papel cartão amarelo",
+          "EVA colorido",
+          "Fita adesiva colorida",
+          "Post-its coloridos"
+        ],
+        demo: "gvs",
+        dica:
+          "No ESP32-S3 N16R8, os pinos IO35, IO36 e IO37 são ligados à PSRAM. Nunca ligue nada neles."
+      },
+      {
+        id: "toque",
+        numero: 2,
+        equipe: "Equipe 2",
+        nome: "O Toque Mágico",
+        tema: "NFC: leitura sem encostar",
+        cor: "emerald",
+        icone: "nfc",
+        aoVivo: true,
+        frase: "Encostou, decidiu.",
+        resumo:
+          "O leitor PN532 e os cartões: esta é a estação com o kit físico. Encostar uma tag de verdade acende o LED e mostra o acesso — mesmo sem internet.",
+        visitante: [
+          "Escolhe um cartão de papel com um UID e encosta no leitor PN532 gigante (com velcro).",
+          "Puxa uma das três respostas do envelope: LIBERADO, NEGADO ou BLOQUEADO.",
+          "Encosta uma tag de verdade no leitor e vê o LED acender na hora; o painel da Estação 5 registra o mesmo acesso."
+        ],
+        montagem: [
+          "Monte um leitor PN532 gigante de papelão com o desenho da placa vermelha.",
+          "Recorte cartões de papel cartão e escreva UIDs diferentes em cada um.",
+          "Cole um envelope atrás do leitor com as três respostas.",
+          "Encha uma bexiga e escreva: “Isto é o campo magnético que o leitor cria”.",
+          "Esta é a estação que recebe o ESP32 + PN532 reais; as demais usam as simulações de papel."
+        ],
+        materiais: [
+          "Cartolina branca",
+          "Papel cartão amarelo",
+          "Etiquetas adesivas brancas",
+          "Bexigas",
+          "Velcro",
+          "Papel alumínio"
+        ],
+        demo: "nfc",
+        dica:
+          "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão."
+      },
+      {
+        id: "semaforo",
+        numero: 3,
+        equipe: "Equipe 3",
+        nome: "O Semáforo Falante",
+        tema: "LED RGB e seus estados",
+        cor: "amber",
+        icone: "led",
+        frase: "Uma cor para cada resposta.",
+        resumo:
+          "O LED RGB conta o estado do acesso em cores. A roleta sorteia um estado e o visitante descobre o que ele significa.",
+        visitante: [
+          "Gira a roleta de papelão com seis setores coloridos.",
+          "Descobre o que a cor sorteada significa no sistema.",
+          "Aponta a lanterna do celular com celofane atrás do furo e acende o “LED de papel”."
+        ],
+        montagem: [
+          "Recorte uma roleta com seis setores: ciano, verde, vermelho, laranja, roxo e azul.",
+          "Faça um cartaz para cada estado, com a explicação da cor.",
+          "Abra um furo na cartolina e cubra com celofane; ilumine por trás para o LED acender.",
+          "Combine azul + verde para obter ciano e vermelho + amarelo para obter laranja."
+        ],
+        materiais: [
+          "Cartolina branca",
+          "Kit de guache",
+          "Pincéis escolares",
+          "Papel celofane",
+          "Lanterna",
+          "Fita dupla face"
+        ],
+        demo: "roleta",
+        dica:
+          "Estados reais do firmware: ciano = standby, verde = liberado, vermelho = negado, amarelo = modo AP, azul = boot e vermelho piscando = falha do PN532."
+      },
+      {
+        id: "caixa",
+        numero: 4,
+        equipe: "Equipe 4",
+        nome: "A Caixa dos Sentidos",
+        tema: "Os 37 sensores do kit",
+        cor: "rose",
+        icone: "box",
+        frase: "Mete a mão e descobre.",
+        resumo:
+          "Seis furos, saquinhos surpresa e 37 sensores: o visitante tira um, lê a etiqueta e descobre se ele é digital, analógico ou especial.",
+        visitante: [
+          "Mete a mão na caixa e tira um saquinho com um “sensor de papel”.",
+          "Lê a etiqueta e tenta adivinhar: digital, analógico ou especial?",
+          "Cola o saquinho na coluna certa do painel — no fim, a equipe confere."
+        ],
+        montagem: [
+          "Faça seis furos redondos em uma caixa de papelão.",
+          "Monte saquinhos zip com um sensor de papel (desenho + etiqueta) em cada.",
+          "Crie um painel com três colunas: Digitais, Analógicos e Especiais.",
+          "Use velcro para colar e descolar os saquinhos."
+        ],
+        materiais: [
+          "Papelão",
+          "Sacos plásticos zip",
+          "Etiquetas adesivas brancas",
+          "Papel cartão colorido",
+          "Velcro",
+          "Ímãs pequenos"
+        ],
+        demo: "caixa",
+        dica:
+          "As três colunas do guia são: Digitais (botão, reed, tilt...), Analógicos (LDR, joystick, hall linear...) e Especiais (DS18B20, DHT11, IR 38 kHz, NFC)."
+      },
+      {
+        id: "memoria",
+        numero: 5,
+        equipe: "Equipe 5",
+        nome: "A Memória que Não Esquece",
+        tema: "Flash, LittleFS e Painel Web",
+        cor: "violet",
+        icone: "database",
+        espelho: true,
+        frase: "Offline também funciona.",
+        resumo:
+          "A memória que não esquece: o painel web do ESP32 da Estação 2 aparece espelhado aqui, em um tablet — e continua funcionando sem internet.",
+        visitante: [
+          "Vê o Painel Web do ESP32 da Estação 2 ao vivo em um notebook ou tablet.",
+          "Segue o varal da linha do tempo: do cartão encostado até o registro no painel.",
+          "Escreve em um post-it “o que acontece se a internet cair?” e cola na seção “Offline ainda funciona!”."
+        ],
+        montagem: [
+          "Deixe um notebook ou tablet rodando o Painel Web do ESP32 que está na Estação 2.",
+          "Estique um barbante e prenda com pregadores os cartões da linha do tempo.",
+          "Pendure um TNT ou tecido atrás da mesa para destacar a tela.",
+          "Reserve um espaço no cartaz para os post-its sobre o modo offline."
+        ],
+        materiais: [
+          "TNT ou tecido",
+          "Barbante de algodão",
+          "Pregadores de madeira",
+          "Cartolina branca",
+          "Post-its coloridos",
+          "Fita crepe"
+        ],
+        demo: "timeline",
+        dica:
+          "Use o mesmo ESP32 da Estação 2: tablet e placa na mesma rede local (IP ou nfc.local). O painel atualiza em ~1,2 s e continua local quando a internet cai."
+      }
+    ],
+
+    /* ---------------------------------------------------------------------
+       MATERIAIS — PRIORITÁRIOS (Material novo) E COMPLEMENTARES (Sugestão)
+       --------------------------------------------------------------------- */
+    materiais: {
+      prioritarios: [
+        { id: "p01", item: "Cartolina branca", qtd: "5 a 6 folhas", uso: "Fundo dos cartazes das 5 estações.", grupo: "papel" },
+        { id: "p02", item: "Papel cartão preto", qtd: "2 folhas", uso: "Linha GND e contraste dos painéis.", grupo: "papel" },
+        { id: "p03", item: "Papel cartão vermelho", qtd: "2 folhas", uso: "Linha VCC (3,3 V / 5 V).", grupo: "papel" },
+        { id: "p04", item: "Papel cartão amarelo", qtd: "3 folhas", uso: "Linha S (sinal) e fileira de GPIOs.", grupo: "papel" },
+        { id: "p05", item: "Papel metro marrom (kraft)", qtd: "4 metros", uso: "Forrar a parede/quadro como cenário único.", grupo: "papel" },
+        { id: "p06", item: "EVA colorido (vermelho, preto e amarelo)", qtd: "3 folhas", uso: "Mapa de pinos em relevo e cartões NFC gigantes.", grupo: "papel" },
+        { id: "p07", item: "Canetinhas hidrográficas (12 cores)", qtd: "1 estojo", uso: "Diagramas, UIDs, setas e detalhes.", grupo: "escrita" },
+        { id: "p08", item: "Pincel marcador permanente preto (grosso)", qtd: "2 unidades", uso: "Títulos grandes dos cartazes.", grupo: "escrita" },
+        { id: "p09", item: "Lápis de cor / giz de cera", qtd: "1 caixa", uso: "Sombreamento e detalhes dos desenhos.", grupo: "escrita" },
+        { id: "p10", item: "Etiquetas adesivas brancas", qtd: "1 cartela", uso: "Nome e função dos sensores de papel.", grupo: "escrita" },
+        { id: "p11", item: "Post-its coloridos", qtd: "3 blocos", uso: "Quiz dos pinos proibidos e “e se a internet cair?”.", grupo: "escrita" },
+        { id: "p12", item: "Fita crepe", qtd: "2 rolos", uso: "Prender cartazes sem estragar a parede.", grupo: "montagem" },
+        { id: "p13", item: "Papel celofane colorido (verde, vermelho, azul)", qtd: "1 unidade de cada", uso: "Lanterna + celofane para acender o “LED de papel”.", grupo: "simulacao" },
+        { id: "p14", item: "Kit de guache", qtd: "1 kit", uso: "Pintura dos painéis e da roleta.", grupo: "simulacao" },
+        { id: "p15", item: "Pincéis para guache escolar", qtd: "3 pincéis", uso: "Pintura dos cartazes.", grupo: "simulacao" },
+        { id: "p16", item: "Fita dupla face", qtd: "2 rolos", uso: "Colar EVA, papelão e elementos 3D.", grupo: "montagem" },
+        { id: "p17", item: "Cola branca / cola quente", qtd: "1 de cada", uso: "Montagem geral da exposição.", grupo: "montagem" },
+        { id: "p18", item: "Tesouras sem ponta", qtd: "5 unidades", uso: "Uma por equipe, com segurança.", grupo: "montagem" },
+        { id: "p19", item: "Estilete (uso do professor)", qtd: "1 unidade", uso: "Furos da caixa e recortes precisos.", grupo: "montagem" },
+        { id: "p20", item: "Barbante de algodão (grosso)", qtd: "1 rolo", uso: "Varal da linha do tempo e cartões pendurados.", grupo: "montagem" }
+      ],
+      extras: [
+        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Suportes em “L” para os cartazes e caixa furada dos sentidos.", grupo: "estrutura", aviso: "A mecânica da Estação 4 usa papelão." },
+        { id: "e02", item: "Fita adesiva colorida (preta, vermelha e amarela)", qtd: "1 rolo de cada", uso: "Reproduzir o padrão G-V-S na parede ou no quadro.", grupo: "simulacao" },
+        { id: "e03", item: "Barbante / lã em 4 cores", qtd: "1 novelo de cada", uso: "Representar os fios jumper (SDA, SCL, VCC, GND).", grupo: "simulacao" },
+        { id: "e04", item: "Palitos de churrasco", qtd: "1 pacote", uso: "Fazer “pinos” de papel para o mapa de EVA.", grupo: "simulacao" },
+        { id: "e05", item: "Papel cartão colorido (colorset)", qtd: "1 bloco", uso: "Recortar cartões NFC e sensores em miniatura.", grupo: "papel" },
+        { id: "e06", item: "Velcro adesivo", qtd: "1 metro", uso: "Colar e descolar cartões e sensores nos painéis.", grupo: "montagem", aviso: "A mecânica das Estações 1, 2 e 4 usa velcro." },
+        { id: "e07", item: "Ímãs pequenos de geladeira", qtd: "10 unidades", uso: "Prender cartões e simular chave magnética (Hall/Reed).", grupo: "simulacao" },
+        { id: "e08", item: "Sacos plásticos zip pequenos", qtd: "20 unidades", uso: "Embalar os sensores de papel da Caixa dos Sentidos.", grupo: "estrutura", aviso: "A mecânica da Estação 4 usa saquinhos zip." },
+        { id: "e09", item: "Papel alumínio", qtd: "1 rolo", uso: "Simular blindagem/antena do leitor NFC.", grupo: "simulacao" },
+        { id: "e10", item: "Bexigas (balões)", qtd: "1 pacote", uso: "Demonstração lúdica do campo eletromagnético do NFC.", grupo: "simulacao" },
+        { id: "e11", item: "Lanterna pequena de LED (ou flash do celular)", qtd: "3 unidades", uso: "Iluminar o “LED de papel” por trás da cartolina.", grupo: "simulacao" },
+        { id: "e12", item: "Pregadores de roupa de madeira", qtd: "20 unidades", uso: "Prender os cartões no varal da linha do tempo.", grupo: "montagem", aviso: "A mecânica da Estação 5 usa pregadores." },
+        { id: "e13", item: "Saco de TNT ou tecido", qtd: "1 metro", uso: "Cortina de fundo para destacar o notebook do Painel Web.", grupo: "estrutura" }
+      ]
+    },
+
+    /* ---------------------------------------------------------------------
+       DADOS DAS DEMOS
+       --------------------------------------------------------------------- */
+    cartoes: [
+      {
+        uid: "2C:9D:7E:8E",
+        nome: "Lucas Silva",
+        situacao: "Aluno ativo",
+        resultado: "liberado",
+        nota: "Cadastrado e ativo: o ESP32 aciona o relé e libera a entrada."
+      },
+      {
+        uid: "AB:12:34:56",
+        nome: "Cartão não cadastrado",
+        situacao: "UID fora da lista",
+        resultado: "negado",
+        nota: "Nenhum aluno corresponde a este UID: o acesso é negado."
+      },
+      {
+        uid: "7F:4A:20:C1",
+        nome: "Aluno com matrícula suspensa",
+        situacao: "Bloqueado pela direção",
+        resultado: "bloqueado",
+        nota: "Existe no sistema, mas está bloqueado: a fechadura não abre."
+      }
+    ],
+
+    roleta: [
+      {
+        cor: "ciano",
+        hex: "#22d3ee",
+        titulo: "Tudo pronto",
+        significado: "Wi-Fi conectado e leitor PN532 online. Pode aproximar o cartão.",
+        real: true
+      },
+      {
+        cor: "verde",
+        hex: "#34d399",
+        titulo: "Acesso liberado",
+        significado: "Aluno ativo: o ESP32 aciona o relé e libera a entrada.",
+        real: true
+      },
+      {
+        cor: "vermelho",
+        hex: "#f87171",
+        titulo: "Acesso negado",
+        significado: "Cartão não cadastrado ou aluno bloqueado: a fechadura não abre.",
+        real: true
+      },
+      {
+        cor: "laranja",
+        hex: "#fb923c",
+        titulo: "Leitor desconectado",
+        significado: "O PN532 não respondeu no I2C (pinos 8/9). No firmware real, isso aparece como vermelho piscando.",
+        real: false
+      },
+      {
+        cor: "roxo",
+        hex: "#a78bfa",
+        titulo: "Mistura RGB",
+        significado: "Vermelho + azul acesos juntos. É demonstração de cor, não um estado do firmware.",
+        real: false
+      },
+      {
+        cor: "azul",
+        hex: "#60a5fa",
+        titulo: "Inicializando",
+        significado: "O ESP32 está conectando ao Wi-Fi e montando a Flash durante o boot.",
+        real: true
+      }
+    ],
+
+    linhaDoTempo: [
+      { icone: "card", titulo: "Cartão encostado", detalhe: "O visitante aproxima o cartão (ou a tag) do leitor." },
+      { icone: "nfc", titulo: "PN532 lê o UID", detalhe: "O campo de 13,56 MHz acorda o cartão; o UID chega por I2C (SDA IO8, SCL IO9)." },
+      { icone: "flash", titulo: "ESP32 consulta a Flash", detalhe: "O UID é procurado em cartoes.json no LittleFS. Sem internet, é aqui que a decisão acontece." },
+      { icone: "check", titulo: "Decisão", detalhe: "Ativo? Libera. Não cadastrado ou bloqueado? Nega." },
+      { icone: "led", titulo: "LED e relé", detalhe: "Verde acende e o relé abre a fechadura; vermelho acende e nada acontece." },
+      { icone: "log", titulo: "Log e Painel Web", detalhe: "O acesso é gravado e aparece no painel. Offline, o log fica na Flash." },
+      { icone: "cloud", titulo: "Sincronização", detalhe: "Quando a internet volta, o ESP32 sincroniza com a nuvem e atualiza a lista." }
+    ],
+
+    pinos: {
+      seguros: ["IO1", "IO2", "IO4", "IO5", "IO6", "IO7", "IO8", "IO9", "IO10", "IO11", "IO12", "IO13", "IO14", "IO17", "IO18", "IO21", "IO38", "IO39", "IO40", "IO41", "IO42", "IO47"],
+      proibidos: ["IO35", "IO36", "IO37"],
+      strapping: ["IO0", "IO3", "IO45", "IO46"],
+      especiais: [
+        { pino: "IO8", uso: "SDA do I2C (PN532)" },
+        { pino: "IO9", uso: "SCL do I2C (PN532)" },
+        { pino: "IO48", uso: "LED RGB WS2812B da placa" },
+        { pino: "IO43", uso: "TX da serial" },
+        { pino: "IO44", uso: "RX da serial" }
+      ]
+    },
+
+    quizGvs: [
+      {
+        sensor: "Sensor de luz (LDR)",
+        tipo: "Analógico",
+        dica: "A leitura é analógica: analogRead no pino de sinal.",
+        pinos: [
+          { rotulo: "−", correta: "G" },
+          { rotulo: "+", correta: "V" },
+          { rotulo: "S", correta: "S", gpio: "IO1" }
+        ]
+      },
+      {
+        sensor: "Botão tátil",
+        tipo: "Digital",
+        dica: "A leitura é digital: digitalRead no pino de sinal.",
+        pinos: [
+          { rotulo: "−", correta: "G" },
+          { rotulo: "+", correta: "V" },
+          { rotulo: "S", correta: "S", gpio: "IO6" }
+        ]
+      },
+      {
+        sensor: "Módulo de relé 5 V",
+        tipo: "Saída digital",
+        dica: "A bobina do relé pede 5 V; o sinal de controle continua em 3,3 V.",
+        pinos: [
+          { rotulo: "−", correta: "G" },
+          { rotulo: "+", correta: "V" },
+          { rotulo: "S", correta: "S", gpio: "IO4" }
+        ]
+      }
+    ],
+
+    sensorQuizIds: [10, 20, 13, 30, 23, 18, 27, 28, 31, 29, 22, 34],
+
+    statusLed: [
+      { cor: "ciano", titulo: "Standby normal", detalhe: "Efeito respiração: Wi-Fi conectado e PN532 online." },
+      { cor: "verde", titulo: "Acesso liberado", detalhe: "Aceso por 2 segundos: aluno cadastrado e ativo." },
+      { cor: "vermelho", titulo: "Acesso negado", detalhe: "Aceso por 2 segundos: cartão desconhecido ou aluno bloqueado." },
+      { cor: "vermelho-piscando", titulo: "Falha do PN532", detalhe: "Pisca rápido: módulo solto, desconectado ou sem resposta no I2C." },
+      { cor: "amarelo", titulo: "Modo ponto de acesso", detalhe: "Pulsa devagar: Wi-Fi não encontrado; rede ControleAcesso-S3 ativa." },
+      { cor: "azul", titulo: "Inicializando", detalhe: "Aceso no boot: conectando ao Wi-Fi e montando o sistema de arquivos." }
+    ],
+
+    /* ---------------------------------------------------------------------
+       OS 37 SENSORES — transcritos do GUIA_37_SENSORES_ESP32.md
+       tipo: digital | analogico | especial
+       --------------------------------------------------------------------- */
+    sensores: [
+      // Som, áudio e luzes
+      { id: 1, nome: "Buzzer Passivo", categoria: "Som, áudio e luzes", tipo: "especial", descricao: "Pastilha piezoelétrica que só vibra com pulsos alternados; com energia contínua faz apenas um clique.", ideia: "Tocar melodias 8-bit e bips de confirmação.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO4" } ] },
+      { id: 2, nome: "Buzzer Ativo", categoria: "Som, áudio e luzes", tipo: "digital", descricao: "Tem oscilador interno e emite um único tom contínuo quando recebe energia.", ideia: "Sirene simples e aviso de porta aberta.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO4" } ] },
+      { id: 3, nome: "Emissor Laser", categoria: "Som, áudio e luzes", tipo: "digital", descricao: "Diodo laser de 650 nm que emite um ponto vermelho concentrado.", ideia: "Barreira de segurança combinada com LDR.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO5" } ] },
+      { id: 4, nome: "LED Infravermelho", categoria: "Som, áudio e luzes", tipo: "digital", descricao: "LED IR de 940 nm, invisível a olho nu, igual ao do controle remoto.", ideia: "Controle remoto universal via Wi-Fi.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+      { id: 5, nome: "LED RGB 5 mm", categoria: "Som, áudio e luzes", tipo: "especial", descricao: "Três LEDs (R, G, B) no mesmo encapsulamento; misturando as intensidades surgem todas as cores.", ideia: "Semáforo de status e luz de notificação.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" }, { rotulo: "B", linha: "S", gpio: "IO4" } ] },
+      { id: 6, nome: "LED RGB SMD", categoria: "Som, áudio e luzes", tipo: "especial", descricao: "Versão plana (SMD 5050) do LED RGB, mais brilhante e com difusão angular maior.", ideia: "Luz piloto de painéis compactos.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" }, { rotulo: "B", linha: "S", gpio: "IO4" } ] },
+      { id: 7, nome: "LED Duas Cores", categoria: "Som, áudio e luzes", tipo: "digital", descricao: "LED de 3 pernas com vermelho e verde; os dois juntos produzem amarelo.", ideia: "Indicador de porta livre/ocupada.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" } ] },
+      { id: 8, nome: "LED Bicolor 3 mm", categoria: "Som, áudio e luzes", tipo: "digital", descricao: "Versão menor do LED bicolor, com resistores integrados na plaquinha.", ideia: "Luzes discretas em caixas de comando.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" } ] },
+      { id: 9, nome: "LED Pisca 7 Cores", categoria: "Som, áudio e luzes", tipo: "digital", descricao: "Microchip interno alterna 7 cores sozinho; só precisa de energia.", ideia: "Efeito festivo sem gastar código.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO5" } ] },
+
+      // Toque, movimento e chaves
+      { id: 10, nome: "Módulo de Chave (Botão)", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Chave tátil com resistor pull-up/pull-down embutido.", ideia: "Campainha, botoeira e contadores.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+      { id: 11, nome: "Sensor de Batida (Knock)", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Peso flexível que toca o contato ao receber batidas.", ideia: "Detector de batidas na porta.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO7" } ] },
+      { id: 12, nome: "Sensor de Vibração", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Mola interna que fecha o circuito com vibração.", ideia: "Alarme de moto/bicicleta e medidor de vibração.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO7" } ] },
+      { id: 13, nome: "Sensor TILT (Esfera)", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Esfera de aço que fecha ou abre o contato conforme a inclinação.", ideia: "Alarme de tombamento e tampa de caixa.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO10" } ] },
+      { id: 14, nome: "Sensor TILT (Mercúrio)", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Gota de mercúrio que conduz suavemente conforme a inclinação.", ideia: "Portão basculante e nível de caçamba.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO10" } ] },
+      { id: 15, nome: "Magic Light Cup", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Sensor de inclinação e LED na mesma placa.", ideia: "Brinquedo de transferir luz entre dois copos.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO11" }, { rotulo: "LED", linha: "S", gpio: "IO12" } ] },
+      { id: 16, nome: "Chave Óptica (Fenda)", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "LED IR e fototransistor frente a frente; um objeto na fenda interrompe o feixe.", ideia: "Fim de curso de impressora 3D e contador de moedas.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO11" } ] },
+      { id: 17, nome: "Encoder Rotativo", categoria: "Toque, movimento e chaves", tipo: "especial", descricao: "Knob infinito com dois canais em quadratura e clique ao pressionar.", ideia: "Navegar em menus de OLED e controlar volume.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "CLK", linha: "S", gpio: "IO12" }, { rotulo: "DT", linha: "S", gpio: "IO13" }, { rotulo: "SW", linha: "S", gpio: "IO14" } ] },
+      { id: 18, nome: "Joystick XY com Botão", categoria: "Toque, movimento e chaves", tipo: "analogico", descricao: "Dois potenciômetros (X/Y) e um botão de clique.", ideia: "Controle de câmera Pan-Tilt e robôs com rodas.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "VRx", linha: "S", gpio: "IO1" }, { rotulo: "VRy", linha: "S", gpio: "IO2" }, { rotulo: "SW", linha: "S", gpio: "IO4" } ] },
+      { id: 19, nome: "Sensor de Toque Metálico", categoria: "Toque, movimento e chaves", tipo: "digital", descricao: "Comuta ao encostar o dedo no terminal metálico, sem partes móveis.", ideia: "Interruptor invisível e botão sem desgaste.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO7" } ] },
+
+      // Sensores magnéticos
+      { id: 20, nome: "Mini Reed Magnético", categoria: "Sensores magnéticos", tipo: "digital", descricao: "Lâminas ferromagnéticas que se tocam com a aproximação de um ímã.", ideia: "Alarme de porta e janela.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+      { id: 21, nome: "Ampola Reed Grande", categoria: "Sensores magnéticos", tipo: "digital", descricao: "Versão maior e mais sensível da ampola reed.", ideia: "Hidrômetro e velocímetro de bicicleta.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+      { id: 22, nome: "Sensor Hall Digital", categoria: "Sensores magnéticos", tipo: "digital", descricao: "Sensor de efeito Hall de estado sólido, sem partes móveis, que comuta na presença do polo sul.", ideia: "RPM de motores e contadores rápidos.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO7" } ] },
+      { id: 23, nome: "Sensor Hall Linear", categoria: "Sensores magnéticos", tipo: "analogico", descricao: "Entrega tensão proporcional à força e à distância do ímã.", ideia: "Medir corrente sem cortar fio e distância magnética.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO1" } ] },
+      { id: 24, nome: "Hall Linear com Trimpot", categoria: "Sensores magnéticos", tipo: "analogico", descricao: "Hall linear + comparador LM393 com ajuste; saídas analógica (AO) e digital (DO).", ideia: "Sensor de proximidade com limite ajustável.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "AO", linha: "S", gpio: "IO1" }, { rotulo: "DO", linha: "S", gpio: "IO2" } ] },
+
+      // Temperatura, clima e fogo
+      { id: 25, nome: "Sensor de Temperatura PTC", categoria: "Temperatura, clima e fogo", tipo: "analogico", descricao: "Termistor cuja resistência varia com a temperatura.", ideia: "Termômetro analógico e proteção térmica.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO1" } ] },
+      { id: 26, nome: "PTC com Ajuste Digital", categoria: "Temperatura, clima e fogo", tipo: "analogico", descricao: "Termistor + LM393 com limite ajustável no trimpot.", ideia: "Termostato de ventoinha.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "AO", linha: "S", gpio: "IO1" }, { rotulo: "DO", linha: "S", gpio: "IO2" } ] },
+      { id: 27, nome: "DS18B20 (1-Wire)", categoria: "Temperatura, clima e fogo", tipo: "especial", descricao: "Sensor digital de alta precisão; vários podem compartilhar o mesmo pino.", ideia: "Aquários, chocadeiras e cervejaria artesanal.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO4" } ] },
+      { id: 28, nome: "DHT11 (Temperatura e Umidade)", categoria: "Temperatura, clima e fogo", tipo: "especial", descricao: "Temperatura e umidade empacotadas em um único fio digital.", ideia: "Estação meteorológica e controle de estufa.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO5" } ] },
+      { id: 29, nome: "Sensor de Chama", categoria: "Temperatura, clima e fogo", tipo: "digital", descricao: "Fototransistor calibrado para o infravermelho do fogo (760–1100 nm).", ideia: "Robô bombeiro e alarme de incêndio.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+
+      // Luz, visão e presença
+      { id: 30, nome: "LDR (Luminosidade)", categoria: "Luz, visão e presença", tipo: "analogico", descricao: "Fotoresistor que perde resistência quando a luz bate nele.", ideia: "Acender a luz ao anoitecer e ajustar brilho.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO1" } ] },
+      { id: 31, nome: "Receptor IR 38 kHz", categoria: "Luz, visão e presença", tipo: "especial", descricao: "Recebe apenas pulsos infravermelhos modulados em 38 kHz.", ideia: "Controlar o ESP32 com o controle remoto da TV.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO7" } ] },
+      { id: 32, nome: "Desvio de Obstáculo IR", categoria: "Luz, visão e presença", tipo: "digital", descricao: "Emissor e receptor infravermelhos frontais; o reflexo indica um obstáculo.", ideia: "Robô aspirador e torneira automática.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+      { id: 33, nome: "Seguidor de Linha", categoria: "Luz, visão e presença", tipo: "digital", descricao: "Reflexão óptica que distingue superfície branca de linha preta.", ideia: "Robô seguidor de linha.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
+      { id: 34, nome: "Detector de Batimentos", categoria: "Luz, visão e presença", tipo: "analogico", descricao: "LED IR + fototransistor que mede a variação de luz no dedo (fotopletismografia).", ideia: "Medidor didático de frequência cardíaca.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO1" } ] },
+
+      // Microfones e potência
+      { id: 35, nome: "Microfone Pequeno", categoria: "Microfones e potência", tipo: "analogico", descricao: "Cápsula de eletreto que entrega variações de tensão proporcionais ao som.", ideia: "Detector de palmas e sensor de ruído ambiente.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "S", linha: "S", gpio: "IO1" } ] },
+      { id: 36, nome: "Microfone Grande com Ajuste", categoria: "Microfones e potência", tipo: "analogico", descricao: "Cápsula maior + LM393, com saída analógica e digital ajustável.", ideia: "Alarme de vidro quebrado e medidor de decibéis.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V" }, { rotulo: "DO", linha: "S", gpio: "IO6" }, { rotulo: "AO", linha: "S", gpio: "IO1" } ] },
+      { id: 37, nome: "Módulo de Relé 5 V", categoria: "Microfones e potência", tipo: "digital", descricao: "Chave eletromecânica isolada que liga cargas de 110/220 V ou fechaduras de 12 V.", ideia: "Acionar fechadura, lâmpada ou portão.", ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "+", linha: "V", valor: "5 V" }, { rotulo: "S", linha: "S", gpio: "IO4" } ] }
+    ]
+  };
+
+  root.FEIRA = root.FEIRA || {};
+  root.FEIRA.data = data;
+
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = data;
+  }
+})(typeof window !== "undefined" ? window : globalThis);
