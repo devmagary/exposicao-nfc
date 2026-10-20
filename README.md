@@ -38,7 +38,7 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
 | Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 1 e uma demo interativa por estação |
 | Sensores | Catálogo dos 37 sensores com busca, filtros e ligação G-V-S/GPIO |
-| Materiais | Os 33 itens em três visões: **por mesa** (uma caixa por estação + caixa de sala), **por bloco** (como no Material Sugestão) e **por origem** (20 prioritários + 13 complementares), com checklist persistente |
+| Materiais | Um guia por estação: material de uso comum + 5 manuais com lista de materiais, montagem e “para que serve”, com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
 
 ### Guia de materiais e montagem
@@ -110,7 +110,7 @@ Quase tudo está em **`js/data.js`**:
 - `meta`: nome da escola, data, créditos.
 - `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica.
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
-- `materiais.extras`: os 13 itens complementares do Material Sugestão.
+- `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.
 - `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia e ligação).
 - `cartoes`, `roleta`, `linhaDoTempo`, `pinos`, `quizGvs`: dados das demos.
 
@@ -120,7 +120,7 @@ Depois de editar, recarregue a página. Não é preciso compilar.
 
 - **Quantidade e nome** valem os do **Material novo** (PDF).
 - **Como usar** vem do **Material Sugestão** (DOCX).
-- Itens do DOCX que não estão no PDF aparecem como **complementares/opcionais**, com aviso quando a mecânica depende deles (papelão, velcro, sacos zip, pregadores).
+- Itens do DOCX que não estão no PDF aparecem como **complementares/opcionais**, com aviso quando a mecânica depende deles (papelão, velcro, pregadores, alumínio e colorset).
 
 ### Observações de fidelidade
 
@@ -141,7 +141,7 @@ node tests/run-tests.js
 node tests/run-e2e.js
 ```
 
-- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 13 materiais, separação por mesa/bloco, cartões, tags físicas, roleta), regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
+- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta), regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
 - `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, filtros de materiais, checklist persistente, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
 - O E2E usa o `WebSocket` nativo do Node 22+; para abrir o site, o Node não é necessário.
 - Variável opcional `CHROME_PATH` para apontar outro navegador Chromium. Em ambientes onde o Chromium é bloqueado por sandbox de sistema, rode o E2E em uma máquina normal ou abra o site diretamente para a revisão visual.
