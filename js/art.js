@@ -1179,6 +1179,468 @@
   }
 
   /* ------------------------------------------------------------------
+     37 SENSORES — desenhos dos módulos (200 x 150)
+     Cada figura mostra o módulo visto de frente: placa azul, componente
+     central e conector de pinos. Desenhos originais, sem fotos, para os
+     alunos compararem o desenho com o módulo na mão.
+     ------------------------------------------------------------------ */
+  var ACC_SENSOR = { digital: "#7dd3fc", analogico: "#6ee7b7", especial: "#fcd34d" };
+
+  function sr(x, y, w, h, r, fill, extra) {
+    return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + r + '" fill="' + fill + '"' + (extra ? " " + extra : "") + "/>";
+  }
+
+  function sc(cx, cy, r, fill, extra) {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + fill + '"' + (extra ? " " + extra : "") + "/>";
+  }
+
+  function st(x, y, valor, fill, extra, ancora) {
+    return '<text x="' + x + '" y="' + y + '" fill="' + fill + '" font-family="Consolas, monospace" font-weight="700" text-anchor="' + (ancora || "middle") + '"' + (extra ? " " + extra : "") + ">" + esc(valor) + "</text>";
+  }
+
+  function ledDomo(cx, cy, raio) {
+    return [
+      '<path d="M' + (cx - 6) + " " + (cy + raio) + "v12M" + (cx + 6) + " " + (cy + raio) + 'v12" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+      sr(cx - raio - 2, cy + raio - 4, raio * 2 + 4, 7, 3.5, "rgba(148,163,184,0.5)"),
+      sc(cx, cy, raio, "rgba(226,232,240,0.26)", 'stroke="#e2e8f0" stroke-opacity="0.7" stroke-width="1.4"'),
+      '<path d="M' + Math.round(cx - raio * 0.55) + " " + Math.round(cy - raio * 0.1) + "a" + Math.round(raio * 0.5) + " " + Math.round(raio * 0.5) + " 0 0 1 " + Math.round(raio * 0.42) + " " + Math.round(-raio * 0.58) + '" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>'
+    ];
+  }
+
+  function placaFundo(numero, k) {
+    var s = [];
+    s.push('<ellipse cx="100" cy="128" rx="58" ry="9" fill="' + k.sombra + '"/>');
+    s.push(sr(40, 18, 120, 86, 8, k.placa, 'stroke="rgba(191,219,254,0.4)" stroke-width="1.3"'));
+    s.push('<path d="M49 22h102" stroke="rgba(255,255,255,0.2)" stroke-width="1.6" stroke-linecap="round"/>');
+    s.push('<path d="M52 88h14M52 92h8" stroke="rgba(147,197,253,0.35)" stroke-width="2" stroke-linecap="round"/>');
+    s.push(sr(44, 44, 3, 34, 1.5, k.acc, 'opacity="0.9"'));
+    [[49, 27], [151, 27], [49, 95], [151, 95]].forEach(function (ponto) {
+      s.push(sc(ponto[0], ponto[1], 3.4, "#0b1a44", 'stroke="rgba(147,197,253,0.55)" stroke-width="1"'));
+    });
+    s.push(st(58, 31, ("0" + numero).slice(-2), "rgba(219,234,254,0.85)", 'font-size="10"', "start"));
+    return s.join("");
+  }
+
+  function conectorSensor(pinos) {
+    var total = Math.max(3, Math.min(5, pinos || 3));
+    var passo = 13;
+    var primeiro = Math.round(100 - ((total - 1) * passo) / 2 - 4);
+    var largura = (total - 1) * passo + 8;
+    var corpo = primeiro - 5;
+    var s = [];
+    for (var i = 0; i < total; i += 1) {
+      s.push(sr(primeiro + i * passo, 98, 8, 24, 2, "#fbbf24", 'stroke="#b45309" stroke-width="0.8"'));
+    }
+    s.push(sr(corpo, 100, largura + 10, 14, 3, "#111a2b", 'stroke="#475569" stroke-width="1"'));
+    if (total === 3) {
+      s.push(st(100, 110, "G  V  S", "rgba(148,163,184,0.9)", 'font-size="7" letter-spacing="1.5"'));
+    }
+    return s.join("");
+  }
+
+  var FIGURAS = {
+    "buzzer-passivo": function (k) {
+      return [
+        sc(100, 54, 26, "#232c3d", 'stroke="#3f4c63" stroke-width="1.6"'),
+        sc(100, 54, 17, "#141b29"),
+        sc(100, 54, 4.5, "#050a14"),
+        '<path d="M100 28v6" stroke="#3f4c63" stroke-width="3" stroke-linecap="round"/>',
+        '<path d="M131 40q9 7 0 14t0 14" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round" opacity="0.85"/>'
+      ];
+    },
+    "buzzer-ativo": function (k) {
+      return [
+        sc(100, 54, 26, "#232c3d", 'stroke="#3f4c63" stroke-width="1.6"'),
+        sc(100, 54, 18, "#0f1624"),
+        '<path d="M93 54h14M100 47v14" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>',
+        '<path d="M128 46h5M128 55h5M128 64h5" stroke="' + k.acc + '" stroke-width="2.6" stroke-linecap="round" opacity="0.85"/>'
+      ];
+    },
+    "laser": function (k) {
+      return [
+        sr(86, 26, 28, 48, 6, k.metal, 'stroke="#5b6b82" stroke-width="1.2"'),
+        '<path d="M86 40h28M86 62h28" stroke="#5b6b82" stroke-width="1.4" opacity="0.6"/>',
+        sr(95, 21, 10, 7, 2, "#1f2937"),
+        sc(100, 30, 6, "#0f172a"),
+        sc(100, 30, 3, "#ef4444"),
+        '<path d="M100 26 166 6" stroke="#ef4444" stroke-width="4" opacity="0.5" stroke-linecap="round"/>',
+        '<path d="M100 26 166 6" stroke="#fca5a5" stroke-width="1.4" opacity="0.9" stroke-linecap="round"/>'
+      ];
+    },
+    "led-ir": function (k) {
+      return ledDomo(100, 50, 15).concat([
+        sr(95, 44, 10, 7, 2, "#111827"),
+        '<path d="M124 40q7 5 0 10M132 34q11 8 0 22" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"/>'
+      ]);
+    },
+    "led-rgb": function (k) {
+      return ledDomo(100, 50, 16).concat([
+        sc(92, 50, 3.6, "#ef4444"),
+        sc(100, 50, 3.6, "#34d399"),
+        sc(108, 50, 3.6, "#60a5fa"),
+        '<path d="M123 36q8 8 0 16" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>',
+        '<path d="M130 31q10 11 0 26" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>',
+        '<path d="M137 26q12 14 0 36" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>'
+      ]);
+    },
+    "led-rgb-smd": function (k) {
+      return [
+        sr(78, 34, 44, 42, 3, "#0f172a", 'stroke="#334155" stroke-width="1.2"'),
+        sr(78, 34, 10, 8, 2, "#fbbf24"),
+        sr(112, 34, 10, 8, 2, "#fbbf24"),
+        sr(78, 68, 10, 8, 2, "#fbbf24"),
+        sr(112, 68, 10, 8, 2, "#fbbf24"),
+        sc(100, 55, 13, "rgba(226,232,240,0.22)", 'stroke="#e2e8f0" stroke-opacity="0.45" stroke-width="1.2"'),
+        sc(93, 55, 4, "#ef4444"),
+        sc(100, 55, 4, "#34d399"),
+        sc(107, 55, 4, "#60a5fa")
+      ];
+    },
+    "led-duas-cores": function (k) {
+      return [
+        '<path d="M100 34a16 16 0 0 0 0 32z" fill="#ef4444" opacity="0.8"/>',
+        '<path d="M100 34a16 16 0 0 1 0 32z" fill="#34d399" opacity="0.8"/>',
+        sc(100, 50, 16, "none", 'stroke="#e2e8f0" stroke-opacity="0.85" stroke-width="1.5"'),
+        sr(82, 62, 36, 7, 3.5, "rgba(148,163,184,0.5)"),
+        '<path d="M88 69v10M100 69v10M112 69v10" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M92 38q4 -4 8 0M100 38q4 -4 8 0" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.6"/>'
+      ];
+    },
+    "led-bicolor": function (k) {
+      return [
+        '<path d="M100 40a11 11 0 0 0 0 22z" fill="#ef4444" opacity="0.8"/>',
+        '<path d="M100 40a11 11 0 0 1 0 22z" fill="#34d399" opacity="0.8"/>',
+        sc(100, 51, 11, "none", 'stroke="#e2e8f0" stroke-opacity="0.85" stroke-width="1.4"'),
+        sr(87, 60, 26, 6, 3, "rgba(148,163,184,0.5)"),
+        '<path d="M92 66v11M100 66v11M108 66v11" stroke="#9fb0c7" stroke-width="2.4" stroke-linecap="round"/>'
+      ];
+    },
+    "led-pisca": function (k) {
+      return ledDomo(100, 50, 16).concat([
+        '<path d="M92 56a9 9 0 0 1 16 0" fill="none" stroke="#ef4444" stroke-width="2.4" stroke-linecap="round"/>',
+        '<path d="M87 57a14 14 0 0 1 26 0" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round"/>',
+        '<path d="M82 58a19 19 0 0 1 36 0" fill="none" stroke="#34d399" stroke-width="2.4" stroke-linecap="round"/>',
+        '<path d="M77 59a24 24 0 0 1 46 0" fill="none" stroke="#60a5fa" stroke-width="2.4" stroke-linecap="round"/>'
+      ]);
+    },
+    "botao": function (k) {
+      return [
+        sr(80, 36, 40, 36, 4, "#1f2937", 'stroke="#475569" stroke-width="1.2"'),
+        sc(100, 52, 12, "#4b5b74", 'stroke="#94a3b8" stroke-width="1.6"'),
+        sc(100, 50, 7, "#64748b"),
+        '<path d="M93 46a9 9 0 0 1 6 -3" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>',
+        sr(84, 72, 6, 12, 1.5, "#9fb0c7"),
+        sr(110, 72, 6, 12, 1.5, "#9fb0c7"),
+        '<path d="M122 40q8 6 8 14" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "knock": function (k) {
+      return [
+        sc(100, 54, 24, "#e2e8f0", 'stroke="#94a3b8" stroke-width="1.6"'),
+        sc(100, 54, 15, "#f8fafc", 'stroke="#cbd5e1" stroke-width="1.4"'),
+        sc(100, 54, 5.5, "#94a3b8"),
+        '<path d="M92 78v6M108 78v6" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M126 34l5 -8M132 44l9 -4M116 25l2 -8" stroke="' + k.acc + '" stroke-width="2.6" stroke-linecap="round"/>'
+      ];
+    },
+    "vibracao": function (k) {
+      return [
+        sr(72, 40, 7, 28, 2, "#9fb0c7"),
+        sr(121, 40, 7, 28, 2, "#9fb0c7"),
+        '<path d="M79 54q5.5 -13 11 0t11 0t11 0t11 0" fill="none" stroke="#cbd5e1" stroke-width="2.2" stroke-linecap="round"/>',
+        '<path d="M86 30q14 -7 28 0" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/>',
+        '<path d="M63 44l-6 -5M63 55h-7M63 66l-6 5M137 44l6 -5M137 55h7M137 66l6 5" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "tilt-esfera": function (k) {
+      return [
+        sr(66, 40, 68, 28, 14, k.vidro, 'stroke="#cbd5e1" stroke-opacity="0.65" stroke-width="1.4"'),
+        sr(69, 50, 5, 8, 1, "#9fb0c7"),
+        sr(126, 50, 5, 8, 1, "#9fb0c7"),
+        sc(80, 60, 7, k.metal, 'stroke="#475569"'),
+        sc(78, 57, 2, "#ffffff", 'opacity="0.55"'),
+        '<path d="M100 26a26 26 0 0 1 22 10" fill="none" stroke="' + k.acc + '" stroke-width="2.2" stroke-linecap="round"/>',
+        '<path d="M120 32l5 4 -7 2" fill="none" stroke="' + k.acc + '" stroke-width="2.2" stroke-linecap="round"/>'
+      ];
+    },
+    "tilt-mercurio": function (k) {
+      return [
+        sr(66, 40, 68, 28, 14, k.vidro, 'stroke="#cbd5e1" stroke-opacity="0.65" stroke-width="1.4"'),
+        '<path d="M74 58q9 -8 18 -2t14 0v8H74z" fill="#e11d48" opacity="0.82"/>',
+        '<path d="M72 52h8M120 52h8" stroke="#9fb0c7" stroke-width="3" stroke-linecap="round"/>',
+        '<path d="M100 26a26 26 0 0 1 22 10" fill="none" stroke="' + k.acc + '" stroke-width="2.2" stroke-linecap="round"/>'
+      ];
+    },
+    "magic-cup": function (k) {
+      return [
+        '<path d="M62 70 90 50" stroke="#9fb0c7" stroke-width="2.4" stroke-linecap="round"/>',
+        sc(82, 58, 6, k.metal, 'stroke="#475569"'),
+        '<path d="M106 34h30v8a15 15 0 0 1 -30 0z" fill="rgba(226,232,240,0.24)" stroke="#cbd5e1" stroke-width="1.4"/>',
+        '<path d="M121 57v8h11" fill="none" stroke="#cbd5e1" stroke-width="2.2"/>',
+        sc(121, 45, 4, "#fbbf24"),
+        '<path d="M121 28v-6M110 32l-4 -5M132 32l4 -5" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "chave-optica": function (k) {
+      return [
+        sr(74, 32, 52, 44, 5, "#1b2434", 'stroke="#3f4c63" stroke-width="1.2"'),
+        sr(74, 50, 52, 9, 0, "#1e3a8a"),
+        '<path d="M74 54.5h52" stroke="' + k.acc + '" stroke-width="2" stroke-dasharray="5 4"/>',
+        sc(80, 44, 3, "#ef4444"),
+        sc(120, 65, 3, "#111827")
+      ];
+    },
+    "encoder": function (k) {
+      return [
+        sc(100, 54, 21, "#334155", 'stroke="#64748b" stroke-width="1.6"'),
+        '<path d="M100 40v-6M100 74v6M86 54h-6M120 54h6" stroke="#64748b" stroke-width="2.4" stroke-linecap="round"/>',
+        sc(100, 54, 7, "#1f2937"),
+        sr(95, 24, 10, 10, 2, "#9fb0c7"),
+        sr(124, 44, 14, 20, 2, "#1f2937", 'stroke="#475569"'),
+        sc(131, 54, 4, "#475569"),
+        '<path d="M76 34a30 30 0 0 0 -5 18" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "joystick": function (k) {
+      return [
+        sr(68, 42, 64, 42, 5, "#1f2937", 'stroke="#475569" stroke-width="1.2"'),
+        sr(73, 47, 16, 16, 2, "#0f172a", 'stroke="#334155"'),
+        '<path d="M81 50v10M76 55h10" stroke="#3f4c63" stroke-width="2"/>',
+        sr(111, 47, 16, 16, 2, "#0f172a", 'stroke="#334155"'),
+        '<path d="M119 50v10M114 55h10" stroke="#3f4c63" stroke-width="2"/>',
+        sc(100, 50, 11, "#334155", 'stroke="#64748b" stroke-width="1.4"'),
+        sc(100, 50, 5.5, "#475569"),
+        '<path d="M96 40h8l3 -8h-14z" fill="#475569"/>'
+      ];
+    },
+    "toque-metal": function (k) {
+      return [
+        sr(86, 42, 28, 32, 4, k.metal, 'stroke="#64748b" stroke-width="1.2"'),
+        sc(100, 58, 8, "#94a3b8"),
+        '<path d="M88 44a17 17 0 0 1 24 0" fill="none" stroke="' + k.acc + '" stroke-width="2"/>',
+        '<path d="M82 36a26 26 0 0 1 36 0" fill="none" stroke="' + k.acc + '" stroke-width="2" opacity="0.6"/>',
+        '<path d="M100 36v-8" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round" opacity="0.7"/>'
+      ];
+    },
+    "reed-mini": function (k) {
+      return [
+        sr(76, 48, 46, 16, 8, k.vidro, 'stroke="#cbd5e1" stroke-opacity="0.7" stroke-width="1.4"'),
+        '<path d="M79 56h17M100 56h17" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M94 56l4 -3M106 56l-4 3" stroke="#9fb0c7" stroke-width="2" stroke-linecap="round"/>',
+        sr(128, 44, 9, 26, 2, "#ef4444"),
+        sr(128, 57, 9, 13, 0, "#60a5fa"),
+        '<path d="M122 38q-6 10 0 20" fill="none" stroke="' + k.acc + '" stroke-width="1.8" stroke-dasharray="3 3"/>'
+      ];
+    },
+    "reed-grande": function (k) {
+      return [
+        sr(64, 48, 74, 18, 9, k.vidro, 'stroke="#cbd5e1" stroke-opacity="0.7" stroke-width="1.4"'),
+        '<path d="M68 57h27M105 57h27" stroke="#9fb0c7" stroke-width="2.8" stroke-linecap="round"/>',
+        '<path d="M98 57l6 -4M102 57l-6 4" stroke="#9fb0c7" stroke-width="2" stroke-linecap="round"/>',
+        sr(86, 24, 14, 9, 2, "#ef4444"),
+        sr(100, 24, 14, 9, 2, "#60a5fa"),
+        '<path d="M88 39q12 -5 24 0" fill="none" stroke="' + k.acc + '" stroke-width="1.8" stroke-dasharray="3 3"/>'
+      ];
+    },
+    "hall-digital": function (k) {
+      return [
+        '<path d="M86 66v-20a14 14 0 0 1 28 0v20z" fill="#1f2937" stroke="#475569" stroke-width="1.2"/>',
+        st(100, 56, "H", "#e2e8f0", 'font-size="13"'),
+        '<path d="M90 66v14M100 66v14M110 66v14" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M124 44h5v10h5v-10h5" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linejoin="round"/>'
+      ];
+    },
+    "hall-linear": function (k) {
+      return [
+        '<path d="M86 66v-20a14 14 0 0 1 28 0v20z" fill="#1f2937" stroke="#475569" stroke-width="1.2"/>',
+        st(100, 56, "H", "#e2e8f0", 'font-size="13"'),
+        '<path d="M90 66v14M100 66v14M110 66v14" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M122 60q10 0 16 -16" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>',
+        '<path d="M122 64h16" stroke="' + k.acc + '" stroke-width="1.4" opacity="0.5"/>'
+      ];
+    },
+    "hall-trimpot": function (k) {
+      return [
+        sr(66, 40, 28, 22, 2, "#111827", 'stroke="#334155"'),
+        st(80, 55, "393", "#cbd5e1", 'font-size="8"'),
+        '<path d="M70 62v6M76 62v6M82 62v6M88 62v6" stroke="#9fb0c7" stroke-width="2"/>',
+        sr(104, 36, 30, 30, 3, "#60a5fa", 'stroke="#bfdbfe" stroke-width="1.4"'),
+        sc(119, 51, 9, "#1e3a8a"),
+        '<path d="M112 51h14M119 44v14" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>',
+        '<path d="M92 32q8 -6 16 0" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-dasharray="3 3"/>'
+      ];
+    },
+    "ptc": function (k) {
+      return [
+        sc(100, 52, 10, "#f59e0b", 'stroke="#b45309" stroke-width="1.6"'),
+        sc(96, 48, 3, "#fde68a"),
+        '<path d="M94 61l-5 15M106 61l5 15" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M84 32q4 -6 8 0t8 0t8 0" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>',
+        '<path d="M78 44q4 -6 8 0t8 0" fill="none" stroke="' + k.acc + '" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>'
+      ];
+    },
+    "ptc-ajuste": function (k) {
+      return [
+        sr(66, 62, 30, 16, 2, "#111827", 'stroke="#334155"'),
+        st(81, 74, "393", "#cbd5e1", 'font-size="8"'),
+        sc(102, 42, 8, "#f59e0b", 'stroke="#b45309" stroke-width="1.4"'),
+        '<path d="M97 49l-3 10M107 49l3 10" stroke="#9fb0c7" stroke-width="2.4"/>',
+        sr(112, 54, 26, 26, 3, "#60a5fa", 'stroke="#bfdbfe" stroke-width="1.4"'),
+        sc(125, 67, 8, "#1e3a8a"),
+        '<path d="M119 67h12M125 61v12" stroke="#fbbf24" stroke-width="1.8"/>'
+      ];
+    },
+    "ds18b20": function (k) {
+      return [
+        '<path d="M86 66v-20a14 14 0 0 1 28 0v20z" fill="#1f2937" stroke="#475569" stroke-width="1.2"/>',
+        st(100, 58, "DS", "#e2e8f0", 'font-size="11"'),
+        '<path d="M90 66v14M100 66v14M110 66v14" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M128 32v16" stroke="#cbd5e1" stroke-width="2.4" stroke-linecap="round"/>',
+        sc(128, 54, 5, "#ef4444"),
+        '<path d="M132 36h3M132 42h3" stroke="#cbd5e1" stroke-width="1.6"/>'
+      ];
+    },
+    "dht11": function (k) {
+      var s = [
+        sr(84, 30, 32, 46, 3, "#dbeafe", 'stroke="#93c5fd" stroke-width="1.4"'),
+        '<path d="M84 40h32" stroke="#93c5fd" stroke-width="1.2" opacity="0.7"/>'
+      ];
+      [44, 52, 60].forEach(function (y) {
+        [90, 97, 104, 111].forEach(function (x) {
+          s.push(sc(x, y, 1.7, "#1e3a8a", 'opacity="0.75"'));
+        });
+      });
+      s.push('<path d="M93 76v10M100 76v10M107 76v10" stroke="#9fb0c7" stroke-width="2.4" stroke-linecap="round"/>');
+      return s;
+    },
+    "chama": function (k) {
+      return ledDomo(100, 50, 16).concat([
+        '<path d="M100 36c7 8 11 12 11 19a11 11 0 0 1 -22 0c0 -7 5 -9 11 -19z" fill="#fb923c"/>',
+        '<path d="M100 47c3.5 5 5.5 7 5.5 10.5a5.5 5.5 0 0 1 -11 0c0 -3.5 2.5 -4.5 5.5 -10.5z" fill="#fde68a"/>',
+        '<path d="M126 40q6 7 0 14M133 32q9 11 0 22" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" opacity="0.85"/>'
+      ]);
+    },
+    "ldr": function (k) {
+      return [
+        sc(100, 54, 16, "#f8fafc", 'stroke="#cbd5e1" stroke-width="1.6"'),
+        '<path d="M88 54l4 -6 4 12 4 -12 4 12 4 -12 4 6" fill="none" stroke="#b45309" stroke-width="2.2" stroke-linejoin="round"/>',
+        '<path d="M94 70v10M106 70v10" stroke="#9fb0c7" stroke-width="2.6" stroke-linecap="round"/>',
+        '<path d="M124 34l6 -6M128 46h8M120 24v-6" stroke="' + k.acc + '" stroke-width="2.2" stroke-linecap="round"/>'
+      ];
+    },
+    "receptor-ir": function (k) {
+      return [
+        sc(100, 50, 14, "#111827", 'stroke="#334155" stroke-width="1.4"'),
+        sc(100, 46, 7, "#1f2937"),
+        '<path d="M96 42a6 6 0 0 1 8 0" fill="none" stroke="#64748b" stroke-width="1.6"/>',
+        '<path d="M94 64v12M100 64v12M106 64v12" stroke="#9fb0c7" stroke-width="2.4" stroke-linecap="round"/>',
+        '<path d="M120 44h4v8h4v-8h4v8h4" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linejoin="round"/>',
+        st(132, 66, "38k", "rgba(148,163,184,0.85)", 'font-size="7"')
+      ];
+    },
+    "obstaculo-ir": function (k) {
+      return [
+        sc(84, 58, 11, "rgba(226,232,240,0.3)", 'stroke="#e2e8f0" stroke-opacity="0.7" stroke-width="1.2"'),
+        sc(84, 58, 5, "#ef4444"),
+        sc(116, 58, 11, "#111827", 'stroke="#334155" stroke-width="1.2"'),
+        sc(116, 58, 5, "#1f2937"),
+        '<path d="M92 52 142 24" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>',
+        '<path d="M124 52 142 30" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5 4"/>',
+        sr(142, 14, 9, 28, 2, "#9fb0c7")
+      ];
+    },
+    "seguidor-linha": function (k) {
+      return [
+        sr(76, 34, 18, 22, 3, "#1f2937", 'stroke="#475569"'),
+        sc(85, 45, 4.5, "#ef4444"),
+        sr(106, 34, 18, 22, 3, "#1f2937", 'stroke="#475569"'),
+        sc(115, 45, 4.5, "#111827"),
+        '<path d="M85 58v12M115 58v12" stroke="' + k.acc + '" stroke-width="2" stroke-dasharray="4 3"/>',
+        sr(62, 76, 76, 14, 3, "#e2e8f0"),
+        sr(62, 81, 76, 6, 0, "#0f172a"),
+        '<path d="M81 74l4 -4M119 74l-4 -4" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "batimentos": function (k) {
+      return [
+        '<path d="M100 74 82 56a11 11 0 0 1 18 -8a11 11 0 0 1 18 8z" fill="#ef4444" stroke="#b91c1c" stroke-width="1.4"/>',
+        '<path d="M62 34h14l4 -8 6 16 5 -10h9" fill="none" stroke="#fecaca" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+        '<path d="M124 40q5 6 0 12" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "mic-pequeno": function (k) {
+      return [
+        sc(100, 52, 16, k.metal, 'stroke="#64748b" stroke-width="1.2"'),
+        sc(100, 52, 12, "#1f2937"),
+        sc(95, 48, 1.6, "#94a3b8"),
+        sc(100, 48, 1.6, "#94a3b8"),
+        sc(105, 48, 1.6, "#94a3b8"),
+        '<path d="M94 68v10M106 68v10" stroke="#9fb0c7" stroke-width="2.4" stroke-linecap="round"/>',
+        '<path d="M124 42q7 10 0 20M132 34q11 18 0 36" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "mic-grande": function (k) {
+      return [
+        sc(82, 46, 11, k.metal, 'stroke="#64748b"'),
+        sc(82, 46, 8, "#1f2937"),
+        '<path d="M78 57v9M86 57v9" stroke="#9fb0c7" stroke-width="2.2"/>',
+        sr(64, 64, 30, 16, 2, "#111827", 'stroke="#334155"'),
+        st(79, 76, "393", "#cbd5e1", 'font-size="8"'),
+        sr(108, 40, 24, 24, 3, "#60a5fa", 'stroke="#bfdbfe" stroke-width="1.4"'),
+        sc(120, 52, 7, "#1e3a8a"),
+        '<path d="M115 52h10M120 47v10" stroke="#fbbf24" stroke-width="1.8"/>',
+        '<path d="M136 34q6 12 0 24" fill="none" stroke="' + k.acc + '" stroke-width="2" stroke-linecap="round"/>'
+      ];
+    },
+    "rele": function (k) {
+      return [
+        sr(72, 34, 46, 40, 3, "#1d4ed8", 'stroke="#1e3a8a" stroke-width="1.4"'),
+        sr(79, 42, 32, 22, 1, "#dbeafe"),
+        st(95, 58, "5V", "#1e3a8a", 'font-size="10"'),
+        '<path d="M84 68q4 -5 8 0t8 0" fill="none" stroke="#bfdbfe" stroke-width="2"/>',
+        sc(130, 42, 6.5, "#fbbf24", 'stroke="#b45309"'),
+        '<path d="M127 42h6" stroke="#92400e" stroke-width="2"/>',
+        sc(130, 58, 6.5, "#fbbf24", 'stroke="#b45309"'),
+        '<path d="M127 58h6" stroke="#92400e" stroke-width="2"/>',
+        sc(130, 74, 6.5, "#fbbf24", 'stroke="#b45309"'),
+        '<path d="M127 74h6" stroke="#92400e" stroke-width="2"/>',
+        '<path d="M118 42h6M118 58h6M118 74h6" stroke="#93c5fd" stroke-width="1.6"/>'
+      ];
+    }
+  };
+
+  function figuraSensor(sensor) {
+    var dado = sensor && typeof sensor === "object" ? sensor : {};
+    var chave = limpo(dado.visual, "");
+    var desenho = FIGURAS[chave];
+    if (!desenho) return "";
+    var tipo = dado.tipo === "analogico" || dado.tipo === "especial" ? dado.tipo : "digital";
+    var id = uid("sensor");
+    var k = {
+      placa: "url(#" + id + "-placa)",
+      metal: "url(#" + id + "-metal)",
+      vidro: "url(#" + id + "-vidro)",
+      sombra: "url(#" + id + "-sombra)",
+      acc: ACC_SENSOR[tipo]
+    };
+    var pinos = Array.isArray(dado.ligacao) ? dado.ligacao.length : 3;
+    var rotulo = limpo(dado.aparencia, "Módulo de sensor sobre placa azul com conector de pinos.");
+    var s = [];
+    s.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 2 160 134" class="sensor-svg" role="img" aria-label="' + esc(rotulo) + '" focusable="false">');
+    s.push('<defs>');
+    s.push('<linearGradient id="' + id + '-placa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#16307a"/></linearGradient>');
+    s.push('<linearGradient id="' + id + '-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset="0.45" stop-color="#a8b5c7"/><stop offset="1" stop-color="#66748b"/></linearGradient>');
+    s.push('<linearGradient id="' + id + '-vidro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2e8f0" stop-opacity="0.42"/><stop offset="1" stop-color="#94a3b8" stop-opacity="0.16"/></linearGradient>');
+    s.push('<radialGradient id="' + id + '-sombra"><stop offset="0.35" stop-color="#020617" stop-opacity="0.4"/><stop offset="1" stop-color="#020617" stop-opacity="0"/></radialGradient>');
+    s.push("</defs>");
+    s.push(placaFundo(numero(dado.id, 0), k));
+    s.push(desenho(k).join(""));
+    s.push(conectorSensor(pinos));
+    s.push("</svg>");
+    return s.join("");
+  }
+
+  /* ------------------------------------------------------------------
      ÍCONES — 24 x 24 lineares
      ------------------------------------------------------------------ */
   var ICONES = {
@@ -1292,6 +1754,7 @@
     cena: cena,
     mapaPinos: mapaPinos,
     roleta: roleta,
+    figuraSensor: figuraSensor,
     icone: icone
   };
 

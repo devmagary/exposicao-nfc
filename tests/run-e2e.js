@@ -353,6 +353,8 @@ async function principal() {
         "abas: document.querySelectorAll('#deck-abas .deck-aba').length," +
         "slides: document.querySelectorAll('#deck-palco .estacao-slide').length," +
         "sensores: document.querySelectorAll('#sensores-grade .sensor-card').length," +
+        "figuras: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
+        "figurasDescritas: document.querySelectorAll('#sensores-grade .sensor-figura svg[role=\"img\"][aria-label]').length," +
         "itensComuns: document.querySelectorAll('#materiais-app .materiais-comuns .material-item').length," +
         "selos: document.querySelectorAll('#selos .selo').length," +
         "demos: document.querySelectorAll('#deck-palco .demo').length," +
@@ -371,6 +373,8 @@ async function principal() {
       garantir(info.abas === 5, "esperava 5 abas, achei " + info.abas);
       garantir(info.slides === 5, "esperava 5 slides, achei " + info.slides);
       garantir(info.sensores === 37, "esperava 37 cards de sensores, achei " + info.sensores);
+      garantir(info.figuras === 37, "esperava 37 desenhos de sensores, achei " + info.figuras);
+      garantir(info.figurasDescritas === 37, "todo desenho de sensor precisa de descrição acessível.");
       garantir(info.itensComuns === 10, "esperava 10 itens de uso comum, achei " + info.itensComuns);
       garantir(info.selos === 5, "esperava 5 selos, achei " + info.selos);
       garantir(info.demos === 5, "esperava 5 demos, achei " + info.demos);
@@ -512,6 +516,11 @@ async function principal() {
       await irPara("planta");
       await capturar("planta-desktop.png");
 
+      await irPara("sensores");
+      await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
+      await pausa(400);
+      await capturar("sensores-desktop.png");
+
       await ativarEstacao(1);
       await irPara("estacoes");
       await capturar("estacao-2-desktop.png");
@@ -532,6 +541,11 @@ async function principal() {
       await avaliar("window.scrollTo(0, 0); true");
       await pausa(300);
       await capturar("capa-claro.png");
+
+      await irPara("sensores");
+      await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
+      await pausa(400);
+      await capturar("sensores-claro.png");
 
       await pagina.cdp.enviar("Emulation.setDeviceMetricsOverride", {
         width: 390, height: 844, deviceScaleFactor: 1, mobile: true

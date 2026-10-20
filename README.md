@@ -88,7 +88,7 @@ feira-exposicao/
 ├── js/
 │   ├── data.js              # TODO o conteúdo: estações, materiais, sensores, cartões...
 │   ├── logic.js             # funções puras (também testáveis no Node)
-│   ├── art.js               # ilustrações SVG (capa, planta, cenas, roleta, pinos)
+│   ├── art.js               # ilustrações SVG (capa, planta, cenas, roleta, pinos, 37 sensores)
 │   ├── interactions.js      # as 5 demos
 │   └── app.js               # renderização, deck, checklist, passaporte, navegação
 ├── assets/favicon.svg
@@ -111,7 +111,10 @@ Quase tudo está em **`js/data.js`**:
 - `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica.
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
 - `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.
-- `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia e ligação).
+- `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia, ligação, `visual` e `aparencia`).
+  - `visual`: chave do desenho em `art.js` (`FIGURAS`). `aparencia`: descrição do desenho, usada como texto acessível do SVG.
+  - O desenho é gerado por `FEIRA.art.figuraSensor(sensor)` e aparece no topo de cada carta. A quantidade de pinos do conector vem do tamanho de `ligacao`.
+  - Para criar um desenho novo, adicione uma chave em `FIGURAS` (`js/art.js`) e aponte o sensor para ela. Os testes exigem 37 chaves distintas.
 - `cartoes`, `roleta`, `linhaDoTempo`, `pinos`, `quizGvs`: dados das demos.
 
 Depois de editar, recarregue a página. Não é preciso compilar.
@@ -128,7 +131,7 @@ Depois de editar, recarregue a página. Não é preciso compilar.
 - O PDF pede celofane **verde, vermelho e azul**; ciano pode ser obtido sobrepondo azul + verde.
 - Os cartões NFC usam os UIDs do material (`2C:9D:7E:8E`, `AB:12:34:56`); o terceiro cartão (bloqueado) é **ilustrativo**.
 - A roleta usa as 6 cores do DOCX; o site diferencia **estados reais do firmware** de **demonstrações de cor** (laranja ≈ falha do PN532; roxo = mistura RGB).
-- As ilustrações são desenhos SVG de referência, não fotos dos materiais.
+- As ilustrações são desenhos SVG de referência, não fotos: inclusive os 37 módulos, desenhados de frente para comparação com o kit físico (as fotos do fornecedor não são usadas).
 
 ---
 
@@ -141,7 +144,7 @@ node tests/run-tests.js
 node tests/run-e2e.js
 ```
 
-- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta), regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
+- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta), os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
 - `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, filtros de materiais, checklist persistente, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
 - O E2E usa o `WebSocket` nativo do Node 22+; para abrir o site, o Node não é necessário.
 - Variável opcional `CHROME_PATH` para apontar outro navegador Chromium. Em ambientes onde o Chromium é bloqueado por sandbox de sistema, rode o E2E em uma máquina normal ou abra o site diretamente para a revisão visual.

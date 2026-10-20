@@ -940,6 +940,52 @@ li { list-style: none; }
   transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 .sensor-card:hover { border-color: var(--border-forte); transform: translateY(-2px); box-shadow: var(--sombra-sm); }
+.sensor-figura {
+  --sensor-acc: var(--primario);
+  display: grid;
+  place-items: center;
+  padding: 8px 10px 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(90% 78% at 50% 4%, color-mix(in srgb, var(--sensor-acc) 16%, transparent), transparent 72%),
+    color-mix(in srgb, var(--bg) 55%, transparent);
+  overflow: hidden;
+}
+.sensor-figura--digital { --sensor-acc: #38bdf8; }
+.sensor-figura--analogico { --sensor-acc: #34d399; }
+.sensor-figura--especial { --sensor-acc: #fbbf24; }
+.sensor-figura svg {
+  display: block;
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  transform-origin: 50% 62%;
+  transition: transform 0.25s ease;
+}
+.sensor-card:hover .sensor-figura svg { transform: scale(1.05) translateY(-1px); }
+.sensores-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--border-forte);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.sensores-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.sensores-legenda i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--muted-2);
+  flex: 0 0 auto;
+}
+.sensores-legenda .cor-placa { background: #2563eb; }
+.sensores-legenda .cor-pino { background: #fbbf24; }
 .sensor-cabeca { display: flex; align-items: flex-start; gap: 10px; }
 .sensor-num {
   flex: 0 0 auto;

@@ -140,6 +140,27 @@ const rele = sensores.find(function (sensor) { return sensor.id === 37; });
 garantir(rele && rele.ligacao.some(function (item) { return item.valor === "5 V"; }), "o módulo de relé deve indicar alimentação de 5 V.");
 
 /* --------------------------------------------------------------------------
+   Desenhos dos 37 sensores
+   -------------------------------------------------------------------------- */
+const art = require(path.join(RAIZ, "js", "art.js"));
+garantir(art && typeof art.figuraSensor === "function", "art.figuraSensor deve existir.");
+const desenhos = sensores.map(function (sensor) {
+  garantir(typeof sensor.visual === "string" && sensor.visual.length > 2, "sensor " + sensor.id + ": campo visual ausente.");
+  garantir(typeof sensor.aparencia === "string" && sensor.aparencia.length >= 20, "sensor " + sensor.id + ": aparencia curta.");
+  garantir(!/"/.test(sensor.aparencia), "sensor " + sensor.id + ": aparencia não pode ter aspas.");
+  const svg = art.figuraSensor(sensor);
+  garantir(svg.indexOf("<svg") === 0 && svg.slice(-6) === "</svg>", "sensor " + sensor.id + ": figura inválida.");
+  garantir(/class="sensor-svg"/.test(svg), "sensor " + sensor.id + ": figura sem a classe sensor-svg.");
+  garantir(/role="img"/.test(svg) && svg.indexOf(sensor.aparencia) !== -1, "sensor " + sensor.id + ": figura sem descrição acessível.");
+  garantir(!/https?:\/\/(?!www\.w3\.org)/i.test(svg), "sensor " + sensor.id + ": figura com recurso externo.");
+  garantir(!/<image|href="/.test(svg), "sensor " + sensor.id + ": figura deve ser vetorial e autocontida.");
+  return sensor.visual;
+});
+iguais(new Set(desenhos).size, 37, "cada sensor deve ter um desenho próprio (visual duplicado).");
+garantir(art.figuraSensor(null) === "", "figuraSensor deve ser defensiva sem dados.");
+garantir(art.figuraSensor({ id: 1, visual: "inexistente" }) === "", "figuraSensor deve ignorar desenhos desconhecidos.");
+
+/* --------------------------------------------------------------------------
    Dados: demos
    -------------------------------------------------------------------------- */
 iguais(dados.cartoes.length, 3, "devem existir 3 cartões NFC.");

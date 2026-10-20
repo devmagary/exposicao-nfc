@@ -762,6 +762,7 @@
 
     grade.innerHTML = filtrados.map(function (sensor) {
       const tipoRotulo = logic.formatarTipo ? logic.formatarTipo(sensor.tipo) : sensor.tipo;
+      const figura = FEIRA.art && FEIRA.art.figuraSensor ? FEIRA.art.figuraSensor(sensor) : "";
       const ligacoes = (sensor.ligacao || []).map(function (item) {
         const rotulo = item.rotulo || item.linha;
         const classe = item.linha === "G" ? "g" : item.linha === "V" ? "v" : "s";
@@ -774,6 +775,7 @@
           '<div><h4>' + esc(sensor.nome) + '</h4><p class="sensor-cat">' + esc(sensor.categoria) + '</p></div>' +
           '<span class="tag tag--' + esc(sensor.tipo) + '">' + esc(tipoRotulo) + '</span>' +
         '</header>' +
+        (figura ? '<div class="sensor-figura sensor-figura--' + esc(sensor.tipo) + '">' + figura + '</div>' : "") +
         '<p class="sensor-desc">' + esc(sensor.descricao) + '</p>' +
         '<p class="sensor-ideia"><span aria-hidden="true">💡</span> ' + esc(sensor.ideia) + '</p>' +
         '<ul class="sensor-ligacao" aria-label="Como ligar">' + ligacoes + '</ul>' +
