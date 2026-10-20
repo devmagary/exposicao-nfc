@@ -1016,109 +1016,153 @@ li { list-style: none; }
 .materiais-grupo-cabeca .tag { font-size: 0.68rem; }
 
 /* ---------------------------------------------------------------
-   Materiais: visões por mesa, por bloco e por origem
+   Materiais: um guia por estação
    --------------------------------------------------------------- */
-.materiais-total { color: var(--muted); font-size: 0.88rem; margin: -8px 0 22px; max-width: 78ch; }
-.materiais-total strong { color: var(--texto); }
-.materiais-guia { color: var(--muted); font-size: 0.86rem; margin: -6px 0 14px; max-width: 78ch; }
+.materiais-topo-nota { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
 
-.materiais-secao { margin-top: 34px; }
-.materiais-secao[hidden] { display: none; }
-.materiais-secao:first-of-type { margin-top: 0; }
-
-.caixa-estacao {
+.materiais-comuns {
   border: 1px solid var(--border);
-  border-left: 4px solid var(--cor, var(--primario));
-  border-radius: var(--raio-sm);
+  border-radius: var(--raio);
   background: color-mix(in srgb, var(--surface) 72%, transparent);
-  margin-bottom: 10px;
-  overflow: hidden;
+  padding: 18px;
+  margin-bottom: 34px;
 }
-.caixa-estacao--sala { border-left-color: var(--primario); }
-.caixa-estacao summary {
+.materiais-comuns-cabeca,
+.manuais-cabeca {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  cursor: pointer;
-  list-style: none;
-  font-weight: 600;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
 }
-.caixa-estacao summary::-webkit-details-marker { display: none; }
-.caixa-estacao summary::after {
-  content: "+";
-  margin-left: auto;
-  font-family: var(--fonte-mono);
-  color: var(--muted);
+.materiais-comuns-cabeca h3,
+.manuais-cabeca h3 { font-size: 1.1rem; }
+.materiais-comuns-cabeca p,
+.manuais-cabeca p { color: var(--muted); font-size: 0.86rem; margin-top: 4px; max-width: 76ch; }
+
+.manuais { display: grid; gap: 18px; }
+.manual-estacao {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--cor, var(--primario));
+  border-radius: var(--raio);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  padding: 20px;
+  scroll-margin-top: 90px;
 }
-.caixa-estacao[open] summary::after { content: "–"; }
-.caixa-estacao summary:focus-visible { outline: 3px solid var(--primario); outline-offset: -3px; }
-.caixa-num {
+.manual-cabeca { display: flex; align-items: center; gap: 14px; }
+.manual-num {
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 26px; height: 26px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--cor, var(--primario)) 18%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cor, var(--primario)) 45%, transparent);
-  color: var(--texto);
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--cor, var(--primario)) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cor, var(--primario)) 48%, transparent);
   font-family: var(--fonte-mono);
-  font-size: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
-.caixa-titulo { font-size: 0.98rem; }
-.caixa-meta { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
-.caixa-estacao summary::after { order: 9; }
-.caixa-estacao .caixa-grade { padding: 0 16px 16px; }
-.caixa-estacao .caixa-roteiro { padding: 0 16px 18px; border-top: 1px dashed var(--border); margin: 0 16px 16px; padding-top: 14px; }
-.caixa-roteiro h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 12px 0 6px; }
-.caixa-roteiro h4:first-child { margin-top: 0; }
-.caixa-roteiro ol { margin: 0 0 0 18px; padding: 0; display: grid; gap: 4px; font-size: 0.86rem; color: var(--texto-suave, var(--texto)); }
-.caixa-dica { margin-top: 12px; font-size: 0.84rem; color: var(--muted); border-left: 2px solid var(--cor, var(--primario)); padding-left: 10px; }
-.caixa-nfc {
-  margin: 0 16px 12px;
+.manual-titulo { min-width: 0; }
+.manual-equipe {
+  font-family: var(--fonte-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.manual-titulo h3 { font-size: 1.2rem; margin-top: 2px; }
+.manual-contagem {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-family: var(--fonte-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.manual-proposito {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--texto-suave, var(--texto));
+  max-width: 90ch;
+}
+.manual-proposito strong { color: var(--texto); }
+.manual-kit {
+  margin-top: 12px;
   padding: 10px 12px;
   border-radius: var(--raio-sm);
   border: 1px dashed color-mix(in srgb, var(--emerald) 45%, var(--border));
   background: color-mix(in srgb, var(--emerald) 7%, transparent);
   font-size: 0.84rem;
 }
-.caixa-vazia { padding: 0 16px 16px; color: var(--muted); font-size: 0.86rem; }
-
-.materiais-bloco { margin-top: 22px; }
-.materiais-bloco h4 { font-size: 0.95rem; margin-bottom: 4px; }
-.materiais-bloco-desc { color: var(--muted); font-size: 0.82rem; margin-bottom: 10px; max-width: 78ch; }
-
-.materiais-origem { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
-.materiais-origem h4 { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; margin-bottom: 10px; }
-.materiais-lista-simples { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 0.84rem; color: var(--muted); }
-.materiais-lista-simples li { padding-left: 14px; position: relative; }
-.materiais-lista-simples li::before { content: "·"; position: absolute; left: 2px; color: var(--primario); }
-
-.materiais-conferir {
-  margin-top: 22px;
-  padding: 16px 18px;
-  border-radius: var(--raio-sm);
-  border: 1px dashed color-mix(in srgb, var(--amber) 55%, var(--border));
-  background: color-mix(in srgb, var(--amber) 7%, transparent);
+.manual-kit--espelho {
+  border-color: color-mix(in srgb, var(--violet) 45%, var(--border));
+  background: color-mix(in srgb, var(--violet) 7%, transparent);
 }
-.materiais-conferir h4 { font-size: 0.95rem; margin-bottom: 6px; }
-.materiais-conferir p { font-size: 0.86rem; color: var(--texto-suave, var(--texto)); margin-bottom: 10px; max-width: 78ch; }
-.materiais-conferir ul { margin: 0 0 0 18px; padding: 0; display: grid; gap: 4px; font-size: 0.84rem; color: var(--muted); }
-.materiais-conferir strong { color: var(--texto); }
-
-/* Etiquetas de bloco e mesa dentro de cada material */
-.material-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-.material-tag {
-  font-family: var(--fonte-mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.04em;
-  padding: 2px 6px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
+.manual-corpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 22px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.manual-bloco h4 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--muted);
+  margin: 0 0 8px;
 }
-.material-tag--bloco { border-color: color-mix(in srgb, var(--cyan) 45%, var(--border)); color: var(--texto); }
-.material-tag--sala { border-color: color-mix(in srgb, var(--amber) 45%, var(--border)); color: var(--texto); }
+.manual-bloco h4:not(:first-child) { margin-top: 18px; }
+.manual-itens { display: grid; gap: 8px; }
+
+/* Listas de material (sem checkbox: é um guia de montagem) */
+.materiais-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.materiais-lista--comum { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.material-item {
+  border: 1px solid var(--border);
+  border-radius: var(--raio-sm);
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  padding: 10px 12px;
+}
+.material-item-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.material-item-topo strong { font-size: 0.88rem; line-height: 1.3; }
+.material-item .material-qtd { flex: 0 0 auto; }
+.material-item .material-uso { margin-top: 3px; font-size: 0.78rem; }
+.material-item .material-aviso { margin-top: 4px; font-size: 0.72rem; }
+.manual-lista { gap: 6px; }
+.manual-lista .material-item { padding: 8px 10px; }
+.manual-nota { color: var(--muted); font-size: 0.78rem; margin-top: 10px; }
+.manual-vazio { color: var(--muted); font-size: 0.84rem; }
+.manual-passos {
+  margin: 0 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.86rem;
+  color: var(--texto-suave, var(--texto));
+}
+.manual-dica {
+  margin-top: 14px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  border-left: 2px solid var(--cor, var(--primario));
+  padding-left: 10px;
+}
+
 
 .materiais-grade {
   display: grid;
@@ -1476,6 +1520,12 @@ li { list-style: none; }
   .estacao-conteudo { padding: 24px 20px 26px; }
   .estacao-visual { padding: 20px; }
   .materiais-grade { grid-template-columns: minmax(0, 1fr); }
+  .materiais-lista--comum { grid-template-columns: minmax(0, 1fr); }
+  .manual-corpo { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .manual-estacao { padding: 16px; }
+  .manual-cabeca { align-items: flex-start; }
+  .manual-contagem { display: none; }
+  .materiais-comuns { padding: 14px; }
   .sensores-grade { grid-template-columns: minmax(0, 1fr); }
   .selos { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
   .selo { padding: 10px 3px 8px; }

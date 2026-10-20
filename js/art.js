@@ -523,11 +523,11 @@
     cerebro:
       "Cartaz com o ESP32-S3 no centro, a placa de expansão ao redor, trilhas G-V-S em preto, vermelho e amarelo e a área hachurada com os pinos IO35, IO36 e IO37 proibidos pela PSRAM.",
     toque:
-      "Leitor PN532 gigante de papelão com antena, cartão NFC com UID, ondas do campo magnético, envelope com as respostas LIBERADO, NEGADO e BLOQUEADO e bexiga explicando o campo.",
+      "Leitor PN532 gigante de papelão com antena, cartão NFC com UID, ondas do campo magnético, envelope com as respostas LIBERADO, NEGADO e BLOQUEADO e um cartaz explicando o campo.",
     semaforo:
       "Roleta de seis setores coloridos, LED RGB aceso em degradê, lanterna de celular com celofane atrás de um furo na cartolina e cartaz dos estados do LED.",
     caixa:
-      "Caixa de papelão com seis furos, saquinhos zip com sensores de papel, velcro e painel de três colunas: Digitais, Analógicos e Especiais.",
+      "Caixa de papelão com seis furos, sensores de papel soltos, velcro e painel de três colunas: Digitais, Analógicos e Especiais.",
     memoria:
       "Notebook com o Painel de Acessos, varal de barbante com cartões da linha do tempo, nuvem com chip Flash e post-it perguntando o que acontece se a internet cair."
   };
@@ -610,14 +610,13 @@
 
   function cenaToque(est, sid) {
     var s = [];
-    s.push('<g class="arte-balao-grupo">');
-    s.push('<ellipse cx="108" cy="152" rx="56" ry="66" class="arte-balao"/>');
-    s.push('<ellipse cx="88" cy="126" rx="16" ry="24" class="arte-balao-brilho"/>');
-    s.push(texto(108, 138, "isto é o", "arte-balao-texto", 'font-size="14" text-anchor="middle"'));
-    s.push(texto(108, 160, "campo", "arte-balao-texto", 'font-size="17" text-anchor="middle" font-weight="700"'));
-    s.push(texto(108, 182, "magnético", "arte-balao-texto", 'font-size="15" text-anchor="middle" font-weight="700"'));
-    s.push('<path d="M108 218 l-9 12 h18 Z" class="arte-balao-no"/>');
-    s.push('<path d="M104 230 C 84 252 44 266 28 296" class="arte-balao-fio"/>');
+    s.push('<g class="arte-campo-grupo" style="color:#10b981">');
+    s.push(ret(28, 106, 158, 116, 8, "arte-papel arte-contorno-forte"));
+    s.push(texto(107, 132, "CAMPO", "arte-rotulo", 'font-size="15" text-anchor="middle" letter-spacing="1.4" font-weight="700"'));
+    s.push(texto(107, 154, "MAGNÉTICO", "arte-rotulo", 'font-size="15" text-anchor="middle" letter-spacing="1.4" font-weight="700"'));
+    s.push('<path d="M62 178 A34 18 0 0 0 152 178" class="arte-onda"/>');
+    s.push('<path d="M52 188 A46 24 0 0 0 162 188" class="arte-onda" style="animation-delay:-0.8s"/>');
+    s.push(texto(107, 210, "acorda a tag", "arte-mono-tinta", 'font-size="12" text-anchor="middle"'));
     s.push("</g>");
 
     s.push(ret(196, 92, 176, 212, 12, "arte-leitor-pn532"));
@@ -764,19 +763,18 @@
     s.push('<path d="M282 258 h36 M282 264 h36 M282 270 h36" class="arte-velcro-traco"/>');
     s.push("</g>");
 
-    var sacos = [
+    var cartoes = [
       { x: 300, y: 78, r: -3, nome: "LDR" },
       { x: 330, y: 136, r: 2, nome: "REED" },
       { x: 296, y: 194, r: -2, nome: "TILT" }
     ];
-    sacos.forEach(function (saco) {
-      s.push('<g transform="rotate(' + saco.r + " " + (saco.x + 75) + " " + (saco.y + 27) + ')">');
-      s.push(ret(saco.x, saco.y, 150, 54, 8, "arte-saquinho-cena"));
-      s.push('<path d="M' + (saco.x + 8) + " " + (saco.y + 12) + " H " + (saco.x + 142) + '" class="arte-zip"/>');
-      s.push(ret(saco.x + 12, saco.y + 20, 30, 24, 3, "arte-sensor-cena"));
-      s.push(ret(saco.x + 18, saco.y + 26, 18, 3, 1, "arte-sensor-traco"));
-      s.push(ret(saco.x + 18, saco.y + 32, 12, 3, 1, "arte-sensor-traco"));
-      s.push(texto(saco.x + 54, saco.y + 38, saco.nome, "arte-rotulo", 'font-size="14" font-weight="700" letter-spacing="1"'));
+    cartoes.forEach(function (cartao) {
+      s.push('<g transform="rotate(' + cartao.r + " " + (cartao.x + 75) + " " + (cartao.y + 27) + ')">');
+      s.push(ret(cartao.x, cartao.y, 150, 54, 8, "arte-papel arte-contorno-forte"));
+      s.push(ret(cartao.x + 12, cartao.y + 15, 30, 24, 3, "arte-sensor-cena"));
+      s.push(ret(cartao.x + 18, cartao.y + 21, 18, 3, 1, "arte-sensor-traco"));
+      s.push(ret(cartao.x + 18, cartao.y + 27, 12, 3, 1, "arte-sensor-traco"));
+      s.push(texto(cartao.x + 54, cartao.y + 33, cartao.nome, "arte-rotulo", 'font-size="14" font-weight="700" letter-spacing="1"'));
       s.push("</g>");
     });
 

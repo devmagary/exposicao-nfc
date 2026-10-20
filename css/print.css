@@ -93,55 +93,70 @@
   .secao-sub { font-size: 10pt; color: #334155; }
   .eyebrow { color: #0e7490; }
 
-  /* ---- Lista de materiais ---- */
+  /* ---- Guia de materiais e montagem ---- */
   .materiais-topo {
     border: 1px solid #cbd5e1;
     background: #f8fafc;
-    padding: 10px 12px;
+    padding: 8px 10px;
     margin-bottom: 10px;
   }
-  .materiais-progresso p { color: #334155; }
-  .progresso { border-color: #94a3b8; }
-  .materiais-grupo { margin-top: 14px; break-inside: auto; }
-  .materiais-grupo-cabeca { margin-bottom: 8px; break-after: avoid; }
-  .materiais-grade { display: block; column-count: 2; column-gap: 10px; }
-  .material-card {
+  .materiais-topo-texto p { color: #334155; font-size: 9pt; }
+  .materiais-topo-nota { font-size: 8pt; }
+  .materiais-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+  .material-item {
     border: 1px solid #cbd5e1;
     background: #ffffff;
-    padding: 8px 10px;
+    padding: 5px 7px;
     break-inside: avoid;
-    gap: 8px;
-    margin: 0 0 7px;
   }
-  .material-check { border: 1.5px solid #475569; width: 14px; height: 14px; margin-top: 2px; }
-  .material-card input:checked + .material-check { background: #047857; border-color: #047857; }
-  .material-check::after { border-color: #ffffff; width: 7px; height: 4px; }
-  .material-corpo strong { font-size: 10pt; }
-  .material-qtd { background: #e2e8f0; color: #0f172a; font-size: 8pt; }
-  .material-uso, .material-aviso { font-size: 8.5pt; color: #334155; }
-  .material-tags { margin-top: 4px; }
-  .material-tag { border-color: #94a3b8; color: #334155; font-size: 7pt; }
-  .materiais-nota { border: 1px dashed #b45309; background: #fff7ed; color: #78350f; font-size: 9pt; }
+  .material-item-topo strong { font-size: 8.5pt; color: #0f172a; }
+  .material-qtd { background: #e2e8f0; color: #0f172a; font-size: 7pt; }
+  .material-item .material-uso, .material-item .material-aviso { font-size: 7.5pt; color: #334155; }
 
-  /* ---- Materiais: visões por mesa, bloco e origem ---- */
-  .materiais-secao { break-before: page; }
-  .materiais-secao:first-of-type { break-before: auto; }
-  .materiais-total, .materiais-guia { color: #334155; font-size: 9pt; }
-  .caixa-estacao { border: 1px solid #cbd5e1; background: #ffffff; margin-bottom: 8px; }
-  .caixa-estacao summary { padding: 6px 10px; font-size: 10pt; cursor: default; }
-  .caixa-estacao summary::after { content: ""; }
-  .caixa-estacao .caixa-grade { padding: 0 10px 8px; }
-  .caixa-estacao .caixa-roteiro { padding: 0 10px 10px; border-top: 1px solid #e2e8f0; margin: 0 10px 8px; padding-top: 8px; }
-  .caixa-roteiro h4 { color: #475569; font-size: 7.5pt; margin: 8px 0 4px; }
-  .caixa-roteiro ol { font-size: 8.5pt; color: #0f172a; }
-  .caixa-dica { color: #334155; font-size: 8.5pt; }
-  .caixa-nfc { border-color: #047857; background: #ecfdf5; font-size: 8.5pt; }
-  .caixa-vazia { color: #475569; font-size: 8.5pt; }
-  .materiais-origem { display: block; }
-  .materiais-lista-simples li { color: #334155; font-size: 8.5pt; }
-  .materiais-conferir { border-color: #b45309; background: #fff7ed; }
-  .materiais-conferir p, .materiais-conferir li { color: #78350f; font-size: 8.5pt; }
-  .materiais-conferir strong { color: #0f172a; }
+  .materiais-comuns {
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    break-inside: avoid;
+  }
+  .materiais-comuns-cabeca h3,
+  .manuais-cabeca h3 { font-size: 12pt; color: #0f172a; }
+  .materiais-comuns-cabeca p,
+  .manuais-cabeca p { font-size: 8pt; color: #475569; }
+
+  .manual-estacao {
+    border: 1px solid #cbd5e1;
+    border-top: 3px solid #0e7490;
+    background: #ffffff;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    break-inside: avoid;
+  }
+  .manual-cabeca { gap: 8px; }
+  .manual-num {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    font-size: 9pt;
+    background: #f1f5f9;
+    border-color: #94a3b8;
+  }
+  .manual-equipe { font-size: 7pt; color: #475569; }
+  .manual-titulo h3 { font-size: 12pt; color: #0f172a; }
+  .manual-contagem { font-size: 7pt; color: #475569; border-color: #cbd5e1; }
+  .manual-proposito { font-size: 8pt; color: #334155; margin-top: 5px; }
+  .manual-kit { border-color: #047857; background: #ecfdf5; font-size: 7.5pt; padding: 5px 7px; margin-top: 5px; }
+  .manual-kit--espelho { border-color: #6d28d9; background: #f5f3ff; }
+  .manual-corpo { gap: 12px; margin-top: 7px; padding-top: 7px; border-color: #e2e8f0; }
+  .manual-bloco h4 { font-size: 7pt; color: #475569; margin: 0 0 4px; }
+  .manual-bloco h4:not(:first-child) { margin-top: 7px; }
+  .manual-lista { gap: 4px; }
+  .manual-lista .material-item { padding: 4px 6px; }
+  .manual-lista .material-item-topo strong { font-size: 7.5pt; }
+  .manual-lista .material-uso { font-size: 6.8pt; }
+  .manual-nota { font-size: 7pt; color: #475569; margin-top: 4px; }
+  .manual-passos { font-size: 7.5pt; color: #0f172a; gap: 2px; margin-left: 14px; }
+  .manual-dica { font-size: 7.5pt; color: #334155; margin-top: 6px; }
 
   /* ---- Planta ---- */
   .planta-grid { display: block; }
