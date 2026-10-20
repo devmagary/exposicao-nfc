@@ -204,9 +204,62 @@ iguais(sorteio.length, 4, "sorteio deve respeitar a quantidade pedida.");
 iguais(new Set(sorteio).size, 4, "sorteio não deve repetir.");
 garantir(sorteio.every(function (item) { return item >= 1 && item <= 8; }), "sorteio deve usar apenas o conjunto.");
 
-const textoMateriais = logic.textoMateriais(prioritarios);
+const textoMateriais = logic.textoMateriais(prioritarios, extras, dados.estacoes);
+const todosMateriais = prioritarios.concat(extras);
 garantir(textoMateriais.indexOf("Cartolina branca") !== -1, "textoMateriais deve citar a cartolina.");
-garantir(textoMateriais.split("\n").filter(function (linha) { return linha.indexOf("[ ]") === 0; }).length === 20, "textoMateriais deve listar 20 itens.");
+const linhasTextoMateriais = textoMateriais.split("\n").filter(function (linha) { return linha.indexOf("[ ] ") === 0; });
+garantir(linhasTextoMateriais.length >= 33, "textoMateriais deve listar todos os 33 itens.");
+iguais(logic.contarLinhasMateriais(textoMateriais), linhasTextoMateriais.length, "contarLinhasMateriais deve bater com as linhas de item.");
+todosMateriais.forEach(function (material) {
+  garantir(textoMateriais.indexOf("[ ] " + material.item + " —") !== -1, "textoMateriais omitiu: " + material.item);
+});
+garantir(linhasTextoMateriais.join("\n").indexOf("Bexigas") !== -1, "textoMateriais deve incluir os complementares (bexigas).");
+garantir(textoMateriais.indexOf("CAIXA DE SALA") !== -1, "textoMateriais deve abrir pela caixa de sala.");
+["MESA 1", "MESA 2", "MESA 3", "MESA 4", "MESA 5"].forEach(function (rotulo) {
+  garantir(textoMateriais.indexOf(rotulo + " —") !== -1, "textoMateriais deve ter a seção " + rotulo + ".");
+});
+garantir(textoMateriais.indexOf("ESP32-S3") === -1, "textoMateriais é de papelaria: não deve listar o kit físico.");
+garantir(textoMateriais.indexOf("Guarde também na caixa de sala") !== -1, "textoMateriais deve ter a nota dos itens compartilhados.");
+
+/* --------------------------------------------------------------------------
+   Materiais: separação por mesa e por bloco
+   -------------------------------------------------------------------------- */
+const idsMateriaisSala = todosMateriais.filter(function (material) { return material.sala === true; });
+garantir(idsMateriaisSala.length >= 8, "a caixa de sala deve ter pelo menos 8 itens.");
+const idsEstacoesConhecidas = dados.estacoes.map(function (estacao) { return estacao.id; });
+todosMateriais.forEach(function (material) {
+  garantir(material.bloco && dados.materiais.blocos.some(function (bloco) { return bloco.id === material.bloco; }),
+    "material sem bloco válido: " + material.item);
+  if (material.sala) {
+    garantir(!material.estacoes, "material de sala não deve apontar para uma estação só: " + material.item);
+    return;
+  }
+  garantir(Array.isArray(material.estacoes) && material.estacoes.length > 0, "material sem mesa: " + material.item);
+  material.estacoes.forEach(function (id) {
+    garantir(idsEstacoesConhecidas.indexOf(id) !== -1, "material " + material.item + " aponta para estação inexistente: " + id);
+  });
+});
+["cerebro", "toque", "semaforo", "caixa", "memoria"].forEach(function (id) {
+  const itens = todosMateriais.filter(function (material) {
+    return !material.sala && material.estacoes.indexOf(id) !== -1;
+  });
+  garantir(itens.length >= 2, "a mesa " + id + " deve ter pelo menos 2 materiais associados.");
+});
+["toque", "caixa"].forEach(function (id) {
+  const itens = todosMateriais.filter(function (material) {
+    return !material.sala && material.estacoes.indexOf(id) !== -1;
+  });
+  garantir(itens.length >= 3, "a mesa " + id + " deve ter pelo menos 3 materiais exclusivos.");
+});
+iguais(dados.materiais.blocos.length, 4, "devem existir 4 blocos de material.");
+iguais(JSON.stringify(dados.materiais.conferir.ids.sort()),
+  JSON.stringify(["e01", "e05", "e06", "e08", "e09", "e12"]),
+  "a conferência deve listar exatamente papelão, colorset, velcro, zip, alumínio e pregadores.");
+
+/* Tags físicas da Estação 2: três resultados distintos, sem expor UID real */
+garantir(Array.isArray(dados.tagsFisicas) && dados.tagsFisicas.length === 3, "tagsFisicas deve ter 3 tags.");
+const consequencias = dados.tagsFisicas.map(function (tag) { return tag.consequencia; }).sort().join(",");
+iguais(consequencias, "BLOQUEADO,LIBERADO,NEGADO", "as três tags devem cobrir LIBERADO, NEGADO e BLOQUEADO.");
 
 /* --------------------------------------------------------------------------
    HTML: arquivos, IDs, scripts e ausência de dependências externas
