@@ -35,7 +35,7 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Capa | Cena SVG animada com o ESP32, as 5 estações e as ondas NFC |
 | A feira | Fluxo da visita em 4 passos, dica de ouro e resumo em números |
 | Kit ao vivo | Onde fica o hardware real (Estação 2), o painel espelhado (Estação 5), passo a passo, cuidados e plano B; checklist imprimível |
-| Planta | Vista de cima com as mesas 1/3/5 em cima, 2/4 embaixo, entrada e circulação em U; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
+| Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
 | Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 1 e uma demo interativa por estação |
 | Sensores | Catálogo dos 37 sensores com busca, filtros e ligação G-V-S/GPIO |
 | Materiais | Lista prioritária do Material novo (20 itens) com checklist persistente + complementares do Material Sugestão (13 itens) |

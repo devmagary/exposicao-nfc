@@ -453,7 +453,7 @@
 
     s.push(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" class="arte-svg arte-planta" role="group" ' +
-      'aria-label="Planta da sala: parede de papel kraft no topo, cinco mesas de equipe e circulação em U saindo da entrada.">'
+      'aria-label="Planta da sala: parede de papel kraft no topo, cinco mesas de equipe e circulação em U saindo da entrada e seguindo da estação 1 até a 5.">'
     );
     s.push("<defs>");
     s.push(
@@ -484,7 +484,7 @@
     s.push('<path d="M936 606 l-8 -15 h16 Z"/>');
     s.push("</g>");
     s.push(texto(500, 376, "circulação em U", "planta-fluxo-rotulo", 'font-size="28" text-anchor="middle" letter-spacing="2"'));
-    s.push(texto(500, 400, "1 → 3 → 5 → 2 → 4", "planta-fluxo-sub", 'font-size="21" text-anchor="middle" letter-spacing="1.5"'));
+    s.push(texto(500, 400, "1 → 2 → 3 → 4 → 5", "planta-fluxo-sub", 'font-size="21" text-anchor="middle" letter-spacing="1.5"'));
 
     /* Parede / quadro de kraft */
     s.push(ret(48, 16, 904, 88, 6, "planta-kraft", 'fill="url(#' + idKraft + ')"'));
@@ -494,11 +494,12 @@
     s.push(texto(500, 70, "[ PAREDE / QUADRO — PAPEL KRAFT ]", "planta-kraft-rotulo", 'font-size="29" text-anchor="middle" letter-spacing="2.5"'));
 
     /* Mesas */
-    s.push(mesaPlanta(108, 142, 192, 164, lista[0], PICTOS[lista[0].id] || pictoPinos));
-    s.push(mesaPlanta(400, 142, 192, 164, lista[2], PICTOS[lista[2].id] || pictoRoleta));
+    /* O U sai da entrada e encontra as estações nesta ordem: 1 → 2 → 3 → 4 → 5. */
+    s.push(mesaPlanta(108, 142, 192, 164, lista[2], PICTOS[lista[2].id] || pictoRoleta));
+    s.push(mesaPlanta(400, 142, 192, 164, lista[3], PICTOS[lista[3].id] || pictoCaixa));
     s.push(mesaPlanta(680, 142, 235, 164, lista[4], PICTOS[lista[4].id] || pictoNotebook));
     s.push(mesaPlanta(108, 424, 192, 164, lista[1], PICTOS[lista[1].id] || pictoLeitor));
-    s.push(mesaPlanta(400, 424, 192, 164, lista[3], PICTOS[lista[3].id] || pictoCaixa));
+    s.push(mesaPlanta(400, 424, 192, 164, lista[0], PICTOS[lista[0].id] || pictoPinos));
 
     /* Entrada */
     s.push('<path d="M724 646 V600" class="planta-entrada-seta"/>');

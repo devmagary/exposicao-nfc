@@ -1,3 +1,5 @@
 # Artefatos locais de teste e pré-visualização
 .tmp/
 tests/artifacts/
+
+.vercel
