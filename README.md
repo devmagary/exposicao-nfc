@@ -40,6 +40,7 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Sensores | Catálogo dos 37 sensores com busca, filtros, foto real por padrão, 3 modos de uso e ligação G-V-S/GPIO |
 | Materiais | Um guia por estação: material de uso comum + 5 manuais com lista de materiais, montagem e “para que serve”, com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
+| Celular | De 320 px a telas grandes: menu hambúrguer, tabelas roláveis, alvos de toque maiores e layout de duas colunas no celular deitado |
 
 ### Guia de materiais e montagem
 
