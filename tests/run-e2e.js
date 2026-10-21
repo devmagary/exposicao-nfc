@@ -614,6 +614,61 @@ async function principal() {
       await avaliar("document.documentElement.setAttribute('data-tema', 'escuro'); true");
     });
 
+    await teste("Layout mobile não estoura e tem alvos de toque", async function () {
+      const medir = async function (w, h) {
+        await pagina.cdp.enviar("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: 1, mobile: w < 900 });
+        await pausa(450);
+        return avaliar("(() => {" +
+          "const doc = document.documentElement;" +
+          "const cols = (sel) => { const el = document.querySelector(sel); return el ? getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length : 0; };" +
+          "const kit = document.querySelector('.kit-ao-vivo');" +
+          "const tags = [...document.querySelectorAll('.kit-selos .tag')];" +
+          "const atalho = document.querySelector('.rodape-lista a');" +
+          "const texto = document.querySelector('.botao-texto');" +
+          "const card = document.querySelector('#sensores-grade .sensor-card');" +
+          "return {" +
+          "  clientW: doc.clientWidth, scrollW: doc.scrollWidth," +
+          "  kitDir: kit ? Math.round(kit.getBoundingClientRect().right) : 0," +
+          "  tagDir: tags.length ? Math.round(Math.max.apply(null, tags.map((t) => t.getBoundingClientRect().right))) : 0," +
+          "  tagAltura: tags.length ? Math.round(tags[0].getBoundingClientRect().height) : 0," +
+          "  atalhoH: atalho ? Math.round(atalho.getBoundingClientRect().height) : 0," +
+          "  textoH: texto ? Math.round(texto.getBoundingClientRect().height) : 0," +
+          "  cardW: card ? Math.round(card.getBoundingClientRect().width) : 0," +
+          "  heroCols: cols('.hero-grid'), deckCols: cols('#deck-palco .estacao-slide:not([hidden])')" +
+          "};" +
+        "})()");
+      };
+
+      const retrato = await medir(320, 568);
+      garantir(retrato.scrollW <= retrato.clientW + 1, "320px: página estourou para " + retrato.scrollW + "px de largura.");
+      garantir(retrato.tagDir <= retrato.kitDir + 1, "320px: a tag do kit escapou do cartão (" + retrato.tagDir + " > " + retrato.kitDir + ").");
+      garantir(retrato.tagAltura >= 40, "320px: a tag do kit deveria quebrar em mais de uma linha, altura " + retrato.tagAltura + ".");
+      garantir(retrato.atalhoH >= 40, "320px: atalho do rodapé com alvo pequeno (" + retrato.atalhoH + "px).");
+      garantir(retrato.textoH >= 40, "320px: link de texto com alvo pequeno (" + retrato.textoH + "px).");
+      garantir(retrato.cardW <= retrato.clientW, "320px: cartão de sensor mais largo que a tela.");
+      await avaliar("(() => { const el = document.querySelector('.kit-ao-vivo'); el.scrollIntoView({ block: 'start' }); return true; })()");
+      await pausa(300);
+      await capturar("mobile-320-kit.png");
+
+      const paisagem = await medir(844, 390);
+      garantir(paisagem.scrollW <= paisagem.clientW + 1, "844x390: página estourou para " + paisagem.scrollW + "px.");
+      garantir(paisagem.heroCols === 2, "844x390: o hero deveria usar 2 colunas na paisagem, achei " + paisagem.heroCols + ".");
+      garantir(paisagem.deckCols === 2, "844x390: o deck deveria usar 2 colunas na paisagem, achei " + paisagem.deckCols + ".");
+      await avaliar("window.scrollTo(0, 0); true");
+      await pausa(300);
+      await capturar("mobile-844x390-inicio.png");
+      await irPara("estacoes");
+      await pausa(300);
+      await capturar("mobile-844x390-estacoes.png");
+
+      const paisagemPequena = await medir(667, 375);
+      garantir(paisagemPequena.scrollW <= paisagemPequena.clientW + 1, "667x375: página estourou para " + paisagemPequena.scrollW + "px.");
+      garantir(paisagemPequena.heroCols === 2, "667x375: o hero deveria usar 2 colunas na paisagem.");
+
+      await pagina.cdp.enviar("Emulation.clearDeviceMetricsOverride");
+      await pausa(400);
+    });
+
     await teste("Captura screenshots (desktop, claro e mobile)", async function () {
       await avaliar("localStorage.setItem('feira:v1:tema', 'escuro'); true");
       await recarregar();

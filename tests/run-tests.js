@@ -429,6 +429,11 @@ garantir(!/<[^>]+\son(?:click|load|error|change|input|submit)\s*=/i.test(html), 
   garantir(!/url\(\s*["']?https?:/i.test(css), relativo + " não pode referenciar URL externa.");
 });
 
+const cssResponsivo = ler("css/styles.css");
+garantir(/\.kit-selos \.tag \{[^}]*white-space:\s*normal/.test(cssResponsivo), "as tags do kit devem poder quebrar linha no celular.");
+garantir(/@media \(max-height: 520px\) and \(orientation: landscape\) and \(min-width: 640px\)/.test(cssResponsivo), "falta o ajuste para celular deitado.");
+garantir(/\.rodape-lista a,[\s\S]*?min-height:\s*40px/.test(cssResponsivo), "os atalhos do rodapé precisam de alvo de toque maior.");
+
 /* --------------------------------------------------------------------------
    Contraste WCAG dos tokens de tema
    -------------------------------------------------------------------------- */
