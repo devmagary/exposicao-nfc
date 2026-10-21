@@ -533,7 +533,11 @@
     const status = $("#deck-status");
     if (status) status.textContent = "Estação " + estacao.numero + " de " + total + ": " + estacao.nome + ".";
     const rodape = $("#deck-rodape-texto");
-    if (rodape) rodape.textContent = "Estação " + estacao.numero + " de " + total + " · use as abas ou as setas do teclado";
+    if (rodape) {
+      const telaEstreita = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
+      rodape.textContent = "Estação " + estacao.numero + " de " + total + " · " +
+        (telaEstreita ? "deslize as abas ou use Anterior/Próxima" : "use as abas ou as setas do teclado");
+    }
     const telaCheia = $("#deck-tela-cheia");
     if (telaCheia && document.fullscreenElement) {
       telaCheia.textContent = "Sair da tela cheia";

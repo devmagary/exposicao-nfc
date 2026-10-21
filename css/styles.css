@@ -1668,6 +1668,20 @@ li { list-style: none; }
   .rodape-grid { grid-template-columns: minmax(0, 1fr); }
   .secao-cabeca--linha { align-items: flex-start; }
   .deck-acoes, .planta-acoes { width: 100%; }
+  .rodape-lista { gap: 0; }
+  .rodape-lista a,
+  .rodape-base a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 4px 0;
+  }
+  .botao-texto {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 8px 4px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1681,6 +1695,21 @@ li { list-style: none; }
   .deck-rodape { flex-direction: column; align-items: flex-start; }
   .eyebrow { flex-wrap: wrap; row-gap: 4px; }
   .eyebrow [data-meta] { flex-basis: 100%; white-space: normal; }
+  .kit-cabeca > div:first-child { flex-basis: 100%; min-width: 0; }
+  .kit-selos { width: 100%; min-width: 0; }
+  .kit-selos .tag { max-width: 100%; white-space: normal; text-align: left; }
+}
+
+/* Celular deitado: cabe o layout de duas colunas do hero e das estações. */
+@media (max-height: 520px) and (orientation: landscape) and (min-width: 640px) {
+  .hero { padding: 36px 0 48px; }
+  .hero-grid { grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr); align-items: center; }
+  .hero-palco { order: 0; }
+  .hero-copy h1 { font-size: clamp(2rem, 4.4vw, 2.9rem); }
+  .hero-sub { margin-top: 14px; }
+  .estacao-slide { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
+  .estacao-visual { border-right: 1px solid var(--border); border-bottom: 0; padding: 20px; }
+  .estacao-cena { min-height: 190px; }
 }
 
 /* --------------------------------------------------------------------------
