@@ -37,7 +37,7 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Kit ao vivo | Onde fica o hardware real (Estação 2), o painel espelhado (Estação 5), passo a passo, cuidados e plano B; checklist imprimível |
 | Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
 | Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 1 e uma demo interativa por estação |
-| Sensores | Catálogo dos 37 sensores com busca, filtros, ligação G-V-S/GPIO e foto real de cada módulo |
+| Sensores | Catálogo dos 37 sensores com busca, filtros, foto real por padrão, 3 modos de uso e ligação G-V-S/GPIO |
 | Materiais | Um guia por estação: material de uso comum + 5 manuais com lista de materiais, montagem e “para que serve”, com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
 
@@ -114,10 +114,11 @@ Quase tudo está em **`js/data.js`**:
 - `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica.
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
 - `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.
-- `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia, ligação, `visual` e `aparencia`).
+- `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia, ligação, `usos`, `visual` e `aparencia`).
   - `visual`: chave do desenho em `art.js` (`FIGURAS`) e também o nome da foto em `assets/sensores/<visual>.jpg`. `aparencia`: descrição do componente, usada como texto acessível do SVG.
-  - O catálogo tem dois modos: **Desenho** (`FEIRA.art.figuraSensor`) e **Foto real do kit** (a imagem recortada, com `alt` descritivo). A quantidade de pinos do conector vem do tamanho de `ligacao`.
-  - Para criar um desenho novo, adicione uma chave em `FIGURAS` (`js/art.js`), aponte o sensor para ela e salve a foto correspondente em `assets/sensores/`. Os testes exigem 37 chaves e 37 fotos.
+  - `usos`: lista com pelo menos 3 modos de uso e aplicação de cada sensor, exibida na carta logo abaixo da descrição.
+  - O catálogo abre no modo **Foto real do kit** (padrão) e permite trocar para **Desenho** (`FEIRA.art.figuraSensor`). A foto usa `alt` descritivo; o desenho mostra a quantidade de pinos do conector a partir de `ligacao`.
+  - Para criar um desenho novo, adicione uma chave em `FIGURAS` (`js/art.js`), aponte o sensor para ela e salve a foto correspondente em `assets/sensores/`. Os testes exigem 37 chaves, 37 fotos e 111 modos de uso.
 - `cartoes`, `roleta`, `linhaDoTempo`, `pinos`, `quizGvs`: dados das demos.
 
 Depois de editar, recarregue a página. Não é preciso compilar.
@@ -147,8 +148,8 @@ node tests/run-tests.js
 node tests/run-e2e.js
 ```
 
-- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta), os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), as 37 fotos e a foto do kit completo, regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
-- `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, alternância desenho/foto dos sensores, manuais de materiais, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
+- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta), os 111 modos de uso, os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), as 37 fotos, a foto do kit completo, o modo foto como padrão, regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
+- `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, foto como padrão e alternância com desenho, modos de uso, manuais de materiais, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
 - O E2E usa o `WebSocket` nativo do Node 22+; para abrir o site, o Node não é necessário.
 - Variável opcional `CHROME_PATH` para apontar outro navegador Chromium. Em ambientes onde o Chromium é bloqueado por sandbox de sistema, rode o E2E em uma máquina normal ou abra o site diretamente para a revisão visual.
 
