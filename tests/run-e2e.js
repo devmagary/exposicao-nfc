@@ -356,8 +356,11 @@ async function principal() {
         "abas: document.querySelectorAll('#deck-abas .deck-aba').length," +
         "slides: document.querySelectorAll('#deck-palco .estacao-slide').length," +
         "sensores: document.querySelectorAll('#sensores-grade .sensor-card').length," +
-        "figuras: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
-        "figurasDescritas: document.querySelectorAll('#sensores-grade .sensor-figura svg[role=\"img\"][aria-label]').length," +
+        "fotos: document.querySelectorAll('#sensores-grade .sensor-foto').length," +
+        "fotosDescritas: document.querySelectorAll('#sensores-grade .sensor-foto[alt]').length," +
+        "desenhos: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
+        "usos: document.querySelectorAll('#sensores-grade .sensor-usos li').length," +
+        "usosTitulos: document.querySelectorAll('#sensores-grade .sensor-usos-titulo').length," +
         "itensComuns: document.querySelectorAll('#materiais-app .materiais-comuns .material-item').length," +
         "selos: document.querySelectorAll('#selos .selo').length," +
         "demos: document.querySelectorAll('#deck-palco .demo').length," +
@@ -377,8 +380,11 @@ async function principal() {
       garantir(info.abas === 5, "esperava 5 abas, achei " + info.abas);
       garantir(info.slides === 5, "esperava 5 slides, achei " + info.slides);
       garantir(info.sensores === 37, "esperava 37 cards de sensores, achei " + info.sensores);
-      garantir(info.figuras === 37, "esperava 37 desenhos de sensores, achei " + info.figuras);
-      garantir(info.figurasDescritas === 37, "todo desenho de sensor precisa de descrição acessível.");
+      garantir(info.fotos === 37, "o modo padrão deve mostrar as 37 fotos, achei " + info.fotos);
+      garantir(info.fotosDescritas === 37, "toda foto de sensor precisa de alt descritivo.");
+      garantir(info.desenhos === 0, "no modo foto não deve haver desenhos na grade.");
+      garantir(info.usos === 111, "esperava 111 modos de uso (3 por sensor), achei " + info.usos);
+      garantir(info.usosTitulos === 37, "cada carta deve ter o título Modos de uso.");
       garantir(info.itensComuns === 10, "esperava 10 itens de uso comum, achei " + info.itensComuns);
       garantir(info.selos === 5, "esperava 5 selos, achei " + info.selos);
       garantir(info.demos === 5, "esperava 5 demos, achei " + info.demos);
@@ -395,44 +401,53 @@ async function principal() {
       garantir(/PAINEL/.test(info.textoEspelho), "a Estação 5 deve ter o selo PAINEL.");
     });
 
-    await teste("Alterna entre desenho e foto real dos sensores", async function () {
+    await teste("Sensores abrem na foto real e alternam com o desenho", async function () {
       await irPara("sensores");
+      await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
+      await pausa(300);
       const inicio = await avaliar("({" +
         "svgs: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
         "fotos: document.querySelectorAll('#sensores-grade .sensor-foto').length," +
-        "botaoFoto: Boolean(document.querySelector('[data-vista=\"foto\"]'))," +
-        "botaoDesenho: Boolean(document.querySelector('[data-vista=\"desenho\"]'))" +
+        "fotoAtiva: document.querySelector('[data-vista=\"foto\"]').getAttribute('aria-pressed')," +
+        "desenhoAtivo: document.querySelector('[data-vista=\"desenho\"]').getAttribute('aria-pressed')" +
       "})");
-      garantir(inicio.botaoFoto && inicio.botaoDesenho, "devem existir os botões Desenho e Foto real.");
-      garantir(inicio.svgs === 37 && inicio.fotos === 0, "o modo inicial deve mostrar os 37 desenhos.");
+      garantir(inicio.fotos === 37 && inicio.svgs === 0, "o padrão deve ser a foto real dos 37 sensores.");
+      garantir(inicio.fotoAtiva === "true" && inicio.desenhoAtivo === "false", "o botão Foto real deve começar pressionado.");
 
-      await avaliar("document.querySelector('[data-vista=\"foto\"]').click(); true");
-      await esperar("document.querySelectorAll('#sensores-grade .sensor-foto').length === 37", 5000);
       await esperar("(() => [...document.querySelectorAll('#sensores-grade .sensor-foto')].filter(img => img.complete && img.naturalWidth > 0).length >= 6)()", 8000);
       const foto = await avaliar("(() => {" +
         "const imgs = [...document.querySelectorAll('#sensores-grade .sensor-foto')];" +
         "const primeira = imgs[0];" +
         "return {" +
-        "  svgs: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
         "  rotulos: document.querySelectorAll('#sensores-grade .sensor-foto-rotulo').length," +
         "  carregadas: imgs.filter(img => img.complete && img.naturalWidth > 0).length," +
         "  alt: primeira ? primeira.getAttribute('alt') : ''," +
         "  src: primeira ? primeira.getAttribute('src') : ''" +
         "};" +
       "})()");
-      garantir(foto.svgs === 0, "no modo foto os desenhos devem sair da grade.");
       garantir(foto.rotulos === 37, "cada foto deve ter o rótulo 'foto do kit'.");
       garantir(foto.carregadas >= 6, "as fotos visíveis não carregaram (só " + foto.carregadas + " de 37).");
       garantir(/^assets\/sensores\/[a-z-]+\.jpg$/.test(foto.src || ""), "src da foto inesperado: " + foto.src);
       garantir(/^Foto do módulo .+ no kit de 37 sensores$/.test(foto.alt || ""), "alt da foto inesperado: " + foto.alt);
-
-      await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
-      await pausa(400);
       await capturar("sensores-fotos-desktop.png");
+      await avaliar("document.querySelector('#sensores-grade .sensor-card').scrollIntoView({ block: 'center' }); true");
+      await pausa(300);
+      await capturar("sensores-usos.png");
 
       await avaliar("document.querySelector('[data-vista=\"desenho\"]').click(); true");
       await esperar("document.querySelectorAll('#sensores-grade .sensor-figura svg').length === 37", 5000);
-      garantir((await avaliar("document.querySelectorAll('#sensores-grade .sensor-foto').length")) === 0, "ao voltar para desenho as fotos devem sair.");
+      const desenho = await avaliar("({" +
+        "fotos: document.querySelectorAll('#sensores-grade .sensor-foto').length," +
+        "descritos: document.querySelectorAll('#sensores-grade .sensor-figura svg[role=\"img\"][aria-label]').length," +
+        "usos: document.querySelectorAll('#sensores-grade .sensor-usos li').length" +
+      "})");
+      garantir(desenho.fotos === 0, "no modo desenho as fotos devem sair.");
+      garantir(desenho.descritos === 37, "todo desenho precisa de descrição acessível.");
+      garantir(desenho.usos === 111, "os modos de uso devem continuar nos dois modos de visualização.");
+      await capturar("sensores-desenhos-desktop.png");
+
+      await avaliar("document.querySelector('[data-vista=\"foto\"]').click(); true");
+      await esperar("document.querySelectorAll('#sensores-grade .sensor-foto').length === 37", 5000);
     });
 
     await teste("Deck navega, atualiza hash e mostra a estação correta", async function () {
@@ -590,12 +605,12 @@ async function principal() {
       await irPara("sensores");
       await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
       await pausa(400);
+      await esperar("(() => [...document.querySelectorAll('#sensores-grade .sensor-foto')].filter(img => img.complete && img.naturalWidth > 0).length >= 6)()", 8000);
       await capturar("sensores-claro.png");
 
-      await avaliar("document.querySelector('[data-vista=\"foto\"]').click(); true");
-      await esperar("(() => [...document.querySelectorAll('#sensores-grade .sensor-foto')].filter(img => img.complete && img.naturalWidth > 0).length >= 6)()", 8000);
-      await capturar("sensores-fotos-claro.png");
       await avaliar("document.querySelector('[data-vista=\"desenho\"]').click(); true");
+      await esperar("document.querySelectorAll('#sensores-grade .sensor-figura svg').length === 37", 5000);
+      await capturar("sensores-desenhos-claro.png");
       await avaliar("(() => { const bloco = document.querySelector('.kit-foto'); bloco.open = true; bloco.scrollIntoView({ block: 'start' }); return true; })()");
       await esperar("(() => { const img = document.querySelector('.kit-foto img'); return img && img.complete && img.naturalWidth > 0; })()", 8000);
       await pausa(300);

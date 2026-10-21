@@ -188,6 +188,28 @@ garantir(htmlTexto.indexOf("assets/kit-37-sensores.jpg") !== -1, "index.html dev
 garantir(/class="kit-foto"/.test(htmlTexto), "index.html deve ter o bloco recolhível com a foto do kit.");
 garantir(/data-vista="foto"/.test(appTexto) && /data-vista="desenho"/.test(appTexto), "deve existir o seletor desenho/foto.");
 garantir(!/https?:\/\/[^"']*\.(?:jpe?g|png|webp)/i.test(appTexto + htmlTexto), "as fotos devem ser locais, sem imagem externa.");
+garantir(/vista: "foto"/.test(appTexto), "o modo foto deve ser a visualização padrão dos sensores.");
+garantir(/data-vista="foto" aria-pressed="true"/.test(appTexto), "o botão Foto real deve começar pressionado.");
+
+/* --------------------------------------------------------------------------
+   Modos de uso dos sensores
+   -------------------------------------------------------------------------- */
+const todosOsUsos = [];
+sensores.forEach(function (sensor) {
+  garantir(Array.isArray(sensor.usos), "sensor " + sensor.nome + ": lista de usos ausente.");
+  if (!Array.isArray(sensor.usos)) return;
+  garantir(sensor.usos.length >= 3, "sensor " + sensor.nome + ": precisa de pelo menos 3 modos de uso.");
+  iguais(new Set(sensor.usos).size, sensor.usos.length, "sensor " + sensor.nome + ": modos de uso repetidos.");
+  sensor.usos.forEach(function (uso) {
+    garantir(typeof uso === "string" && uso.trim().length >= 12, "sensor " + sensor.nome + ": modo de uso curto demais.");
+    garantir(!/"/.test(uso), "sensor " + sensor.nome + ": modo de uso não pode ter aspas.");
+    garantir(/[.!?]$/.test(uso.trim()), "sensor " + sensor.nome + ": modo de uso deve terminar em ponto.");
+    todosOsUsos.push(logic.normalizar ? logic.normalizar(uso) : uso.toLowerCase());
+  });
+});
+iguais(todosOsUsos.length, 111, "os 37 sensores devem somar 111 modos de uso.");
+garantir(appTexto.indexOf("sensor-usos") !== -1, "app.js deve renderizar os modos de uso na carta.");
+garantir(appTexto.indexOf("Modos de uso") !== -1, "as cartas devem ter o título Modos de uso.");
 
 /* --------------------------------------------------------------------------
    Dados: demos
