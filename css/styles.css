@@ -1516,9 +1516,16 @@ li { list-style: none; }
 .rodape-marca strong { color: var(--primario); }
 .rodape-texto { color: var(--muted); font-size: 0.84rem; max-width: 44ch; }
 .rodape-titulo { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 10px; }
-.rodape-lista { display: grid; gap: 6px; }
+.rodape-lista { display: grid; gap: 2px; }
 .rodape-lista li, .rodape-lista a { color: var(--muted); font-size: 0.84rem; text-decoration: none; }
 .rodape-lista a:hover { color: var(--texto); }
+.rodape-lista a,
+.rodape-base a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 4px 0;
+}
 .rodape-base {
   display: flex;
   justify-content: space-between;
@@ -1612,6 +1619,10 @@ li { list-style: none; }
   font-size: 0.78rem;
   text-decoration: underline;
   text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 4px;
 }
 .botao-texto:hover { color: var(--texto); }
 
@@ -1668,20 +1679,6 @@ li { list-style: none; }
   .rodape-grid { grid-template-columns: minmax(0, 1fr); }
   .secao-cabeca--linha { align-items: flex-start; }
   .deck-acoes, .planta-acoes { width: 100%; }
-  .rodape-lista { gap: 0; }
-  .rodape-lista a,
-  .rodape-base a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
-    padding: 4px 0;
-  }
-  .botao-texto {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 4px;
-  }
 }
 
 @media (max-width: 480px) {
