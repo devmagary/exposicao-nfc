@@ -62,7 +62,7 @@
     plantaSelecionada: null,
     passaporte: [],
     nomeCertificado: "Visitante",
-    sensores: { busca: "", tipo: "todos", categoria: "todas", vista: "desenho" }
+    sensores: { busca: "", tipo: "todos", categoria: "todas", vista: "foto" }
   };
 
   let toastTimer = null;
@@ -673,8 +673,8 @@
         '</label>' +
         '<div class="vista-sensores" role="group" aria-label="Visualização dos sensores">' +
           '<span class="vista-rotulo">Ver cada sensor como</span>' +
-          '<button class="filtro filtro--vista" type="button" data-vista="desenho" aria-pressed="true">Desenho</button>' +
-          '<button class="filtro filtro--vista" type="button" data-vista="foto" aria-pressed="false">Foto real do kit</button>' +
+          '<button class="filtro filtro--vista" type="button" data-vista="desenho" aria-pressed="false">Desenho</button>' +
+          '<button class="filtro filtro--vista" type="button" data-vista="foto" aria-pressed="true">Foto real do kit</button>' +
         '</div>' +
         '<div class="filtros" role="group" aria-label="Filtrar por tipo">' +
           '<button class="filtro" type="button" data-tipo="todos" aria-pressed="true">Todos <span class="filtro-conta">' + dados.sensores.length + '</span></button>' +
@@ -757,6 +757,7 @@
       if (!busca) return true;
       const campos = [
         sensor.nome, sensor.categoria, sensor.descricao, sensor.ideia, sensor.aparencia,
+        (sensor.usos || []).join(" "),
         (sensor.ligacao || []).map(function (item) { return item.gpio || item.linha; }).join(" ")
       ].join(" ");
       const normalizado = logic.normalizar ? logic.normalizar(campos) : campos.toLowerCase();
@@ -794,6 +795,12 @@
         '</header>' +
         (figura ? '<div class="sensor-figura sensor-figura--' + esc(sensor.tipo) + (modoFoto ? ' sensor-figura--foto' : '') + '">' + figura + (modoFoto ? '<span class="sensor-foto-rotulo">foto do kit</span>' : "") + '</div>' : "") +
         '<p class="sensor-desc">' + esc(sensor.descricao) + '</p>' +
+        '<div class="sensor-usos">' +
+          '<p class="sensor-usos-titulo">Modos de uso</p>' +
+          '<ul aria-label="Modos de uso e aplicação">' + (sensor.usos || []).map(function (uso) {
+            return '<li>' + esc(uso) + '</li>';
+          }).join("") + '</ul>' +
+        '</div>' +
         '<p class="sensor-ideia"><span aria-hidden="true">💡</span> ' + esc(sensor.ideia) + '</p>' +
         '<ul class="sensor-ligacao" aria-label="Como ligar">' + ligacoes + '</ul>' +
       '</article>';

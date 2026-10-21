@@ -1055,6 +1055,34 @@ li { list-style: none; }
 .sensor-cabeca h4 { font-size: 0.96rem; line-height: 1.25; flex: 1; }
 .sensor-cat { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 3px; }
 .sensor-desc { color: var(--muted); font-size: 0.84rem; margin: 0; }
+.sensor-usos {
+  padding: 9px 11px 10px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--primario) 18%, var(--border));
+  background: color-mix(in srgb, var(--primario) 5%, transparent);
+}
+.sensor-usos-titulo {
+  margin: 0 0 6px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primario);
+}
+.sensor-usos ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.sensor-usos li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--texto-suave);
+}
+.sensor-usos li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--primario);
+}
 .sensor-ideia { color: var(--texto-suave); font-size: 0.8rem; margin: 0; }
 .sensor-ideia span { color: var(--amber); }
 .sensor-ligacao { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 4px; }
