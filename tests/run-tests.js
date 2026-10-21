@@ -161,6 +161,35 @@ garantir(art.figuraSensor(null) === "", "figuraSensor deve ser defensiva sem dad
 garantir(art.figuraSensor({ id: 1, visual: "inexistente" }) === "", "figuraSensor deve ignorar desenhos desconhecidos.");
 
 /* --------------------------------------------------------------------------
+   Fotos dos 37 sensores (recortes do kit de referência)
+   -------------------------------------------------------------------------- */
+const PASTA_FOTOS = path.join(RAIZ, "assets", "sensores");
+garantir(fs.existsSync(PASTA_FOTOS), "assets/sensores deve existir.");
+const arquivosFotos = fs.existsSync(PASTA_FOTOS) ? fs.readdirSync(PASTA_FOTOS).filter(function (nome) { return /\.jpg$/i.test(nome); }) : [];
+iguais(arquivosFotos.length, 37, "devem existir 37 fotos de sensores em assets/sensores.");
+sensores.forEach(function (sensor) {
+  const relativo = "assets/sensores/" + sensor.visual + ".jpg";
+  garantir(existe(relativo), "sensor " + sensor.id + ": falta a foto " + relativo + ".");
+  if (existe(relativo)) {
+    const tamanho = fs.statSync(path.join(RAIZ, relativo)).size;
+    garantir(tamanho > 1500, "sensor " + sensor.id + ": foto pequena demais (" + tamanho + " bytes).");
+  }
+});
+garantir(existe("assets/kit-37-sensores.jpg"), "falta a foto do kit completo em assets/kit-37-sensores.jpg.");
+if (existe("assets/kit-37-sensores.jpg")) {
+  garantir(fs.statSync(path.join(RAIZ, "assets/kit-37-sensores.jpg")).size > 50000, "a foto do kit completo está pequena demais.");
+}
+const appTexto = ler("js/app.js");
+garantir(appTexto.indexOf("assets/sensores/") !== -1, "app.js deve montar a foto a partir de assets/sensores/.");
+garantir(/sensor-foto/.test(appTexto), "app.js deve renderizar a classe sensor-foto.");
+garantir(/sensor-figura--foto/.test(appTexto), "app.js deve marcar a figura quando estiver no modo foto.");
+const htmlTexto = ler("index.html");
+garantir(htmlTexto.indexOf("assets/kit-37-sensores.jpg") !== -1, "index.html deve exibir a foto do kit completo.");
+garantir(/class="kit-foto"/.test(htmlTexto), "index.html deve ter o bloco recolhível com a foto do kit.");
+garantir(/data-vista="foto"/.test(appTexto) && /data-vista="desenho"/.test(appTexto), "deve existir o seletor desenho/foto.");
+garantir(!/https?:\/\/[^"']*\.(?:jpe?g|png|webp)/i.test(appTexto + htmlTexto), "as fotos devem ser locais, sem imagem externa.");
+
+/* --------------------------------------------------------------------------
    Dados: demos
    -------------------------------------------------------------------------- */
 iguais(dados.cartoes.length, 3, "devem existir 3 cartões NFC.");

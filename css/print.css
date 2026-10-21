@@ -75,6 +75,7 @@
   .estacao-dica,
   .sensores-controles,
   .sensores-legenda,
+  .kit-foto,
   .campo-busca,
   .materiais-acoes,
   .materiais-filtros,
@@ -188,6 +189,9 @@
   .sensor-card { border: 1px solid #cbd5e1; background: #ffffff; break-inside: avoid; padding: 8px 10px; }
   .sensor-figura { border: 1px solid #cbd5e1; background: #f8fafc; padding: 4px; break-inside: avoid; }
   .sensor-figura svg { max-width: 150px; }
+  .sensor-figura--foto { background: #ffffff; }
+  .sensor-foto { max-width: 150px; }
+  .sensor-foto-rotulo { color: #64748b; }
   .sensor-svg { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .sensor-desc, .sensor-ideia { font-size: 8.5pt; color: #334155; }
   .sensor-ligacao li { border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; }

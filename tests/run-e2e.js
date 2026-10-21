@@ -46,6 +46,9 @@ const MIME = {
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
   ".json": "application/json; charset=utf-8",
   ".md": "text/markdown; charset=utf-8",
   ".pdf": "application/pdf"
@@ -364,6 +367,7 @@ async function principal() {
         "kitBloco: Boolean(document.querySelector('#kit-app .kit-ao-vivo'))," +
         "manuais: document.querySelectorAll('#materiais-app .manual-estacao').length," +
         "kitManual: Boolean(document.querySelector('#material-toque .manual-kit'))," +
+        "kitFoto: Boolean(document.querySelector('.kit-foto img'))," +
         "semFiltros: document.querySelectorAll('#materiais-app [data-materiais-filtro]').length === 0," +
         "textoMateriais: (document.querySelector('#materiais-app') || {}).textContent || ''," +
         "textoAoVivo: (document.querySelector('#aba-estacao-2') || {}).textContent || ''," +
@@ -384,10 +388,51 @@ async function principal() {
       garantir(info.kitBloco, "o bloco do kit ao vivo não foi renderizado.");
       garantir(info.manuais === 5, "materiais deveria ter 5 manuais de estação, achei " + info.manuais);
       garantir(info.kitManual, "o manual da Estação 2 deve avisar do kit físico (NFC).");
+      garantir(info.kitFoto, "a seção de sensores deve mostrar a foto do kit completo.");
       garantir(info.semFiltros, "a página de materiais não deve ter menus de filtro.");
       garantir(!/zip|bexiga|bal[aã]o/i.test(info.textoMateriais), "a página não deve citar zip nem bexigas.");
       garantir(/AO VIVO/.test(info.textoAoVivo), "a Estação 2 deve ter o selo AO VIVO.");
       garantir(/PAINEL/.test(info.textoEspelho), "a Estação 5 deve ter o selo PAINEL.");
+    });
+
+    await teste("Alterna entre desenho e foto real dos sensores", async function () {
+      await irPara("sensores");
+      const inicio = await avaliar("({" +
+        "svgs: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
+        "fotos: document.querySelectorAll('#sensores-grade .sensor-foto').length," +
+        "botaoFoto: Boolean(document.querySelector('[data-vista=\"foto\"]'))," +
+        "botaoDesenho: Boolean(document.querySelector('[data-vista=\"desenho\"]'))" +
+      "})");
+      garantir(inicio.botaoFoto && inicio.botaoDesenho, "devem existir os botões Desenho e Foto real.");
+      garantir(inicio.svgs === 37 && inicio.fotos === 0, "o modo inicial deve mostrar os 37 desenhos.");
+
+      await avaliar("document.querySelector('[data-vista=\"foto\"]').click(); true");
+      await esperar("document.querySelectorAll('#sensores-grade .sensor-foto').length === 37", 5000);
+      await esperar("(() => [...document.querySelectorAll('#sensores-grade .sensor-foto')].filter(img => img.complete && img.naturalWidth > 0).length >= 6)()", 8000);
+      const foto = await avaliar("(() => {" +
+        "const imgs = [...document.querySelectorAll('#sensores-grade .sensor-foto')];" +
+        "const primeira = imgs[0];" +
+        "return {" +
+        "  svgs: document.querySelectorAll('#sensores-grade .sensor-figura svg').length," +
+        "  rotulos: document.querySelectorAll('#sensores-grade .sensor-foto-rotulo').length," +
+        "  carregadas: imgs.filter(img => img.complete && img.naturalWidth > 0).length," +
+        "  alt: primeira ? primeira.getAttribute('alt') : ''," +
+        "  src: primeira ? primeira.getAttribute('src') : ''" +
+        "};" +
+      "})()");
+      garantir(foto.svgs === 0, "no modo foto os desenhos devem sair da grade.");
+      garantir(foto.rotulos === 37, "cada foto deve ter o rótulo 'foto do kit'.");
+      garantir(foto.carregadas >= 6, "as fotos visíveis não carregaram (só " + foto.carregadas + " de 37).");
+      garantir(/^assets\/sensores\/[a-z-]+\.jpg$/.test(foto.src || ""), "src da foto inesperado: " + foto.src);
+      garantir(/^Foto do módulo .+ no kit de 37 sensores$/.test(foto.alt || ""), "alt da foto inesperado: " + foto.alt);
+
+      await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
+      await pausa(400);
+      await capturar("sensores-fotos-desktop.png");
+
+      await avaliar("document.querySelector('[data-vista=\"desenho\"]').click(); true");
+      await esperar("document.querySelectorAll('#sensores-grade .sensor-figura svg').length === 37", 5000);
+      garantir((await avaliar("document.querySelectorAll('#sensores-grade .sensor-foto').length")) === 0, "ao voltar para desenho as fotos devem sair.");
     });
 
     await teste("Deck navega, atualiza hash e mostra a estação correta", async function () {
@@ -546,6 +591,15 @@ async function principal() {
       await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
       await pausa(400);
       await capturar("sensores-claro.png");
+
+      await avaliar("document.querySelector('[data-vista=\"foto\"]').click(); true");
+      await esperar("(() => [...document.querySelectorAll('#sensores-grade .sensor-foto')].filter(img => img.complete && img.naturalWidth > 0).length >= 6)()", 8000);
+      await capturar("sensores-fotos-claro.png");
+      await avaliar("document.querySelector('[data-vista=\"desenho\"]').click(); true");
+      await avaliar("(() => { const bloco = document.querySelector('.kit-foto'); bloco.open = true; bloco.scrollIntoView({ block: 'start' }); return true; })()");
+      await esperar("(() => { const img = document.querySelector('.kit-foto img'); return img && img.complete && img.naturalWidth > 0; })()", 8000);
+      await pausa(300);
+      await capturar("kit-foto-painel.png");
 
       await pagina.cdp.enviar("Emulation.setDeviceMetricsOverride", {
         width: 390, height: 844, deviceScaleFactor: 1, mobile: true

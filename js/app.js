@@ -62,7 +62,7 @@
     plantaSelecionada: null,
     passaporte: [],
     nomeCertificado: "Visitante",
-    sensores: { busca: "", tipo: "todos", categoria: "todas" }
+    sensores: { busca: "", tipo: "todos", categoria: "todas", vista: "desenho" }
   };
 
   let toastTimer = null;
@@ -671,6 +671,11 @@
           '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
           '<input type="search" id="sensores-busca" placeholder="Buscar sensor, função, categoria ou pino..." aria-label="Buscar sensor">' +
         '</label>' +
+        '<div class="vista-sensores" role="group" aria-label="Visualização dos sensores">' +
+          '<span class="vista-rotulo">Ver cada sensor como</span>' +
+          '<button class="filtro filtro--vista" type="button" data-vista="desenho" aria-pressed="true">Desenho</button>' +
+          '<button class="filtro filtro--vista" type="button" data-vista="foto" aria-pressed="false">Foto real do kit</button>' +
+        '</div>' +
         '<div class="filtros" role="group" aria-label="Filtrar por tipo">' +
           '<button class="filtro" type="button" data-tipo="todos" aria-pressed="true">Todos <span class="filtro-conta">' + dados.sensores.length + '</span></button>' +
           '<button class="filtro" type="button" data-tipo="digital" aria-pressed="false">Digitais <span class="filtro-conta">' + contagens.digital + '</span></button>' +
@@ -704,6 +709,15 @@
         renderizarGradeSensores();
       });
     });
+    $$("[data-vista]", app).forEach(function (botao) {
+      botao.addEventListener("click", function () {
+        estado.sensores.vista = botao.getAttribute("data-vista");
+        $$("[data-vista]", app).forEach(function (outro) {
+          outro.setAttribute("aria-pressed", outro === botao ? "true" : "false");
+        });
+        renderizarGradeSensores();
+      });
+    });
     $$("[data-categoria]", app).forEach(function (botao) {
       botao.addEventListener("click", function () {
         estado.sensores.categoria = botao.getAttribute("data-categoria");
@@ -716,7 +730,7 @@
 
     const limparFiltros = $("#sensores-limpar");
     if (limparFiltros) limparFiltros.addEventListener("click", function () {
-      estado.sensores = { busca: "", tipo: "todos", categoria: "todas" };
+      estado.sensores = { busca: "", tipo: "todos", categoria: "todas", vista: estado.sensores.vista };
       if (busca) busca.value = "";
       $$("[data-tipo]", app).forEach(function (botao) {
         botao.setAttribute("aria-pressed", botao.getAttribute("data-tipo") === "todos" ? "true" : "false");
@@ -742,7 +756,7 @@
       if (estado.sensores.categoria !== "todas" && sensor.categoria !== estado.sensores.categoria) return false;
       if (!busca) return true;
       const campos = [
-        sensor.nome, sensor.categoria, sensor.descricao, sensor.ideia,
+        sensor.nome, sensor.categoria, sensor.descricao, sensor.ideia, sensor.aparencia,
         (sensor.ligacao || []).map(function (item) { return item.gpio || item.linha; }).join(" ")
       ].join(" ");
       const normalizado = logic.normalizar ? logic.normalizar(campos) : campos.toLowerCase();
@@ -762,7 +776,10 @@
 
     grade.innerHTML = filtrados.map(function (sensor) {
       const tipoRotulo = logic.formatarTipo ? logic.formatarTipo(sensor.tipo) : sensor.tipo;
-      const figura = FEIRA.art && FEIRA.art.figuraSensor ? FEIRA.art.figuraSensor(sensor) : "";
+      const modoFoto = estado.sensores.vista === "foto";
+      const figura = modoFoto
+        ? '<img class="sensor-foto" src="assets/sensores/' + esc(sensor.visual) + '.jpg" alt="Foto do módulo ' + esc(sensor.nome) + ' no kit de 37 sensores" width="280" height="210" loading="lazy" decoding="async">'
+        : (FEIRA.art && FEIRA.art.figuraSensor ? FEIRA.art.figuraSensor(sensor) : "");
       const ligacoes = (sensor.ligacao || []).map(function (item) {
         const rotulo = item.rotulo || item.linha;
         const classe = item.linha === "G" ? "g" : item.linha === "V" ? "v" : "s";
@@ -775,7 +792,7 @@
           '<div><h4>' + esc(sensor.nome) + '</h4><p class="sensor-cat">' + esc(sensor.categoria) + '</p></div>' +
           '<span class="tag tag--' + esc(sensor.tipo) + '">' + esc(tipoRotulo) + '</span>' +
         '</header>' +
-        (figura ? '<div class="sensor-figura sensor-figura--' + esc(sensor.tipo) + '">' + figura + '</div>' : "") +
+        (figura ? '<div class="sensor-figura sensor-figura--' + esc(sensor.tipo) + (modoFoto ? ' sensor-figura--foto' : '') + '">' + figura + (modoFoto ? '<span class="sensor-foto-rotulo">foto do kit</span>' : "") + '</div>' : "") +
         '<p class="sensor-desc">' + esc(sensor.descricao) + '</p>' +
         '<p class="sensor-ideia"><span aria-hidden="true">💡</span> ' + esc(sensor.ideia) + '</p>' +
         '<ul class="sensor-ligacao" aria-label="Como ligar">' + ligacoes + '</ul>' +
