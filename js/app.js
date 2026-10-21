@@ -489,9 +489,9 @@
         '<p class="estacao-resumo">' + esc(estacao.resumo) + '</p>' +
         '<div class="estacao-abas" role="tablist" aria-label="Detalhes da estação ' + esc(estacao.numero) + '">' + abas + '</div>' +
         conteudos +
-        '<div class="demo" data-demo="' + esc(estacao.demo) + '" data-estacao="' + esc(estacao.numero) + '" data-estacao-id="' + esc(estacao.id) + '"></div>' +
         dica +
       '</div>' +
+      '<div class="demo" data-demo="' + esc(estacao.demo) + '" data-estacao="' + esc(estacao.numero) + '" data-estacao-id="' + esc(estacao.id) + '"></div>' +
     '</article>';
   }
 

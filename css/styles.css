@@ -561,7 +561,7 @@ li { list-style: none; }
 
 .callouts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   margin-top: 30px;
 }
@@ -587,11 +587,10 @@ li { list-style: none; }
 }
 .callout--ouro { border-color: color-mix(in srgb, var(--amber) 32%, transparent); background: color-mix(in srgb, var(--amber) 7%, var(--surface)); }
 .callout--ouro .callout-selo { color: var(--amber); background: rgba(251, 191, 36, 0.13); }
-.callout--fonte .callout-selo { color: var(--primario); background: color-mix(in srgb, var(--primario) 13%, transparent); font-style: italic; }
 
 .fatos {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 30px;
   padding: 18px;
@@ -1596,8 +1595,14 @@ li { list-style: none; }
    Ajustes finos por elemento
    -------------------------------------------------------------------------- */
 .estacao-tema + .estacao-resumo { margin-top: 10px; }
-.estacao-conteudo .demo { margin-top: 22px; }
-.estacao-conteudo .demo + .estacao-dica { margin-top: 16px; }
+.estacao-slide > .demo {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-block: 24px 28px;
+  padding-inline: max(28px, calc((100% - 980px) / 2));
+  border-width: 1px 0 0;
+  border-radius: 0;
+}
 
 .botao-texto {
   border: 0;
@@ -1641,9 +1646,6 @@ li { list-style: none; }
   .passos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .passo::after { display: none; }
   .callouts { grid-template-columns: minmax(0, 1fr); }
-  .fatos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fato:nth-child(3) { border-left: 0; }
-  .fato:nth-child(n + 3) { border-top: 1px solid var(--border); padding-top: 14px; }
   .deck-abas { grid-template-columns: repeat(5, minmax(108px, 1fr)); overflow-x: auto; scroll-snap-type: x proximity; }
   .deck-aba { padding: 12px 10px; scroll-snap-align: start; }
   .deck-aba-tema { display: none; }
@@ -1651,6 +1653,7 @@ li { list-style: none; }
   .deck-aba-nome { font-size: 0.78rem; }
   .estacao-conteudo { padding: 24px 20px 26px; }
   .estacao-visual { padding: 20px; }
+  .estacao-slide > .demo { padding: 20px 18px 22px; }
   .materiais-grade { grid-template-columns: minmax(0, 1fr); }
   .materiais-lista--comum { grid-template-columns: minmax(0, 1fr); }
   .manual-corpo { grid-template-columns: minmax(0, 1fr); gap: 18px; }
@@ -1670,7 +1673,6 @@ li { list-style: none; }
 @media (max-width: 480px) {
   .container { width: calc(100% - 28px); }
   .passos { grid-template-columns: minmax(0, 1fr); }
-  .fatos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-acoes .btn { flex: 1 1 100%; }
   .passaporte-card, .certificado-card { padding: 20px; }
   .selo-nome { display: none; }
