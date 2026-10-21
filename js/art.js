@@ -80,8 +80,8 @@
      Estações: metadados leves para desenhar mesmo sem data.js
      ------------------------------------------------------------------ */
   var ESTACOES = [
-    { id: "cerebro", numero: 1, nome: "O Cérebro", curto: "Cérebro", papel: "ESP32-S3", cor: "cyan", tema: "ESP32-S3 + placa de expansão" },
-    { id: "toque", numero: 2, nome: "O Toque Mágico", curto: "Toque", papel: "NFC", cor: "emerald", tema: "NFC: leitura sem encostar" },
+    { id: "toque", numero: 1, nome: "O Toque Mágico", curto: "Toque", papel: "NFC", cor: "emerald", tema: "NFC: leitura sem encostar" },
+    { id: "cerebro", numero: 2, nome: "O Cérebro", curto: "Cérebro", papel: "ESP32-S3", cor: "cyan", tema: "ESP32-S3 + placa de expansão" },
     { id: "semaforo", numero: 3, nome: "O Semáforo Falante", curto: "Semáforo", papel: "LED RGB", cor: "amber", tema: "LED RGB e seus estados" },
     { id: "caixa", numero: 4, nome: "A Caixa dos Sentidos", curto: "Caixa", papel: "37 sensores", cor: "rose", tema: "Os 37 sensores do kit" },
     { id: "memoria", numero: 5, nome: "A Memória que Não Esquece", curto: "Memória", papel: "Flash + Web", cor: "violet", tema: "Flash, LittleFS e Painel Web" }
@@ -234,13 +234,13 @@
     s.push(ret(332, 362, 56, 9, 3, "arte-usb"));
 
     /* Nós das estações */
-    s.push(noHero(64, 92, 1, "Cérebro", "ESP32-S3", "cyan", 0));
-    s.push(noHero(506, 76, 2, "Toque", "NFC", "emerald", -1.2));
+    s.push(noHero(64, 92, 2, "Cérebro", "ESP32-S3", "cyan", 0));
+    s.push(noHero(506, 76, 1, "Toque", "NFC", "emerald", -1.2));
     s.push(noHero(284, 20, 5, "Memória", "Flash + Web", "violet", 0));
     s.push(noHero(56, 396, 3, "Semáforo", "LED RGB", "amber", 0));
     s.push(noHero(516, 404, 4, "Caixa", "37 sensores", "rose", 0));
 
-    /* Ondas NFC saindo do nó 2 */
+    /* Ondas NFC saindo do nó 1 (Toque) */
     s.push('<g ' + estiloCor("emerald") + ">");
     s.push('<path d="M489 108 A20 20 0 0 0 489 128" class="arte-onda" style="animation-delay:0s"/>');
     s.push('<path d="M479 102 A31 31 0 0 0 479 134" class="arte-onda" style="animation-delay:-0.8s"/>');

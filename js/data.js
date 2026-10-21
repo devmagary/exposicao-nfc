@@ -19,7 +19,7 @@
 
     /* ---------------------------------------------------------------------
        KIT AO VIVO — decisão da feira
-       Uma única placa ESP32-S3 + PN532 fica na Estação 2; a Estação 5
+       Uma única placa ESP32-S3 + PN532 fica na Estação 1; a Estação 5
        espelha o painel web dessa mesma placa em um tablet.
        --------------------------------------------------------------------- */
     kitAoVivo: {
@@ -27,15 +27,15 @@
       espelho: "memoria",
       titulo: "Kit ao vivo: uma placa, duas estações",
       resumo:
-        "O ESP32-S3 com PN532 fica na Estação 2. A Estação 5 mostra o painel web da mesma placa em um tablet — sem precisar de um segundo kit.",
+        "O ESP32-S3 com PN532 fica na Estação 1. A Estação 5 mostra o painel web da mesma placa em um tablet — sem precisar de um segundo kit.",
       aviso:
-        "As demos do site são simulações. Na feira, o hardware real fica na Estação 2.",
+        "As demos do site são simulações. Na feira, o hardware real fica na Estação 1.",
       passos: [
-        "Leve o ESP32-S3 + PN532 para a Estação 2 e conecte o PN532 em I2C: SDA IO8, SCL IO9, 3,3 V e chaves 1 ON / 2 OFF.",
+        "Leve o ESP32-S3 + PN532 para a Estação 1 e conecte o PN532 em I2C: SDA IO8, SCL IO9, 3,3 V e chaves 1 ON / 2 OFF.",
         "Leia o UID real de cada tag e cadastre no painel: uma ativa (LIBERADO), uma bloqueada (BLOQUEADO) e uma desconhecida (NEGADO).",
         "Deixe o LED RGB (GPIO 48) visível e teste as três leituras. O relé/fechadura é opcional.",
         "Na Estação 5, abra o painel do mesmo ESP32 em um tablet na mesma rede (IP ou nfc.local) e mantenha a sessão autenticada.",
-        "Faça um ensaio: encoste a tag na Estação 2 e confirme o registro aparecendo na Estação 5."
+        "Faça um ensaio: encoste a tag na Estação 1 e confirme o registro aparecendo na Estação 5."
       ],
       cuidados: [
         "Troque as senhas padrão do painel e do AP antes da feira; não divulgue credenciais no site.",
@@ -45,7 +45,7 @@
         "Se usar relé/fechadura, use fonte externa de 5 V e supervisão; nada de 110/220 V na mesa."
       ],
       planoB: [
-        "Sem tablet ou rede, a Estação 5 continua com o varal de papel e o kit fica só na Estação 2.",
+        "Sem tablet ou rede, a Estação 5 continua com o varal de papel e o kit fica só na Estação 1.",
         "Se o Wi-Fi da escola isolar dispositivos, use um roteador portátil ou o modo AP do ESP32.",
         "Se o PN532 falhar, o LED vermelho piscando indica falha de I2C; confira os fios e as chaves antes de abrir a feira."
       ]
@@ -56,9 +56,46 @@
        --------------------------------------------------------------------- */
     estacoes: [
       {
-        id: "cerebro",
+        id: "toque",
         numero: 1,
         equipe: "Equipe 1",
+        nome: "O Toque Mágico",
+        tema: "NFC: leitura sem encostar",
+        cor: "emerald",
+        icone: "nfc",
+        aoVivo: true,
+        frase: "Encostou, decidiu.",
+        resumo:
+          "Abrir a visita encostando uma tag de verdade. O leitor PN532 e os cartões: esta é a estação com o kit físico. Encostar uma tag acende o LED e mostra o acesso — mesmo sem internet.",
+        visitante: [
+          "Escolhe um cartão de papel com o UID real e encosta no leitor PN532 gigante (com velcro).",
+          "Puxa uma das três respostas do envelope: LIBERADO, NEGADO ou BLOQUEADO.",
+          "Encosta uma tag de verdade no leitor e vê o LED acender na hora; o painel da Estação 5 registra o mesmo acesso."
+        ],
+        montagem: [
+          "Monte um leitor PN532 gigante de papelão com o desenho da placa vermelha.",
+          "Recorte cartões de papel cartão e escreva o UID real de cada tag.",
+          "Cole um envelope atrás do leitor com as três respostas.",
+          "Faça um cartaz com o desenho do campo magnético: é ele que “acorda” a tag.",
+          "Esta é a estação que recebe o ESP32 + PN532 reais; as demais usam as simulações de papel."
+        ],
+        materiais: [
+          "Papelão",
+          "Papel alumínio",
+          "Etiquetas adesivas brancas",
+          "Barbante / lã em 4 cores",
+          "Papel cartão colorido",
+          "EVA colorido",
+          "Velcro"
+        ],
+        demo: "nfc",
+        dica:
+          "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão."
+      },
+      {
+        id: "cerebro",
+        numero: 2,
+        equipe: "Equipe 2",
         nome: "O Cérebro",
         tema: "ESP32-S3 + placa de expansão",
         cor: "cyan",
@@ -91,43 +128,6 @@
         demo: "gvs",
         dica:
           "No ESP32-S3 N16R8, os pinos IO35, IO36 e IO37 são ligados à PSRAM. Nunca ligue nada neles."
-      },
-      {
-        id: "toque",
-        numero: 2,
-        equipe: "Equipe 2",
-        nome: "O Toque Mágico",
-        tema: "NFC: leitura sem encostar",
-        cor: "emerald",
-        icone: "nfc",
-        aoVivo: true,
-        frase: "Encostou, decidiu.",
-        resumo:
-          "O leitor PN532 e os cartões: esta é a estação com o kit físico. Encostar uma tag de verdade acende o LED e mostra o acesso — mesmo sem internet.",
-        visitante: [
-          "Escolhe um cartão de papel com o UID real e encosta no leitor PN532 gigante (com velcro).",
-          "Puxa uma das três respostas do envelope: LIBERADO, NEGADO ou BLOQUEADO.",
-          "Encosta uma tag de verdade no leitor e vê o LED acender na hora; o painel da Estação 5 registra o mesmo acesso."
-        ],
-        montagem: [
-          "Monte um leitor PN532 gigante de papelão com o desenho da placa vermelha.",
-          "Recorte cartões de papel cartão e escreva o UID real de cada tag.",
-          "Cole um envelope atrás do leitor com as três respostas.",
-          "Faça um cartaz com o desenho do campo magnético: é ele que “acorda” a tag.",
-          "Esta é a estação que recebe o ESP32 + PN532 reais; as demais usam as simulações de papel."
-        ],
-        materiais: [
-          "Papelão",
-          "Papel alumínio",
-          "Etiquetas adesivas brancas",
-          "Barbante / lã em 4 cores",
-          "Papel cartão colorido",
-          "EVA colorido",
-          "Velcro"
-        ],
-        demo: "nfc",
-        dica:
-          "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão."
       },
       {
         id: "semaforo",
@@ -204,17 +204,19 @@
         espelho: true,
         frase: "Offline também funciona.",
         resumo:
-          "A memória que não esquece: o painel web do ESP32 da Estação 2 aparece espelhado aqui, em um tablet — e continua funcionando sem internet.",
+          "A memória que não esquece: o painel web do ESP32 da Estação 1 aparece espelhado aqui, em um tablet — e continua funcionando sem internet. No fim, a estação fecha a visita falando de LGPD: a memória que também sabe esquecer.",
         visitante: [
-          "Vê o Painel Web do ESP32 da Estação 2 ao vivo em um notebook ou tablet.",
+          "Vê o Painel Web do ESP32 da Estação 1 ao vivo em um notebook ou tablet.",
           "Segue o varal da linha do tempo: do cartão encostado até o registro no painel.",
-          "Escreve em um post-it “o que acontece se a internet cair?” e cola na seção “Offline ainda funciona!”."
+          "Escreve em um post-it “o que acontece se a internet cair?” e cola na seção “Offline ainda funciona!”.",
+          "Fecha a visita com uma conversa rápida sobre a LGPD: os dados do aluno são excluídos de todos os bancos quando ele conclui toda a jornada escolar."
         ],
         montagem: [
-          "Deixe um notebook ou tablet rodando o Painel Web do ESP32 que está na Estação 2.",
+          "Deixe um notebook ou tablet rodando o Painel Web do ESP32 que está na Estação 1.",
           "Estique um barbante e prenda com pregadores os cartões da linha do tempo.",
           "Pendure um TNT ou tecido atrás da mesa para destacar a tela.",
-          "Reserve um espaço no cartaz para os post-its sobre o modo offline."
+          "Reserve um espaço no cartaz para os post-its sobre o modo offline.",
+          "Imprima o cartaz da LGPD com a frase do direito à exclusão e deixe à vista no fim da mesa."
         ],
         materiais: [
           "TNT ou tecido",
@@ -223,8 +225,18 @@
           "Post-its coloridos"
         ],
         demo: "timeline",
+        lgpd: {
+          titulo: "Quando a memória precisa esquecer",
+          resumo:
+            "A Lei Geral de Proteção de Dados (Lei nº 13.709/2018) garante que dados pessoais não ficam guardados para sempre: eles existem enquanto houver uma finalidade.",
+          pontos: [
+            "O painel registra só o necessário para o acesso: matrícula, nome e horário.",
+            "Quando o aluno conclui toda a jornada escolar, os dados dele são excluídos de todos os bancos de dados.",
+            "Os dados do Passaporte da feira ficam apenas no seu navegador; nada é enviado para a escola."
+          ]
+        },
         dica:
-          "Use o mesmo ESP32 da Estação 2: tablet e placa na mesma rede local (IP ou nfc.local). O painel atualiza em ~1,2 s e continua local quando a internet cai."
+          "Use o mesmo ESP32 da Estação 1: tablet e placa na mesma rede local (IP ou nfc.local). O painel atualiza em ~1,2 s e continua local quando a internet cai."
       }
     ],
 
@@ -240,7 +252,7 @@
         { id: "p03", item: "Papel cartão vermelho", qtd: "2 folhas", uso: "Linha VCC (3,3 V / 5 V).", grupo: "papel", estacoes: ["cerebro"] },
         { id: "p04", item: "Papel cartão amarelo", qtd: "3 folhas", uso: "Linha S (sinal) e fileira de GPIOs.", grupo: "papel", estacoes: ["cerebro"] },
         { id: "p05", item: "Papel metro marrom (kraft)", qtd: "4 metros", uso: "Forrar a parede/quadro como cenário único.", grupo: "papel", sala: true },
-        { id: "p06", item: "EVA colorido (vermelho, preto e amarelo)", qtd: "3 folhas", uso: "Mapa de pinos em relevo na mesa 1 e camada de acabamento dos cartões NFC na mesa 2.", grupo: "papel", estacoes: ["cerebro", "toque"] },
+        { id: "p06", item: "EVA colorido (vermelho, preto e amarelo)", qtd: "3 folhas", uso: "Mapa de pinos em relevo na mesa 2 e camada de acabamento dos cartões NFC na mesa 1.", grupo: "papel", estacoes: ["cerebro", "toque"] },
         { id: "p07", item: "Canetinhas hidrográficas (12 cores)", qtd: "1 estojo", uso: "Diagramas, UIDs, setas e detalhes.", grupo: "escrita", sala: true },
         { id: "p08", item: "Pincel marcador permanente preto (grosso)", qtd: "2 unidades", uso: "Títulos grandes dos cartazes.", grupo: "escrita", sala: true },
         { id: "p09", item: "Lápis de cor / giz de cera", qtd: "1 caixa", uso: "Sombreamento e detalhes dos desenhos.", grupo: "escrita", sala: true },
@@ -257,7 +269,7 @@
         { id: "p20", item: "Barbante de algodão (grosso)", qtd: "1 rolo", uso: "Varal da linha do tempo e cartões pendurados.", grupo: "montagem", estacoes: ["memoria"] }
       ],
       extras: [
-        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Suportes em “L” dos cartazes, leitor gigante da mesa 2 e a caixa furada da mesa 4.", grupo: "estrutura", estacoes: ["toque", "caixa"], aviso: "A mecânica das Estações 2 e 4 usa papelão." },
+        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Suportes em “L” dos cartazes, leitor gigante da mesa 1 e a caixa furada da mesa 4.", grupo: "estrutura", estacoes: ["toque", "caixa"], aviso: "A mecânica das Estações 1 e 4 usa papelão." },
         { id: "e02", item: "Fita adesiva colorida (preta, vermelha e amarela)", qtd: "1 rolo de cada", uso: "Reproduzir o padrão G-V-S na parede ou no quadro.", grupo: "simulacao", estacoes: ["cerebro"] },
         { id: "e03", item: "Barbante / lã em 4 cores", qtd: "1 novelo de cada", uso: "Representar os fios jumper (SDA, SCL, VCC, GND).", grupo: "simulacao", estacoes: ["toque"] },
         { id: "e04", item: "Palitos de churrasco", qtd: "1 pacote", uso: "Fazer “pinos” de papel para o mapa de EVA.", grupo: "simulacao", estacoes: ["cerebro"] },
@@ -274,7 +286,7 @@
     /* ---------------------------------------------------------------------
        DADOS DAS DEMOS
        --------------------------------------------------------------------- */
-    /* Cards de exemplo das simulações. Na Estação 2 real, o que vale é a tag
+    /* Cards de exemplo das simulações. Na Estação 1 real, o que vale é a tag
        física: o UID dela decide o resultado (ver `tagsFisicas`). */
     cartoes: [
       {
@@ -301,7 +313,7 @@
     ],
 
     /* ---------------------------------------------------------------------
-       AS TRÊS TAGS FÍSICAS DA ESTAÇÃO 2
+       AS TRÊS TAGS FÍSICAS DA ESTAÇÃO 1
        Os UIDs abaixo são só exemplo: tags comuns têm UID fixo, então o ideal
        é usar os UIDs reais das tags do kit nesta lista e manter os cartões
        de papel como apoio visual.

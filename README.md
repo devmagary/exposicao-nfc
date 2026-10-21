@@ -4,6 +4,18 @@ Site estático em português para os alunos **verem e experimentarem como será 
 
 > É uma **prévia visual e navegável**, baseada no `Material Sugestão.docx` e na lista prioritária `Material novo.pdf`. O site em si é estático e não se conecta ao ESP32 nem ao Supabase; ele também documenta o kit físico que ficará na feira.
 
+### Ordem da visita
+
+| # | Estação | Tema |
+|---:|---|---|
+| 1 | **O Toque Mágico** (kit físico) | NFC: leitura sem encostar |
+| 2 | **O Cérebro** | ESP32-S3 + placa de expansão |
+| 3 | **O Semáforo Falante** | LED RGB e seus estados |
+| 4 | **A Caixa dos Sentidos** | os 37 sensores do kit |
+| 5 | **A Memória que Não Esquece** | Flash, Painel Web e fechamento com a LGPD |
+
+A numeração vale para o site inteiro (deck, planta, passaporte, materiais e guia). A estação 5 fecha a visita com uma conversa rápida sobre a **LGPD**: quando o aluno conclui toda a jornada escolar, os dados dele são excluídos de todos os bancos de dados.
+
 ---
 
 ## Como abrir
@@ -34,9 +46,9 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 |---|---|
 | Capa | Cena SVG animada com o ESP32, as 5 estações e as ondas NFC |
 | A feira | Fluxo da visita em 4 passos, dica de ouro e resumo em números |
-| Kit ao vivo | Onde fica o hardware real (Estação 2), o painel espelhado (Estação 5), passo a passo, cuidados e plano B; checklist imprimível |
+| Kit ao vivo | Onde fica o hardware real (Estação 1), o painel espelhado (Estação 5), passo a passo, cuidados e plano B; checklist imprimível |
 | Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
-| Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 1 e uma demo interativa por estação |
+| Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 2 e uma demo interativa por estação. A estação 5 fecha a visita com uma nota sobre a LGPD |
 | Sensores | Catálogo dos 37 sensores com busca, filtros, foto real por padrão, 3 modos de uso e ligação G-V-S/GPIO |
 | Materiais | Um guia por estação: material de uso comum + 5 manuais com lista de materiais, montagem e “para que serve”, com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
@@ -44,7 +56,7 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 
 ### Guia de materiais e montagem
 
-O arquivo [`GUIA-MATERIAIS-E-MONTAGEM.md`](GUIA-MATERIAIS-E-MONTAGEM.md) transforma o Material Sugestão no roteiro atual: lista atualizada, como separar as caixas, as três tags físicas da Estação 2 e o passo a passo de montagem (com o plano B) de cada mesa.
+O arquivo [`GUIA-MATERIAIS-E-MONTAGEM.md`](GUIA-MATERIAIS-E-MONTAGEM.md) transforma o Material Sugestão no roteiro atual: lista atualizada, como separar as caixas, as três tags físicas da Estação 1 e o passo a passo de montagem (com o plano B) de cada mesa.
 
 ### Demos interativas
 
@@ -60,7 +72,7 @@ Os estados do passaporte e do checklist ficam no navegador (`localStorage`). Par
 
 A decisão registrada no site é:
 
-- **Estação 2 — “O Toque Mágico”:** recebe o **ESP32-S3 + PN532 reais**. É a estação cujo tema é o NFC e onde o visitante encosta uma tag de verdade e vê o LED reagir.
+- **Estação 1 — “O Toque Mágico”:** recebe o **ESP32-S3 + PN532 reais**. É a estação cujo tema é o NFC e onde o visitante encosta uma tag de verdade e vê o LED reagir.
 - **Estação 5 — “A Memória que Não Esquece”:** recebe apenas um **tablet/notebook** acessando o painel web do **mesmo ESP32**, pela rede local. Não é necessário um segundo kit.
 
 Cuidados de montagem:
@@ -69,7 +81,7 @@ Cuidados de montagem:
 - Tags comuns têm **UID fixo**. Leia o UID real de cada tag, cadastre no painel e atualize as etiquetas dos cartões de papel; não conte com “gravar” o UID do exemplo.
 - Para o painel na Estação 5, use o IP mostrado no Monitor Serial ou `http://nfc.local/`. O painel tem login; mantenha a sessão autenticada no tablet.
 - O painel é local: com o roteador ligado e sem internet externa, ele continua funcionando. O modo AP do ESP32 (`ControleAcesso-S3`) também serve.
-- **Plano B:** sem tablet ou rede, a Estação 5 fica com o varal de papel e o kit permanece na Estação 2.
+- **Plano B:** sem tablet ou rede, a Estação 5 fica com o varal de papel e o kit permanece na Estação 1.
 - **Segurança:** troque as senhas padrão do painel e do AP antes da feira; use apenas dados de demonstração; não publique credenciais no site, no README ou em capturas.
 
 O bloco “Kit ao vivo” no site e o botão **Imprimir checklist** trazem o roteiro completo.
@@ -112,7 +124,7 @@ Carregamento (scripts clássicos, em ordem): `data.js` → `logic.js` → `art.j
 Quase tudo está em **`js/data.js`**:
 
 - `meta`: nome da escola, data, créditos.
-- `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica.
+- `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica. A ordem do array é a **ordem da visita** (1 → 5); a estação 5 tem o campo `lgpd` com o fechamento sobre proteção de dados.
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
 - `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.
 - `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia, ligação, `usos`, `visual` e `aparencia`).
@@ -149,7 +161,7 @@ node tests/run-tests.js
 node tests/run-e2e.js
 ```
 
-- `run-tests.js`: valida dados (5 estações, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta), os 111 modos de uso, os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), as 37 fotos, a foto do kit completo, o modo foto como padrão, regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
+- `run-tests.js`: valida dados (5 estações na ordem da visita, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta, fechamento LGPD), os 111 modos de uso, os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), as 37 fotos, a foto do kit completo, o modo foto como padrão, regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
 - `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, foto como padrão e alternância com desenho, modos de uso, manuais de materiais, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
 - O E2E usa o `WebSocket` nativo do Node 22+; para abrir o site, o Node não é necessário.
 - Variável opcional `CHROME_PATH` para apontar outro navegador Chromium. Em ambientes onde o Chromium é bloqueado por sandbox de sistema, rode o E2E em uma máquina normal ou abra o site diretamente para a revisão visual.
@@ -177,6 +189,7 @@ Se publicar dentro de um subdiretório, mantenha a estrutura de pastas (`css/`, 
 - `prefers-reduced-motion`: animações e giros são reduzidos/instantâneos.
 - Tema escuro (padrão) e claro, com preferência salva.
 - Sem requisições externas, sem cookies, sem rastreamento.
+- **LGPD:** os dados do passaporte e do checklist ficam apenas no `localStorage` do navegador; a última estação explica a exclusão dos dados ao fim da jornada escolar.
 - Impressão dedicada para lista de materiais, planta e certificado.
 
 ---

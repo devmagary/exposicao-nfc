@@ -369,11 +369,13 @@ async function principal() {
         "plantaSvg: Boolean(document.querySelector('#planta-arte svg'))," +
         "kitBloco: Boolean(document.querySelector('#kit-app .kit-ao-vivo'))," +
         "manuais: document.querySelectorAll('#materiais-app .manual-estacao').length," +
+        "mapaPinos: Boolean(document.querySelector('#tab-pinos-cerebro'))," +
+        "mapasPinos: document.querySelectorAll('#deck-palco [data-aba=\"pinos\"]').length," +
         "kitManual: Boolean(document.querySelector('#material-toque .manual-kit'))," +
         "kitFoto: Boolean(document.querySelector('.kit-foto img'))," +
         "semFiltros: document.querySelectorAll('#materiais-app [data-materiais-filtro]').length === 0," +
         "textoMateriais: (document.querySelector('#materiais-app') || {}).textContent || ''," +
-        "textoAoVivo: (document.querySelector('#aba-estacao-2') || {}).textContent || ''," +
+        "textoAoVivo: (document.querySelector('#aba-estacao-1') || {}).textContent || ''," +
         "textoEspelho: (document.querySelector('#aba-estacao-5') || {}).textContent || ''" +
       "})");
       garantir(/Mundo Maker/.test(info.titulo), "título inesperado: " + info.titulo);
@@ -393,11 +395,13 @@ async function principal() {
       garantir(info.plantaSvg, "a planta não foi renderizada.");
       garantir(info.kitBloco, "o bloco do kit ao vivo não foi renderizado.");
       garantir(info.manuais === 5, "materiais deveria ter 5 manuais de estação, achei " + info.manuais);
-      garantir(info.kitManual, "o manual da Estação 2 deve avisar do kit físico (NFC).");
+      garantir(info.mapaPinos, "o mapa de pinos deve ficar na Estação 2 (O Cérebro).");
+      garantir(info.mapasPinos === 1, "só a Estação 2 deve ter a aba de mapa de pinos, achei " + info.mapasPinos + ".");
+      garantir(info.kitManual, "o manual da Estação 1 deve avisar do kit físico (NFC).");
       garantir(info.kitFoto, "a seção de sensores deve mostrar a foto do kit completo.");
       garantir(info.semFiltros, "a página de materiais não deve ter menus de filtro.");
       garantir(!/zip|bexiga|bal[aã]o/i.test(info.textoMateriais), "a página não deve citar zip nem bexigas.");
-      garantir(/AO VIVO/.test(info.textoAoVivo), "a Estação 2 deve ter o selo AO VIVO.");
+      garantir(/AO VIVO/.test(info.textoAoVivo), "a Estação 1 deve ter o selo AO VIVO.");
       garantir(/PAINEL/.test(info.textoEspelho), "a Estação 5 deve ter o selo PAINEL.");
     });
 
@@ -480,6 +484,9 @@ async function principal() {
     });
 
     await teste("Deck navega, atualiza hash e mostra a estação correta", async function () {
+      const ordem = await avaliar("([...document.querySelectorAll('#deck-abas .deck-aba-nome')].map(function (el) { return el.textContent; }))");
+      garantir(ordem[0] === "O Toque Mágico" && ordem[1] === "O Cérebro", "a visita deveria começar pelo Toque Mágico e seguir pelo Cérebro: " + ordem.join(" → "));
+
       await ativarEstacao(2);
       const estado = await avaliar("({" +
         "hash: location.hash," +
@@ -495,11 +502,11 @@ async function principal() {
       await avaliar("document.querySelector('#deck-proxima').click(); true");
       await pausa(200);
       garantir((await avaliar("location.hash")) === "#estacao-4", "o botão Próxima deveria ir para a estação 4.");
-      await ativarEstacao(1);
+      await ativarEstacao(0);
     });
 
     await teste("Demo NFC retorna LIBERADO, NEGADO e BLOQUEADO", async function () {
-      await ativarEstacao(1);
+      await ativarEstacao(0);
       const ler = async function (indice, esperado) {
         if (indice > 0) await avaliar("document.querySelector('#nfc-limpar') && document.querySelector('#nfc-limpar').click(); true");
         await avaliar("document.querySelectorAll('[data-nfc-cartao]')[" + indice + "].click(); true");
@@ -571,6 +578,33 @@ async function principal() {
       garantir(semMenus, "a página não deve ter os menus de bloco/estação/lista.");
     });
 
+    await teste("Última estação fecha a visita com a LGPD", async function () {
+      await ativarEstacao(4);
+      const lgpd = await avaliar("(() => {" +
+        "const slide = document.querySelector('#deck-palco .estacao-slide:not([hidden])');" +
+        "const nota = slide.querySelector('.estacao-lgpd');" +
+        "return {" +
+        "  titulo: slide.querySelector('h3').textContent," +
+        "  selo: slide.querySelector('.estacao-selo').textContent," +
+        "  hash: location.hash," +
+        "  nota: Boolean(nota)," +
+        "  texto: nota ? nota.textContent : ''," +
+        "  total: document.querySelectorAll('.estacao-lgpd').length" +
+        "};" +
+      "})()");
+      garantir(/Memória/.test(lgpd.titulo), "a última estação deveria ser A Memória que Não Esquece: " + lgpd.titulo);
+      garantir(/Estação 5/.test(lgpd.selo), "a última estação deveria estar numerada como 5: " + lgpd.selo);
+      garantir(lgpd.hash === "#estacao-5", "hash da última estação inesperado: " + lgpd.hash);
+      garantir(lgpd.nota, "a última estação deve mostrar a nota de LGPD.");
+      garantir(/LGPD/.test(lgpd.texto), "a nota precisa citar a LGPD.");
+      garantir(/excluídos de todos os bancos de dados/i.test(lgpd.texto), "a nota precisa explicar a exclusão dos dados ao fim da jornada.");
+      garantir(lgpd.total === 1, "só a última estação deve ter a nota de LGPD, achei " + lgpd.total + ".");
+      await avaliar("(() => { document.querySelector('#deck-palco .estacao-slide:not([hidden]) .estacao-lgpd').scrollIntoView({ block: 'center' }); return true; })()");
+      await pausa(300);
+      await capturar("estacao-5-lgpd.png");
+      await ativarEstacao(0);
+    });
+
     await teste("Passaporte libera o certificado e salva o nome", async function () {
       await avaliar("document.querySelectorAll('[data-carimbar]').forEach(function (botao) { botao.click(); }); true");
       await esperar("document.querySelector('#passaporte-contagem') && document.querySelector('#passaporte-contagem').textContent.indexOf('5 de 5') !== -1", 6000);
@@ -604,7 +638,7 @@ async function principal() {
       };
       for (const tema of ["escuro", "claro"]) {
         await avaliar("document.documentElement.setAttribute('data-tema', '" + tema + "'); true");
-        const contrasteCampo = await medir(1, ".arte-campo-grupo text.arte-rotulo-tinta");
+        const contrasteCampo = await medir(0, ".arte-campo-grupo text.arte-rotulo-tinta");
         garantir(contrasteCampo !== null, "não achei o texto do cartaz de campo magnético no tema " + tema + ".");
         garantir(contrasteCampo >= 4.5, "contraste do cartaz de campo no tema " + tema + " ficou em " + contrasteCampo + ":1.");
         const contrasteCartao = await medir(3, ".arte-cena text.arte-rotulo-tinta");
@@ -698,9 +732,9 @@ async function principal() {
       await pausa(400);
       await capturar("sensores-desktop.png");
 
-      await ativarEstacao(1);
+      await ativarEstacao(0);
       await irPara("estacoes");
-      await capturar("estacao-2-desktop.png");
+      await capturar("estacao-1-desktop.png");
 
       await irPara("materiais");
       await avaliar("document.querySelector('#materiais-app .materiais-comuns').scrollIntoView({ block: 'start' }); true");
@@ -708,7 +742,7 @@ async function principal() {
       await capturar("materiais-desktop.png");
       await avaliar("document.querySelector('#material-toque').scrollIntoView({ block: 'start' }); true");
       await pausa(250);
-      await capturar("materiais-estacao-2.png");
+      await capturar("materiais-estacao-1.png");
 
       await irPara("passaporte");
       await capturar("certificado-desktop.png");

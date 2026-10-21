@@ -823,6 +823,45 @@ li { list-style: none; }
 }
 .estacao-dica strong { color: var(--cor-estacao); }
 
+/* LGPD: nota de fechamento da última estação (fundo de superfície para
+   manter o contraste igual nos dois temas). */
+.estacao-lgpd {
+  margin-top: 18px;
+  padding: 15px 16px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--cor-estacao) 34%, var(--border));
+  background: var(--surface-2);
+}
+.estacao-lgpd-topo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+.estacao-lgpd-selo {
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--cor-estacao) 45%, transparent);
+  background: color-mix(in srgb, var(--cor-estacao) 16%, transparent);
+  color: var(--texto);
+  font-family: var(--fonte-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+.estacao-lgpd h4 { margin: 0; font-size: 0.98rem; color: var(--texto); }
+.estacao-lgpd p { margin: 0 0 9px; color: var(--texto-suave); font-size: 0.86rem; }
+.estacao-lgpd ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 5px;
+  color: var(--texto-suave);
+  font-size: 0.84rem;
+}
+.estacao-lgpd li::marker { color: var(--cor-estacao); }
+
 .deck-rodape {
   display: flex;
   align-items: center;
@@ -1233,6 +1272,16 @@ li { list-style: none; }
   border-color: color-mix(in srgb, var(--violet) 45%, var(--border));
   background: color-mix(in srgb, var(--violet) 7%, transparent);
 }
+.manual-lgpd {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--raio-sm);
+  border: 1px dashed color-mix(in srgb, var(--violet) 45%, var(--border));
+  background: color-mix(in srgb, var(--violet) 8%, transparent);
+  font-size: 0.84rem;
+  color: var(--texto-suave, var(--texto));
+}
+.manual-lgpd strong { color: var(--texto); }
 .manual-corpo {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);

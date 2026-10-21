@@ -441,7 +441,7 @@
       { id: "montagem", rotulo: "Como montar", itens: estacao.montagem, tipo: "lista" },
       { id: "materiais", rotulo: "Materiais usados", itens: estacao.materiais, tipo: "chips" }
     ];
-    if (estacao.numero === 1 && typeof art.mapaPinos === "function") {
+    if (estacao.id === "cerebro" && typeof art.mapaPinos === "function") {
       const mapa = art.mapaPinos(dados.pinos);
       if (mapa) paineis.push({ id: "pinos", rotulo: "Mapa de pinos", html: mapa });
     }
@@ -470,6 +470,19 @@
         (posicao === 0 ? "" : "hidden") + '>' + corpo + '</div>';
     }).join("");
 
+    const lgpd = estacao.lgpd
+      ? '<aside class="estacao-lgpd" aria-labelledby="lgpd-' + esc(estacao.id) + '">' +
+          '<div class="estacao-lgpd-topo">' +
+            '<span class="estacao-lgpd-selo">LGPD</span>' +
+            '<h4 id="lgpd-' + esc(estacao.id) + '">' + esc(estacao.lgpd.titulo) + '</h4>' +
+          '</div>' +
+          '<p>' + esc(estacao.lgpd.resumo) + '</p>' +
+          '<ul>' + (estacao.lgpd.pontos || []).map(function (ponto) {
+            return "<li>" + esc(ponto) + "</li>";
+          }).join("") + '</ul>' +
+        '</aside>'
+      : "";
+
     return '<article class="estacao-slide cor-' + esc(estacao.cor) + '" id="painel-estacao-' + esc(estacao.numero) + '" ' +
       'role="tabpanel" aria-labelledby="aba-estacao-' + esc(estacao.numero) + '" data-estacao="' + esc(estacao.id) + '" ' +
       (indice === 0 ? "" : "hidden") + '>' +
@@ -490,6 +503,7 @@
         '<div class="estacao-abas" role="tablist" aria-label="Detalhes da estação ' + esc(estacao.numero) + '">' + abas + '</div>' +
         conteudos +
         dica +
+        lgpd +
       '</div>' +
       '<div class="demo" data-demo="' + esc(estacao.demo) + '" data-estacao="' + esc(estacao.numero) + '" data-estacao-id="' + esc(estacao.id) + '"></div>' +
     '</article>';
@@ -848,7 +862,7 @@
         '<div class="manuais-cabeca">' +
           '<div>' +
             '<h3 id="materiais-estacoes-titulo">Manual de cada estação</h3>' +
-            '<p>O que separar, como montar e para que a mesa serve. A Estação 2 é a única que também recebe o kit físico.</p>' +
+            '<p>O que separar, como montar e para que a mesa serve. A Estação 1 é a única que também recebe o kit físico.</p>' +
           '</div>' +
           '<span class="tag tag--ativo">5 estações</span>' +
         '</div>' +
@@ -895,7 +909,10 @@
     if (estacao.id === dados.kitAoVivo.aoVivo) {
       aviso = '<p class="manual-kit"><strong>+ Kit físico (não é compra):</strong> ESP32-S3, PN532, três tags NFC, cabo USB e o tablet que espelha o painel na Estação 5.</p>';
     } else if (estacao.id === dados.kitAoVivo.espelho) {
-      aviso = '<p class="manual-kit manual-kit--espelho"><strong>+ Painel espelhado:</strong> use um tablet ou notebook na mesma rede do ESP32 da Estação 2. Não precisa de um segundo kit.</p>';
+      aviso = '<p class="manual-kit manual-kit--espelho"><strong>+ Painel espelhado:</strong> use um tablet ou notebook na mesma rede do ESP32 da Estação 1. Não precisa de um segundo kit.</p>';
+    }
+    if (estacao.lgpd) {
+      aviso += '<p class="manual-lgpd"><strong>+ Fechamento LGPD:</strong> ' + esc(estacao.lgpd.resumo) + ' ' + esc(estacao.lgpd.pontos[1]) + '</p>';
     }
     return '<article class="manual-estacao" id="material-' + esc(estacao.id) + '" style="--cor:' + corEstacao(estacao) + '">' +
       '<header class="manual-cabeca">' +

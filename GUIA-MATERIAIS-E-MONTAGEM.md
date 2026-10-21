@@ -4,7 +4,7 @@ Este guia substitui o roteiro do **Material Sugestão** e já reflete o projeto 
 
 1. A compra segue a lista prioritária do **Material novo** (20 itens).
 2. O roteiro do Material Sugestão entra como **11 complementares** — sem zip e sem bexigas, que não serão usados.
-3. O **ESP32-S3 + PN532** fica na **Estação 2**; a **Estação 5** só espelha o painel da mesma placa.
+3. O **ESP32-S3 + PN532** fica na **Estação 1**; a **Estação 5** só espelha o painel da mesma placa.
 
 > A mesma informação está no site, na seção **Materiais**: material de uso comum + um manual por estação com lista, montagem e “para que serve”.
 
@@ -51,9 +51,9 @@ Este guia substitui o roteiro do **Material Sugestão** e já reflete o projeto 
 
 | # | Material | Quantidade | Onde entra |
 |---:|---|---|---|
-| 1 | Papelão (caixas de supermercado) | 5 caixas médias | Suportes “L”, leitor gigante da mesa 2 e caixa da mesa 4 |
-| 2 | Fita adesiva colorida (preta, vermelha, amarela) | 1 de cada | Linhas G-V-S da mesa 1 |
-| 3 | Barbante / lã em 4 cores | 1 novelo de cada | “Circuito do PN532” na mesa 2 |
+| 1 | Papelão (caixas de supermercado) | 5 caixas médias | Suportes “L”, leitor gigante da mesa 1 e caixa da mesa 4 |
+| 2 | Fita adesiva colorida (preta, vermelha, amarela) | 1 de cada | Linhas G-V-S da mesa 2 |
+| 3 | Barbante / lã em 4 cores | 1 novelo de cada | “Circuito do PN532” na mesa 1 |
 | 4 | Palitos de churrasco | 1 pacote | “Pinos” de papel do mapa de EVA |
 | 5 | Papel cartão colorido (colorset) | 1 bloco | Cartões NFC e sensores em miniatura |
 | 6 | Velcro adesivo | 1 metro | Encaixe dos painéis das mesas 1 e 2 |
@@ -84,28 +84,9 @@ Fica com o professor e serve às cinco equipes. Separe uma vez só:
 
 ## 3. Cada estação
 
-### Estação 1 — O Cérebro
+### Estação 1 — O Toque Mágico (kit físico)
 
-**Para que serve:** mostrar o ESP32-S3 e a placa de expansão, e explicar as três linhas G-V-S e os pinos proibidos da PSRAM.
-
-**Materiais próprios (9):** papel cartão preto, vermelho e amarelo; EVA colorido; fita adesiva colorida; post-its; palitos de churrasco; papel cartão colorido; velcro. **Use também o material de uso comum.**
-
-**Montagem**
-1. Desenhe o ESP32-S3 no centro da cartolina e a placa de expansão ao redor.
-2. Reproduza as linhas G-V-S com fita preta, vermelha e amarela.
-3. Monte os “pinos” de papel nos palitos e cole no EVA; fixe o painel com velcro.
-4. Marque **IO35, IO36 e IO37** com hachura vermelha e “PROIBIDOS — PSRAM”.
-5. Acrescente uma etiqueta com **IO8 (SDA), IO9 (SCL) e IO48 (LED)**, os pinos usados pela mesa 2.
-
-**O visitante faz:** recebe um sensor de papel, descobre se ele vai em G, V ou S e confere atrás do velcro; depois encontra a área proibida.
-
-**Dica:** se faltar EVA, use cartolina colorida nos pinos — o encaixe com velcro continua.
-
----
-
-### Estação 2 — O Toque Mágico (kit físico)
-
-**Para que serve:** mostrar o NFC de verdade: a tag acorda o leitor, o ESP32 decide e o LED responde — mesmo sem internet.
+**Para que serve:** abrir a visita mostrando o NFC de verdade: a tag acorda o leitor, o ESP32 decide e o LED responde — mesmo sem internet.
 
 **Materiais próprios (7):** papelão, papel alumínio, etiquetas adesivas brancas, barbante/lã em 4 cores, papel cartão colorido, EVA colorido e velcro. **Use também o material de uso comum.**
 
@@ -125,9 +106,28 @@ Fica com o professor e serve às cinco equipes. Separe uma vez só:
 
 ---
 
+### Estação 2 — O Cérebro
+
+**Para que serve:** mostrar o ESP32-S3 e a placa de expansão, e explicar as três linhas G-V-S e os pinos proibidos da PSRAM.
+
+**Materiais próprios (9):** papel cartão preto, vermelho e amarelo; EVA colorido; fita adesiva colorida; post-its; palitos de churrasco; papel cartão colorido; velcro. **Use também o material de uso comum.**
+
+**Montagem**
+1. Desenhe o ESP32-S3 no centro da cartolina e a placa de expansão ao redor.
+2. Reproduza as linhas G-V-S com fita preta, vermelha e amarela.
+3. Monte os “pinos” de papel nos palitos e cole no EVA; fixe o painel com velcro.
+4. Marque **IO35, IO36 e IO37** com hachura vermelha e “PROIBIDOS — PSRAM”.
+5. Acrescente uma etiqueta com **IO8 (SDA), IO9 (SCL) e IO48 (LED)**, os pinos usados pela mesa 1.
+
+**O visitante faz:** recebe um sensor de papel, descobre se ele vai em G, V ou S e confere atrás do velcro; depois encontra a área proibida.
+
+**Dica:** se faltar EVA, use cartolina colorida nos pinos — o encaixe com velcro continua.
+
+---
+
 ### Estação 3 — O Semáforo Falante
 
-**Para que serve:** traduzir o LED RGB da mesa 2 em cores e significados: standby, liberado, negado, modo AP, boot e falha.
+**Para que serve:** traduzir o LED RGB da mesa 1 em cores e significados: standby, liberado, negado, modo AP, boot e falha.
 
 **Materiais próprios (4):** kit de guache, pincéis, papel celofane e lanterna. **Use também o material de uso comum.**
 
@@ -135,7 +135,7 @@ Fica com o professor e serve às cinco equipes. Separe uma vez só:
 1. Recorte a roleta de seis setores: ciano, verde, vermelho, laranja, roxo e azul.
 2. Pinte com guache e monte um cartaz para cada estado real do firmware.
 3. Abra um furo na cartolina, cubra com celofane e ilumine por trás com a lanterna.
-4. Deixe claro que “leitor desconectado” é o **vermelho piscando**, igual ao da mesa 2.
+4. Deixe claro que “leitor desconectado” é o **vermelho piscando**, igual ao da mesa 1.
 
 **O visitante faz:** gira a roleta, descobre o significado da cor e acende o “LED de papel” com a lanterna.
 
@@ -163,22 +163,25 @@ Fica com o professor e serve às cinco equipes. Separe uma vez só:
 
 ### Estação 5 — A Memória que Não Esquece
 
-**Para que serve:** mostrar que o acesso lido na mesa 2 vira registro na Flash e aparece no Painel Web — e continua funcionando offline.
+**Para que serve:** mostrar que o acesso lido na mesa 1 vira registro na Flash e aparece no Painel Web — e continua funcionando offline. No fim, fechar a visita com a LGPD: a memória que também sabe esquecer.
 
 **Materiais próprios (4):** TNT ou tecido, barbante de algodão, pregadores e post-its. **Use também o material de uso comum.**
 
-**Painel espelhado (não é compra):** um tablet ou notebook na mesma rede do ESP32 da Estação 2. Não precisa de segundo kit.
+**Painel espelhado (não é compra):** um tablet ou notebook na mesma rede do ESP32 da Estação 1. Não precisa de segundo kit.
 
 **Montagem**
 1. Conecte o tablet na mesma rede do ESP32, abra o painel por IP ou `nfc.local` e deixe a sessão autenticada.
 2. Prenda o TNT atrás do tablet para destacar a tela.
 3. Estique o barbante e pendure os sete cartões da linha do tempo com os pregadores.
 4. Reserve o espaço dos post-its “o que acontece se a internet cair?”.
-5. Ensaiem: tag na mesa 2 → LED → linha nova aparecendo na mesa 5.
+5. Ensaiem: tag na mesa 1 → LED → linha nova aparecendo na mesa 5.
+6. Imprima o cartaz da LGPD com a frase do direito à exclusão e deixe à vista no fim da mesa.
 
-**O visitante faz:** vê o painel ao vivo, segue o varal da linha do tempo e cola um post-it sobre o modo offline.
+**O visitante faz:** vê o painel ao vivo, segue o varal da linha do tempo, cola um post-it sobre o modo offline e ouve a explicação rápida sobre a LGPD.
 
-**Dica:** sem tablet ou rede, a mesa continua com o varal; o painel fica só na Estação 2.
+**LGPD (fechamento):** a Lei nº 13.709/2018 garante que dados pessoais existem só enquanto houver finalidade. Quando o aluno conclui toda a jornada escolar, os registros dele são excluídos de **todos os bancos de dados**. O painel guarda apenas matrícula, nome e horário; os dados do passaporte do site ficam só no navegador.
+
+**Dica:** sem tablet ou rede, a mesa continua com o varal; o painel fica só na Estação 1.
 
 ---
 
@@ -190,6 +193,7 @@ Fica com o professor e serve às cinco equipes. Separe uma vez só:
 - [ ] Ler os UIDs reais das 3 tags e cadastrar no painel.
 - [ ] Atualizar as etiquetas dos cartões de papel.
 - [ ] Testar o painel espelhado da Estação 5.
+- [ ] Imprimir o cartaz da LGPD da Estação 5.
 - [ ] Ensaiar o circuito completo: tag → LED → registro.
 - [ ] Trocar as senhas do painel e do AP (sem publicar no site).
 

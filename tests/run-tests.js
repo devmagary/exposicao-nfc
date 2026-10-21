@@ -39,10 +39,12 @@ iguais(dados.estacoes.length, 5, "devem existir 5 estações.");
 
 const idsEstacoes = dados.estacoes.map(function (estacao) { return estacao.id; });
 garantir(new Set(idsEstacoes).size === idsEstacoes.length, "ids de estação duplicados.");
-const numeros = dados.estacoes.map(function (estacao) { return estacao.numero; }).sort(function (a, b) { return a - b; });
-iguais(JSON.stringify(numeros), JSON.stringify([1, 2, 3, 4, 5]), "as estações devem ser numeradas de 1 a 5.");
+const numeros = dados.estacoes.map(function (estacao) { return estacao.numero; });
+iguais(JSON.stringify(numeros), JSON.stringify([1, 2, 3, 4, 5]), "as estações devem seguir a ordem da visita, de 1 a 5.");
+iguais(dados.estacoes[0].id, "toque", "a visita deve começar pela estação do kit físico (Toque Mágico).");
+iguais(dados.estacoes[1].id, "cerebro", "a segunda estação da visita deve ser O Cérebro.");
 
-const demosEsperadas = ["gvs", "nfc", "roleta", "caixa", "timeline"];
+const demosEsperadas = ["nfc", "gvs", "roleta", "caixa", "timeline"];
 const demosObtidas = dados.estacoes.map(function (estacao) { return estacao.demo; });
 iguais(JSON.stringify(demosObtidas), JSON.stringify(demosEsperadas), "cada estação deve ter uma demo distinta.");
 const coresValidas = ["cyan", "emerald", "amber", "rose", "violet"];
@@ -56,9 +58,10 @@ dados.estacoes.forEach(function (estacao) {
 
 const kit = dados.kitAoVivo;
 garantir(kit && typeof kit === "object", "kitAoVivo ausente.");
-iguais(kit.aoVivo, "toque", "o kit ao vivo deve ficar na Estação 2 (toque).");
+iguais(kit.aoVivo, "toque", "o kit ao vivo deve ficar na Estação 1 (toque).");
 iguais(kit.espelho, "memoria", "o painel espelhado deve ficar na Estação 5 (memoria).");
-garantir(dados.estacoes.find(function (estacao) { return estacao.id === kit.aoVivo; }).aoVivo === true, "Estação 2 deve estar marcada como aoVivo.");
+garantir(dados.estacoes.find(function (estacao) { return estacao.id === kit.aoVivo; }).aoVivo === true, "Estação 1 deve estar marcada como aoVivo.");
+garantir(dados.estacoes.find(function (estacao) { return estacao.id === kit.aoVivo; }).numero === 1, "o kit ao vivo deve ser a primeira estação da visita.");
 garantir(dados.estacoes.find(function (estacao) { return estacao.id === kit.espelho; }).espelho === true, "Estação 5 deve estar marcada como espelho.");
 ["passos", "cuidados", "planoB"].forEach(function (chave) {
   garantir(Array.isArray(kit[chave]) && kit[chave].length >= 3, "kitAoVivo." + chave + " deve ter pelo menos 3 itens.");
@@ -163,7 +166,7 @@ garantir(art.figuraSensor({ id: 1, visual: "inexistente" }) === "", "figuraSenso
 /* --------------------------------------------------------------------------
    Contraste do texto desenhado sobre papel
    -------------------------------------------------------------------------- */
-const cenaToque = art.cena(dados.estacoes[1]);
+const cenaToque = art.cena(dados.estacoes[0]);
 const cenaCaixa = art.cena(dados.estacoes[3]);
 garantir(/class="arte-rotulo-tinta"[^>]*>CAMPO</.test(cenaToque), "o cartaz CAMPO MAGNÉTICO deve usar tinta fixa sobre o papel.");
 garantir(/class="arte-rotulo-tinta"[^>]*>MAGNÉTICO</.test(cenaToque), "o cartaz CAMPO MAGNÉTICO deve usar tinta fixa sobre o papel.");
@@ -171,6 +174,21 @@ garantir(/class="arte-rotulo-tinta"[^>]*>LDR</.test(cenaCaixa), "os cartões de 
 garantir(cenaToque.indexOf('class="arte-rotulo"') === -1, "a cena do Toque não deve usar texto que troca de cor sobre papel.");
 garantir(cenaCaixa.indexOf('class="arte-rotulo"') === -1, "a cena da Caixa não deve usar texto que troca de cor sobre papel.");
 garantir(/\.arte-rotulo-tinta\s*\{[^}]*fill:\s*var\(--arte-tinta\)/.test(ler("css/arte.css")), "arte-rotulo-tinta deve usar a tinta fixa.");
+
+/* Planta: as mesas seguem a ordem da visita no percurso em U (1 e 2 embaixo, 3 a 5 em cima). */
+const plantaSvg = art.planta(dados.estacoes);
+const mesasPlanta = [];
+const reMesa = /data-estacao-mesa="([a-z]+)"[\s\S]*?<title>Estação (\d+) —[\s\S]*?translate\((\d+) (\d+)\)/g;
+let mesaAchada;
+while ((mesaAchada = reMesa.exec(plantaSvg))) {
+  mesasPlanta.push({ id: mesaAchada[1], numero: Number(mesaAchada[2]), chave: mesaAchada[3] + "," + mesaAchada[4] });
+}
+iguais(mesasPlanta.length, 5, "a planta deve posicionar as 5 mesas.");
+const posicoesEsperadas = { "400,424": 1, "108,424": 2, "108,142": 3, "400,142": 4, "680,142": 5 };
+mesasPlanta.forEach(function (mesa) {
+  iguais(mesa.numero, posicoesEsperadas[mesa.chave], "a mesa " + mesa.id + " saiu da ordem do percurso em U.");
+});
+garantir(plantaSvg.indexOf("1 → 2 → 3 → 4 → 5") !== -1, "a planta deve indicar a ordem 1 → 2 → 3 → 4 → 5.");
 
 /* --------------------------------------------------------------------------
    Fotos dos 37 sensores (recortes do kit de referência)
@@ -342,7 +360,21 @@ dados.estacoes.forEach(function (estacao) {
   garantir(Array.isArray(estacao.visitante) && estacao.visitante.length >= 2, "estação " + estacao.numero + " sem roteiro do visitante.");
 });
 
-/* Tags físicas da Estação 2: três resultados distintos, sem expor UID real */
+/* Fechamento da última estação: LGPD */
+const ultimaEstacao = dados.estacoes[dados.estacoes.length - 1];
+iguais(ultimaEstacao.id, "memoria", "a última estação da visita deve ser A Memória que Não Esquece.");
+garantir(ultimaEstacao.lgpd && typeof ultimaEstacao.lgpd === "object", "a última estação deve ter o bloco lgpd.");
+garantir(/memória/i.test(ultimaEstacao.lgpd.titulo || ""), "o bloco lgpd precisa de um título sobre a memória.");
+garantir(/estacao-lgpd-selo/.test(ler("js/app.js")), "app.js deve renderizar o selo LGPD da nota.");
+garantir(/13\.709/.test(ultimaEstacao.lgpd.resumo || ""), "o bloco lgpd deve citar a Lei nº 13.709/2018.");
+const pontosLgpd = (ultimaEstacao.lgpd.pontos || []).join(" ");
+garantir(Array.isArray(ultimaEstacao.lgpd.pontos) && ultimaEstacao.lgpd.pontos.length >= 3, "o bloco lgpd deve ter pelo menos 3 pontos.");
+garantir(/conclui toda a jornada escolar/i.test(pontosLgpd), "o bloco lgpd deve dizer quando os dados são excluídos.");
+garantir(/excluídos de todos os bancos de dados/i.test(pontosLgpd), "o bloco lgpd deve dizer que os dados saem de todos os bancos de dados.");
+const estacoesComLgpd = dados.estacoes.filter(function (estacao) { return Boolean(estacao.lgpd); });
+iguais(estacoesComLgpd.length, 1, "só a última estação deve ter o bloco lgpd.");
+
+/* Tags físicas da Estação 1: três resultados distintos, sem expor UID real */
 garantir(Array.isArray(dados.tagsFisicas) && dados.tagsFisicas.length === 3, "tagsFisicas deve ter 3 tags.");
 const consequencias = dados.tagsFisicas.map(function (tag) { return tag.consequencia; }).sort().join(",");
 iguais(consequencias, "BLOQUEADO,LIBERADO,NEGADO", "as três tags devem cobrir LIBERADO, NEGADO e BLOQUEADO.");
@@ -510,6 +542,7 @@ garantir(/modo-impressao-planta/.test(ler("css/print.css")), "print.css deve ter
 garantir(/modo-impressao-certificado/.test(ler("css/print.css")), "print.css deve ter o modo de impressão do certificado.");
 garantir(/\.demo\b/.test(css), "styles.css deve definir a base .demo.");
 garantir(/\.estacao-slide\[hidden\]/.test(css), "styles.css deve esconder slides inativos.");
+garantir(/\.estacao-lgpd\s*\{/.test(css), "styles.css deve estilizar a nota de LGPD da última estação.");
 
 /* --------------------------------------------------------------------------
    Resultado
