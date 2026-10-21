@@ -45,14 +45,25 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Seção | O que mostra |
 |---|---|
 | Capa | Cena SVG animada com o ESP32, as 5 estações e as ondas NFC |
-| A feira | Fluxo da visita em 4 passos, dica de ouro e resumo em números |
-| Kit ao vivo | Onde fica o hardware real (Estação 1), o painel espelhado (Estação 5), passo a passo, cuidados e plano B; checklist imprimível |
+| A feira | Fluxo da visita em 4 passos, dicionário rápido, dica de ouro e resumo em números |
+| Kit ao vivo | Onde fica o equipamento (Estação 1), o painel em outro tablet (Estação 5), passo a passo, cuidados e plano B no nível técnico; checklist imprimível |
 | Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
 | Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 2 e uma demo interativa por estação. A estação 5 fecha a visita com uma nota sobre a LGPD |
-| Sensores | Catálogo dos 37 sensores com busca, filtros, foto real por padrão, 3 modos de uso e ligação G-V-S/GPIO |
+| Sensores | Catálogo dos 37 sensores com busca, filtros, foto real por padrão, explicação curta, 3 modos de uso e a ligação no nível técnico |
+| Glossário | 21 palavras técnicas explicadas em uma frase, cada uma com um exemplo da feira |
 | Materiais | Um guia por estação: material de uso comum + 5 manuais com lista de materiais, montagem e “para que serve”, com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
 | Celular | De 320 px a telas grandes: menu hambúrguer, tabelas roláveis, alvos de toque maiores e layout de duas colunas no celular deitado |
+
+### Níveis de leitura (linguagem simples e detalhe técnico)
+
+O site foi escrito para quem nunca estudou eletrônica: a primeira camada usa frases curtas e comparações, e o detalhe fica guardado.
+
+- **Padrão: simples.** Resumos das estações, roteiro do visitante e cartas dos sensores aparecem em linguagem leiga.
+- **Botão “Ver detalhes técnicos”** (na seção Estações, no Kit e em Sensores): mostra descrição do componente, ligação G-V-S, dica da equipe e passo a passo de montagem. O estado fica em `localStorage` na chave `feira:v1:nivel` e vale para o site inteiro.
+- **Termos sublinhados**: clicar (ou usar Enter) em uma palavra técnica abre um popover com a explicação e o exemplo; Esc fecha. As definições vêm de `glossario` em `js/data.js`, então site e seção `#glossario` nunca divergem.
+- **Sempre visível**: “Para o visitante”, modos de uso dos sensores, demos e o glossário.
+
 
 ### Guia de materiais e montagem
 
@@ -124,15 +135,19 @@ Carregamento (scripts clássicos, em ordem): `data.js` → `logic.js` → `art.j
 Quase tudo está em **`js/data.js`**:
 
 - `meta`: nome da escola, data, créditos.
-- `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica. A ordem do array é a **ordem da visita** (1 → 5); a estação 5 tem o campo `lgpd` com o fechamento sobre proteção de dados.
+- `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica. A ordem do array é a **ordem da visita** (1 → 5); a estação 5 tem o campo `lgpd` com o fechamento sobre proteção de dados. `resumo` e `visitante` são a **primeira camada** (linguagem simples); `montagem`, `materiais` e `dica` são o detalhe técnico.
+- `glossario`: fonte única das explicações (`id`, `termo`, `simples`, `exemplo`). O mesmo texto alimenta a seção Glossário e o popover dos termos sublinhados.
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
 - `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.
-- `sensores`: os 37 sensores (nome, categoria, tipo, descrição, ideia, ligação, `usos`, `visual` e `aparencia`).
+- `sensores`: os 37 sensores (nome, categoria, tipo, `explicacao`, descrição, ideia, ligação, `usos`, `visual` e `aparencia`).
+  - `explicacao`: frase curta em linguagem simples, sempre visível na carta. `descricao`: detalhe técnico, mostrado em “Detalhes técnicos”.
   - `visual`: chave do desenho em `art.js` (`FIGURAS`) e também o nome da foto em `assets/sensores/<visual>.jpg`. `aparencia`: descrição do componente, usada como texto acessível do SVG.
-  - `usos`: lista com pelo menos 3 modos de uso e aplicação de cada sensor, exibida na carta logo abaixo da descrição.
+  - `usos`: lista com pelo menos 3 modos de uso e aplicação de cada sensor, exibida na carta logo abaixo da explicação.
   - O catálogo abre no modo **Foto real do kit** (padrão) e permite trocar para **Desenho** (`FEIRA.art.figuraSensor`). A foto usa `alt` descritivo; o desenho mostra a quantidade de pinos do conector a partir de `ligacao`.
-  - Para criar um desenho novo, adicione uma chave em `FIGURAS` (`js/art.js`), aponte o sensor para ela e salve a foto correspondente em `assets/sensores/`. Os testes exigem 37 chaves, 37 fotos e 111 modos de uso.
+  - Para criar um desenho novo, adicione uma chave em `FIGURAS` (`js/art.js`), aponte o sensor para ela e salve a foto correspondente em `assets/sensores/`. Os testes exigem 37 chaves, 37 fotos, 111 modos de uso e uma explicação simples por sensor.
 - `cartoes`, `roleta`, `linhaDoTempo`, `pinos`, `quizGvs`: dados das demos.
+
+Para manter a leitura fácil: frases curtas na primeira camada, nenhum termo da lista bloqueada (GPIO, PSRAM, I2C, PN532 etc.) fora do nível técnico e todo termo novo registrado no `glossario`. Os testes verificam isso automaticamente.
 
 Depois de editar, recarregue a página. Não é preciso compilar.
 
@@ -161,8 +176,8 @@ node tests/run-tests.js
 node tests/run-e2e.js
 ```
 
-- `run-tests.js`: valida dados (5 estações na ordem da visita, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta, fechamento LGPD), os 111 modos de uso, os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), as 37 fotos, a foto do kit completo, o modo foto como padrão, regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
-- `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, foto como padrão e alternância com desenho, modos de uso, manuais de materiais, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
+- `run-tests.js`: valida dados (5 estações na ordem da visita, 37 sensores, 20 + 11 materiais, separação por estação, cartões, tags físicas, roleta, fechamento LGPD), os 111 modos de uso, as 37 explicações simples e a ausência de jargão na primeira camada, o glossário (ids/termos únicos e frases curtas), o nível de leitura padrão, os 37 desenhos de sensores (chaves distintas, SVG autocontido e descrição acessível), as 37 fotos, a foto do kit completo, o modo foto como padrão, regras puras, referências de arquivos, ausência de URLs externas, contraste WCAG e sintaxe dos JS.
+- `run-e2e.js`: sobe um servidor local próprio, abre o Chrome headless via CDP e testa os fluxos principais (NFC, roleta, caixa, offline, foto como padrão e alternância com desenho, modos de uso, nível simples/técnico com persistência, glossário e popover de termos, linguagem da primeira camada, manuais de materiais, passaporte/certificado), além de gerar screenshots e PDFs de impressão em `tests/artifacts/`.
 - O E2E usa o `WebSocket` nativo do Node 22+; para abrir o site, o Node não é necessário.
 - Variável opcional `CHROME_PATH` para apontar outro navegador Chromium. Em ambientes onde o Chromium é bloqueado por sandbox de sistema, rode o E2E em uma máquina normal ou abra o site diretamente para a revisão visual.
 
@@ -185,6 +200,8 @@ Se publicar dentro de um subdiretório, mantenha a estrutura de pastas (`css/`, 
 ## Acessibilidade e desempenho
 
 - Navegação por teclado nas abas do deck, nas demos e no checklist; foco visível.
+- Termos do glossário viram botões com `aria-expanded`; o popover fecha com Esc, clique fora ou rolagem e devolve o foco.
+- Nível de leitura simples por padrão, com alternância acessível (`aria-pressed`) e preferência salva.
 - Resultados anunciados com `aria-live`; botões com rótulos claros.
 - `prefers-reduced-motion`: animações e giros são reduzidos/instantâneos.
 - Tema escuro (padrão) e claro, com preferência salva.

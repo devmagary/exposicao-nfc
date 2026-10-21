@@ -7,6 +7,8 @@ Este guia substitui o roteiro do **Material Sugestão** e já reflete o projeto 
 3. O **ESP32-S3 + PN532** fica na **Estação 1**; a **Estação 5** só espelha o painel da mesma placa.
 
 > A mesma informação está no site, na seção **Materiais**: material de uso comum + um manual por estação com lista, montagem e “para que serve”.
+>
+> **No site, este guia fica no nível técnico.** A visita abre no modo simples (linguagem para quem nunca viu eletrônica); para ver montagem, ligação dos pinos e dicas da equipe, use o botão **“Ver detalhes técnicos”** na seção Estações, no Kit ou em Sensores. As palavras técnicas têm explicação no **Glossário do maker**.
 
 ---
 
