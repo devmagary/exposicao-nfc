@@ -301,7 +301,7 @@
         { id: "p20", item: "Barbante de algodão (grosso)", qtd: "1 rolo", uso: "Varal da linha do tempo e cartões pendurados.", grupo: "montagem", estacoes: ["memoria"] }
       ],
       extras: [
-        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Suportes em “L” dos cartazes, leitor gigante da mesa 1 e a caixa furada da mesa 4.", grupo: "estrutura", estacoes: ["toque", "caixa"], aviso: "A mecânica das Estações 1 e 4 usa papelão." },
+        { id: "e01", item: "Papelão (caixas de supermercado)", qtd: "5 caixas médias", uso: "Estruturas de apoio dos cartazes, leitor gigante da mesa 1 e a caixa furada da mesa 4.", grupo: "estrutura", estacoes: ["toque", "caixa"], aviso: "A mecânica das Estações 1 e 4 usa papelão." },
         { id: "e02", item: "Fita adesiva colorida (preta, vermelha e amarela)", qtd: "1 rolo de cada", uso: "Reproduzir o padrão G-V-S na parede ou no quadro.", grupo: "simulacao", estacoes: ["cerebro"] },
         { id: "e03", item: "Barbante / lã em 4 cores", qtd: "1 novelo de cada", uso: "Representar os fios jumper (SDA, SCL, VCC, GND).", grupo: "simulacao", estacoes: ["toque"] },
         { id: "e04", item: "Palitos de churrasco", qtd: "1 pacote", uso: "Fazer “pinos” de papel para o mapa de EVA.", grupo: "simulacao", estacoes: ["cerebro"] },

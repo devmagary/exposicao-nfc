@@ -53,7 +53,7 @@ Este guia substitui o roteiro do **Material Sugestão** e já reflete o projeto 
 
 | # | Material | Quantidade | Onde entra |
 |---:|---|---|---|
-| 1 | Papelão (caixas de supermercado) | 5 caixas médias | Suportes “L”, leitor gigante da mesa 1 e caixa da mesa 4 |
+| 1 | Papelão (caixas de supermercado) | 5 caixas médias | Estruturas de apoio dos cartazes, leitor gigante da mesa 1 e caixa da mesa 4 |
 | 2 | Fita adesiva colorida (preta, vermelha, amarela) | 1 de cada | Linhas G-V-S da mesa 2 |
 | 3 | Barbante / lã em 4 cores | 1 novelo de cada | “Circuito do PN532” na mesa 1 |
 | 4 | Palitos de churrasco | 1 pacote | “Pinos” de papel do mapa de EVA |
