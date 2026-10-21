@@ -161,6 +161,18 @@ garantir(art.figuraSensor(null) === "", "figuraSensor deve ser defensiva sem dad
 garantir(art.figuraSensor({ id: 1, visual: "inexistente" }) === "", "figuraSensor deve ignorar desenhos desconhecidos.");
 
 /* --------------------------------------------------------------------------
+   Contraste do texto desenhado sobre papel
+   -------------------------------------------------------------------------- */
+const cenaToque = art.cena(dados.estacoes[1]);
+const cenaCaixa = art.cena(dados.estacoes[3]);
+garantir(/class="arte-rotulo-tinta"[^>]*>CAMPO</.test(cenaToque), "o cartaz CAMPO MAGNÉTICO deve usar tinta fixa sobre o papel.");
+garantir(/class="arte-rotulo-tinta"[^>]*>MAGNÉTICO</.test(cenaToque), "o cartaz CAMPO MAGNÉTICO deve usar tinta fixa sobre o papel.");
+garantir(/class="arte-rotulo-tinta"[^>]*>LDR</.test(cenaCaixa), "os cartões de sensor devem usar tinta fixa sobre o papel.");
+garantir(cenaToque.indexOf('class="arte-rotulo"') === -1, "a cena do Toque não deve usar texto que troca de cor sobre papel.");
+garantir(cenaCaixa.indexOf('class="arte-rotulo"') === -1, "a cena da Caixa não deve usar texto que troca de cor sobre papel.");
+garantir(/\.arte-rotulo-tinta\s*\{[^}]*fill:\s*var\(--arte-tinta\)/.test(ler("css/arte.css")), "arte-rotulo-tinta deve usar a tinta fixa.");
+
+/* --------------------------------------------------------------------------
    Fotos dos 37 sensores (recortes do kit de referência)
    -------------------------------------------------------------------------- */
 const PASTA_FOTOS = path.join(RAIZ, "assets", "sensores");

@@ -590,6 +590,30 @@ async function principal() {
       garantir((await avaliar("document.documentElement.getAttribute('data-tema')")) === depois, "o tema não persistiu após recarregar.");
     });
 
+    await teste("Textos sobre papel mantêm contraste nos dois temas", async function () {
+      const medir = async function (indice, seletor) {
+        await ativarEstacao(indice);
+        return avaliar("(() => {" +
+          "const texto = document.querySelector('#deck-palco .estacao-slide:not([hidden]) " + seletor + "');" +
+          "const papel = texto ? texto.closest('g').querySelector('.arte-papel') : null;" +
+          "if (!texto || !papel) return null;" +
+          "const lum = (cor) => { const v = (cor.match(/[\\d.]+/g) || []).map(Number).slice(0, 3).map((c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };" +
+          "const a = lum(getComputedStyle(texto).fill); const b = lum(getComputedStyle(papel).fill);" +
+          "return Math.round(((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)) * 100) / 100;" +
+        "})()");
+      };
+      for (const tema of ["escuro", "claro"]) {
+        await avaliar("document.documentElement.setAttribute('data-tema', '" + tema + "'); true");
+        const contrasteCampo = await medir(1, ".arte-campo-grupo text.arte-rotulo-tinta");
+        garantir(contrasteCampo !== null, "não achei o texto do cartaz de campo magnético no tema " + tema + ".");
+        garantir(contrasteCampo >= 4.5, "contraste do cartaz de campo no tema " + tema + " ficou em " + contrasteCampo + ":1.");
+        const contrasteCartao = await medir(3, ".arte-cena text.arte-rotulo-tinta");
+        garantir(contrasteCartao !== null, "não achei o texto dos cartões de sensor no tema " + tema + ".");
+        garantir(contrasteCartao >= 4.5, "contraste dos cartões de sensor no tema " + tema + " ficou em " + contrasteCartao + ":1.");
+      }
+      await avaliar("document.documentElement.setAttribute('data-tema', 'escuro'); true");
+    });
+
     await teste("Captura screenshots (desktop, claro e mobile)", async function () {
       await avaliar("localStorage.setItem('feira:v1:tema', 'escuro'); true");
       await recarregar();
