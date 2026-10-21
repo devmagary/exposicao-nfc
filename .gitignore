@@ -2,4 +2,7 @@
 .tmp/
 tests/artifacts/
 
+# Worktrees do plugin git-worktree
+.agents/
+
 .vercel
