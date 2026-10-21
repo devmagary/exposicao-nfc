@@ -52,12 +52,14 @@
 
   const CHAVES = {
     tema: "feira:v1:tema",
+    nivel: "feira:v1:nivel",
     passaporte: "feira:v1:passaporte",
     nome: "feira:v1:nome-certificado"
   };
 
   const estado = {
     tema: document.documentElement.getAttribute("data-tema") === "claro" ? "claro" : "escuro",
+    nivel: "simples",
     estacaoAtiva: 1,
     plantaSelecionada: null,
     passaporte: [],
@@ -96,6 +98,21 @@
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", escolhido === "claro" ? "#f4f7fb" : "#070d19");
     if (persistir) salvar(CHAVES.tema, escolhido, true);
+  }
+
+  /* Nível de leitura: "simples" (padrão) ou "tecnico".
+     Os blocos com a classe .tecnico só aparecem no nível técnico. */
+  function aplicarNivel(nivel, persistir) {
+    const escolhido = nivel === "tecnico" ? "tecnico" : "simples";
+    estado.nivel = escolhido;
+    document.documentElement.setAttribute("data-nivel", escolhido);
+    $$("[data-nivel-botao]").forEach(function (botao) {
+      const ativo = escolhido === "tecnico";
+      botao.setAttribute("aria-pressed", ativo ? "true" : "false");
+      botao.setAttribute("aria-label", ativo ? "Ocultar detalhes técnicos" : "Mostrar detalhes técnicos");
+      botao.textContent = ativo ? "Ocultar detalhes técnicos" : "Ver detalhes técnicos";
+    });
+    if (persistir) salvar(CHAVES.nivel, escolhido, true);
   }
 
   function imprimir(modo) {
@@ -433,7 +450,7 @@
     const svgCena = typeof art.cena === "function" ? art.cena(estacao) : "";
     const selo = seloHardware(estacao, false);
     const dica = estacao.dica
-      ? '<p class="estacao-dica"><span aria-hidden="true">💡</span><span><strong>Dica:</strong> ' + esc(estacao.dica) + '</span></p>'
+      ? '<p class="estacao-dica tecnico"><span aria-hidden="true">💡</span><span><strong>Dica da equipe:</strong> ' + esc(estacao.dica) + '</span></p>'
       : "";
 
     const paineis = [
@@ -619,14 +636,14 @@
       ? '● Estação ' + esc(estacaoAoVivo.numero) + ' · ' + esc(estacaoAoVivo.nome) + ' — AO VIVO'
       : "● AO VIVO";
     const tagEspelho = estacaoEspelho
-      ? '◉ Estação ' + esc(estacaoEspelho.numero) + ' · ' + esc(estacaoEspelho.nome) + ' — PAINEL ESPELHADO'
-      : "◉ PAINEL ESPELHADO";
+      ? '◉ Estação ' + esc(estacaoEspelho.numero) + ' · ' + esc(estacaoEspelho.nome) + ' — PAINEL EM OUTRO TABLET'
+      : "◉ PAINEL EM OUTRO TABLET";
 
     app.innerHTML =
       '<section class="kit-ao-vivo" data-kit="ao-vivo" aria-labelledby="kit-titulo">' +
         '<div class="kit-cabeca">' +
           '<div>' +
-            '<p class="eyebrow">Hardware real</p>' +
+            '<p class="eyebrow">O kit de verdade</p>' +
             '<h3 id="kit-titulo">' + esc(kit.titulo) + '</h3>' +
             '<p class="kit-resumo">' + esc(kit.resumo) + '</p>' +
           '</div>' +
@@ -636,22 +653,26 @@
           '</div>' +
         '</div>' +
         (kit.aviso ? '<p class="kit-aviso"><strong>Atenção:</strong> ' + esc(kit.aviso) + '</p>' : '') +
-        '<div class="kit-grid">' +
-          '<div class="kit-bloco">' +
-            '<h4>Passo a passo</h4>' +
-            '<ol class="kit-lista kit-passos">' + passos + '</ol>' +
+        '<p class="kit-dica-nivel">A montagem, os cuidados e o plano B estão em “Detalhes técnicos”.</p>' +
+        '<div class="tecnico">' +
+          '<div class="kit-grid">' +
+            '<div class="kit-bloco">' +
+              '<h4>Passo a passo</h4>' +
+              '<ol class="kit-lista kit-passos">' + passos + '</ol>' +
+            '</div>' +
+            '<div class="kit-bloco">' +
+              '<h4>Cuidados antes da feira</h4>' +
+              '<ul class="kit-lista kit-cuidados">' + cuidados + '</ul>' +
+            '</div>' +
           '</div>' +
-          '<div class="kit-bloco">' +
-            '<h4>Cuidados antes da feira</h4>' +
-            '<ul class="kit-lista kit-cuidados">' + cuidados + '</ul>' +
+          '<div class="kit-bloco kit-plano-b">' +
+            '<h4>Plano B</h4>' +
+            '<ul class="kit-lista">' + planoB + '</ul>' +
           '</div>' +
-        '</div>' +
-        '<div class="kit-bloco kit-plano-b">' +
-          '<h4>Plano B</h4>' +
-          '<ul class="kit-lista">' + planoB + '</ul>' +
         '</div>' +
         '<div class="kit-acoes">' +
           (estacaoAoVivo ? '<button class="btn btn--primario btn--mini" type="button" id="kit-ir-estacao">Ver a Estação ' + esc(estacaoAoVivo.numero) + '</button>' : '') +
+          '<button class="btn btn--fantasma btn--mini" type="button" data-nivel-botao aria-pressed="false">Ver detalhes técnicos</button>' +
           '<button class="btn btn--fantasma btn--mini" type="button" id="kit-imprimir">Imprimir checklist</button>' +
         '</div>' +
       '</section>';
@@ -706,6 +727,10 @@
             return '<button class="filtro" type="button" data-categoria="' + esc(categoria) + '" aria-pressed="false">' + esc(categoria) + '</button>';
           }).join("") +
           '<button class="filtro filtro--limpar" type="button" id="sensores-limpar">Limpar filtros</button>' +
+        '</div>' +
+        '<div class="filtros filtros--nivel">' +
+          '<span class="vista-rotulo">Nível de leitura</span>' +
+          '<button class="filtro filtro--nivel" type="button" data-nivel-botao aria-pressed="false">Ver detalhes técnicos</button>' +
         '</div>' +
         '<p class="sensores-contagem" id="sensores-contagem" role="status" aria-live="polite"></p>' +
       '</div>' +
@@ -774,7 +799,7 @@
       if (estado.sensores.categoria !== "todas" && sensor.categoria !== estado.sensores.categoria) return false;
       if (!busca) return true;
       const campos = [
-        sensor.nome, sensor.categoria, sensor.descricao, sensor.ideia, sensor.aparencia,
+        sensor.nome, sensor.categoria, sensor.explicacao, sensor.descricao, sensor.ideia, sensor.aparencia,
         (sensor.usos || []).join(" "),
         (sensor.ligacao || []).map(function (item) { return item.gpio || item.linha; }).join(" ")
       ].join(" ");
@@ -812,7 +837,7 @@
           '<span class="tag tag--' + esc(sensor.tipo) + '">' + esc(tipoRotulo) + '</span>' +
         '</header>' +
         (figura ? '<div class="sensor-figura sensor-figura--' + esc(sensor.tipo) + (modoFoto ? ' sensor-figura--foto' : '') + '">' + figura + (modoFoto ? '<span class="sensor-foto-rotulo">foto do kit</span>' : "") + '</div>' : "") +
-        '<p class="sensor-desc">' + esc(sensor.descricao) + '</p>' +
+        '<p class="sensor-explicacao">' + esc(sensor.explicacao || sensor.descricao) + '</p>' +
         '<div class="sensor-usos">' +
           '<p class="sensor-usos-titulo">Modos de uso</p>' +
           '<ul aria-label="Modos de uso e aplicação">' + (sensor.usos || []).map(function (uso) {
@@ -820,9 +845,151 @@
           }).join("") + '</ul>' +
         '</div>' +
         '<p class="sensor-ideia"><span aria-hidden="true">💡</span> ' + esc(sensor.ideia) + '</p>' +
-        '<ul class="sensor-ligacao" aria-label="Como ligar">' + ligacoes + '</ul>' +
+        '<div class="sensor-tecnico tecnico">' +
+          '<p class="sensor-desc">' + esc(sensor.descricao) + '</p>' +
+          '<ul class="sensor-ligacao" aria-label="Como ligar">' + ligacoes + '</ul>' +
+        '</div>' +
       '</article>';
     }).join("");
+  }
+
+  /* ---------------------------------------------------------------------
+     GLOSSÁRIO E TERMOS
+     --------------------------------------------------------------------- */
+  function renderizarGlossario() {
+    const lista = Array.isArray(dados.glossario) ? dados.glossario : [];
+    const completa = $("#glossario-app");
+    const rapida = $("#glossario-rapido-app");
+
+    if (completa) {
+      completa.innerHTML = lista.map(function (item) {
+        return '<article class="glossario-item" id="termo-' + esc(item.id) + '">' +
+          '<h3>' + esc(item.termo) + '</h3>' +
+          '<p>' + esc(item.simples) + '</p>' +
+          '<p class="glossario-exemplo"><strong>Exemplo:</strong> ' + esc(item.exemplo) + '</p>' +
+        '</article>';
+      }).join("");
+    }
+
+    if (rapida) {
+      rapida.innerHTML = lista.slice(0, 8).map(function (item) {
+        return '<li><strong>' + esc(item.termo) + ':</strong> ' + esc(item.simples) + '</li>';
+      }).join("");
+    }
+  }
+
+  function termoDoGlossario(id) {
+    const lista = Array.isArray(dados.glossario) ? dados.glossario : [];
+    for (let i = 0; i < lista.length; i += 1) {
+      if (lista[i].id === id) return lista[i];
+    }
+    return null;
+  }
+
+  /* Transforma os <span data-termo> do HTML em botões acessíveis. */
+  function melhorarTermos() {
+    $$("[data-termo]").forEach(function (elemento) {
+      if (elemento.tagName === "BUTTON") return;
+      const id = elemento.getAttribute("data-termo");
+      if (!termoDoGlossario(id)) return;
+      const botao = document.createElement("button");
+      botao.type = "button";
+      botao.className = (elemento.className ? elemento.className + " " : "") + "termo";
+      botao.setAttribute("data-termo", id);
+      botao.setAttribute("aria-expanded", "false");
+      botao.setAttribute("aria-controls", "termo-popover");
+      botao.innerHTML = elemento.innerHTML;
+      if (elemento.getAttribute("title")) botao.title = elemento.getAttribute("title");
+      elemento.replaceWith(botao);
+    });
+  }
+
+  let termoAberto = null;
+
+  function posicionarTermoPopover(botao) {
+    const popover = $("#termo-popover");
+    if (!popover || popover.hidden) return;
+    const aplicar = function () {
+      if (!popover || popover.hidden) return;
+      const margem = 10;
+      const caixa = botao.getBoundingClientRect();
+      const largura = popover.offsetWidth || popover.scrollWidth || 300;
+      const altura = popover.offsetHeight || popover.scrollHeight || 160;
+      let esquerda = caixa.left + caixa.width / 2 - largura / 2;
+      esquerda = Math.min(Math.max(margem, esquerda), window.innerWidth - largura - margem);
+      let topo = caixa.bottom + 8;
+      if (topo + altura > window.innerHeight - margem) topo = caixa.top - altura - 8;
+      topo = Math.min(Math.max(margem, topo), Math.max(margem, window.innerHeight - altura - margem));
+      popover.style.left = Math.round(esquerda) + "px";
+      popover.style.top = Math.round(topo) + "px";
+      popover.style.visibility = "visible";
+    };
+    popover.style.visibility = "hidden";
+    popover.style.left = "0px";
+    popover.style.top = "0px";
+    aplicar();
+    if (typeof window.requestAnimationFrame === "function") window.requestAnimationFrame(aplicar);
+  }
+
+  function fecharTermoPopover(devolverFoco) {
+    const popover = $("#termo-popover");
+    if (!popover || popover.hidden) return;
+    popover.hidden = true;
+    popover.innerHTML = "";
+    if (termoAberto) {
+      termoAberto.setAttribute("aria-expanded", "false");
+      if (devolverFoco) termoAberto.focus();
+      termoAberto = null;
+    }
+  }
+
+  function abrirTermoPopover(botao) {
+    const popover = $("#termo-popover");
+    const item = termoDoGlossario(botao.getAttribute("data-termo"));
+    if (!popover || !item) return;
+    if (termoAberto === botao && !popover.hidden) {
+      fecharTermoPopover(true);
+      return;
+    }
+    if (termoAberto) termoAberto.setAttribute("aria-expanded", "false");
+    termoAberto = botao;
+    botao.setAttribute("aria-expanded", "true");
+    popover.innerHTML =
+      '<p class="termo-popover-termo">' + esc(item.termo) + '</p>' +
+      '<p>' + esc(item.simples) + '</p>' +
+      '<p class="termo-popover-exemplo"><strong>Exemplo:</strong> ' + esc(item.exemplo) + '</p>' +
+      '<a class="termo-popover-link" href="#termo-' + esc(item.id) + '">Ver no glossário</a>';
+    popover.hidden = false;
+    posicionarTermoPopover(botao);
+    const link = popover.querySelector(".termo-popover-link");
+    if (link) link.addEventListener("click", function () { fecharTermoPopover(false); });
+  }
+
+  function configurarTermos() {
+    document.addEventListener("click", function (evento) {
+      const termo = evento.target.closest(".termo");
+      if (termo) {
+        evento.preventDefault();
+        abrirTermoPopover(termo);
+        return;
+      }
+      const popover = $("#termo-popover");
+      if (popover && !popover.hidden && !evento.target.closest("#termo-popover")) {
+        fecharTermoPopover(false);
+      }
+    });
+    document.addEventListener("keydown", function (evento) {
+      if (evento.key !== "Escape") return;
+      if (!$("#termo-popover") || $("#termo-popover").hidden) return;
+      fecharTermoPopover(true);
+    });
+    window.addEventListener("scroll", function () {
+      if (termoAberto) posicionarTermoPopover(termoAberto);
+    }, { passive: true });
+    window.addEventListener("resize", function () {
+      if (termoAberto) posicionarTermoPopover(termoAberto);
+    });
+    melhorarTermos();
   }
 
   /* ---------------------------------------------------------------------
@@ -1149,6 +1316,12 @@
       aplicarTema(estado.tema === "claro" ? "escuro" : "claro", true);
     });
 
+    document.addEventListener("click", function (evento) {
+      const botao = evento.target.closest("[data-nivel-botao]");
+      if (!botao) return;
+      aplicarNivel(estado.nivel === "tecnico" ? "simples" : "tecnico", true);
+    });
+
     const tour = $("[data-tour]");
     if (tour) tour.addEventListener("click", function (evento) {
       evento.preventDefault();
@@ -1230,7 +1403,7 @@
     const header = $(".site-header");
     if (header) header.classList.toggle("compacto", window.scrollY > 12);
 
-    const secoes = ["inicio", "visao-geral", "planta", "estacoes", "sensores", "materiais", "passaporte"];
+    const secoes = ["inicio", "visao-geral", "planta", "estacoes", "sensores", "materiais", "glossario", "passaporte"];
     const margem = parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 90;
     const referencia = window.scrollY + margem + 40;
     let ativa = secoes[0];
@@ -1263,8 +1436,10 @@
       ? passaporteSalvo.filter(function (id) { return idsValidos.indexOf(id) !== -1; })
       : [];
     estado.nomeCertificado = (lerTexto(CHAVES.nome, "") || "Visitante").slice(0, 60);
+    estado.nivel = lerTexto(CHAVES.nivel, "simples") === "tecnico" ? "tecnico" : "simples";
 
     aplicarTema(estado.tema, false);
+    aplicarNivel(estado.nivel, false);
     preencherMeta();
     desenharArtes();
     renderizarPlanta();
@@ -1272,9 +1447,12 @@
     renderizarKitAoVivo();
     renderizarDeck();
     renderizarSensores();
+    renderizarGlossario();
     renderizarMateriais();
     renderizarPassaporte();
     configurarNavegacao();
+    configurarTermos();
+    aplicarNivel(estado.nivel, false);
 
     // Hash inicial
     const indiceInicial = indiceDoHash();

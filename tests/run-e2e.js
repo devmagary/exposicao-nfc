@@ -483,6 +483,129 @@ async function principal() {
       await esperar("document.querySelectorAll('#sensores-grade .sensor-foto').length === 37", 5000);
     });
 
+    await teste("Nível simples esconde os detalhes técnicos", async function () {
+      await irPara("sensores");
+      const inicial = await avaliar("(() => {" +
+        "const card = document.querySelector('#sensores-grade .sensor-card');" +
+        "const explicacao = card.querySelector('.sensor-explicacao');" +
+        "const tecnico = card.querySelector('.sensor-tecnico');" +
+        "return {" +
+        "  nivel: document.documentElement.getAttribute('data-nivel')," +
+        "  explicacao: explicacao ? explicacao.textContent : ''," +
+        "  tecVisivel: tecnico ? getComputedStyle(tecnico).display !== 'none' : true," +
+        "  botoes: document.querySelectorAll('[data-nivel-botao]').length," +
+        "  pressionado: document.querySelector('[data-nivel-botao]').getAttribute('aria-pressed')" +
+        "};" +
+      "})()");
+      garantir(inicial.nivel === "simples", "o nível padrão deve ser simples.");
+      garantir(inicial.explicacao.length > 20, "a carta deve abrir com a explicação simples.");
+      garantir(!inicial.tecVisivel, "os detalhes técnicos devem começar escondidos.");
+      garantir(inicial.botoes >= 2, "deve haver botões do nível de leitura na página, achei " + inicial.botoes + ".");
+      garantir(inicial.pressionado === "false", "o botão de detalhes deve começar desligado.");
+      await avaliar("document.querySelector('#sensores-grade .sensor-card').scrollIntoView({ block: 'center' }); true");
+      await pausa(300);
+      await capturar("sensores-simples.png");
+
+      await avaliar("document.querySelector('[data-nivel-botao]').click(); true");
+      await pausa(200);
+      const tecnico = await avaliar("(() => {" +
+        "const card = document.querySelector('#sensores-grade .sensor-card');" +
+        "const bloco = card.querySelector('.sensor-tecnico');" +
+        "const dica = document.querySelector('#deck-palco .estacao-slide:not([hidden]) .estacao-dica');" +
+        "return {" +
+        "  nivel: document.documentElement.getAttribute('data-nivel')," +
+        "  tecVisivel: getComputedStyle(bloco).display !== 'none'," +
+        "  descricao: card.querySelector('.sensor-desc').textContent," +
+        "  dicaVisivel: dica ? getComputedStyle(dica).display !== 'none' : true," +
+        "  rotulo: document.querySelector('[data-nivel-botao]').textContent" +
+        "};" +
+      "})()");
+      garantir(tecnico.nivel === "tecnico", "o botão deveria ligar o nível técnico.");
+      garantir(tecnico.tecVisivel, "os detalhes técnicos deveriam aparecer.");
+      garantir(tecnico.descricao.length > 20, "a descrição técnica deve estar disponível.");
+      garantir(tecnico.dicaVisivel, "a dica da equipe deveria aparecer no nível técnico.");
+      garantir(/Ocultar/.test(tecnico.rotulo), "o botão deveria oferecer ocultar os detalhes.");
+      await avaliar("document.querySelector('#sensores-grade .sensor-card').scrollIntoView({ block: 'center' }); true");
+      await pausa(300);
+      await capturar("sensores-tecnico.png");
+
+      await recarregar();
+      garantir((await avaliar("document.documentElement.getAttribute('data-nivel')")) === "tecnico", "o nível técnico deveria persistir após recarregar.");
+      await avaliar("document.querySelector('[data-nivel-botao]').click(); true");
+      await pausa(200);
+      garantir((await avaliar("document.documentElement.getAttribute('data-nivel')")) === "simples", "o botão deveria voltar ao nível simples.");
+      await irPara("sensores");
+      await pausa(200);
+    });
+
+    await teste("Glossário e termos explicam as palavras técnicas", async function () {
+      await irPara("glossario");
+      await pausa(200);
+      const glossario = await avaliar("(() => {" +
+        "const itens = [...document.querySelectorAll('#glossario-app .glossario-item')];" +
+        "return {" +
+        "  total: itens.length," +
+        "  primeiro: itens[0] ? itens[0].textContent : ''," +
+        "  termos: document.querySelectorAll('.termo').length," +
+        "  rapidos: document.querySelectorAll('#glossario-rapido-app li').length" +
+        "};" +
+      "})()");
+      garantir(glossario.total >= 18, "o glossário deve listar pelo menos 18 termos, achei " + glossario.total + ".");
+      garantir(glossario.rapidos === 8, "o dicionário rápido deve listar 8 termos, achei " + glossario.rapidos + ".");
+      garantir(glossario.termos >= 1, "deve haver pelo menos um termo clicável na página.");
+      await capturar("glossario.png");
+
+      await avaliar("(() => { const bloco = document.querySelector('.dicionario-rapido'); bloco.open = true; return true; })()");
+      await pausa(250);
+      await avaliar("(() => { const bloco = document.querySelector('.dicionario-rapido'); " +
+        "window.scrollTo(0, bloco.getBoundingClientRect().top + window.scrollY - 120); return true; })()");
+      await pausa(300);
+      await avaliar("document.querySelector('.dicionario-rapido .termo').click(); true");
+      await pausa(300);
+      const popover = await avaliar("(() => {" +
+        "const p = document.querySelector('#termo-popover');" +
+        "if (!p || p.hidden) return { aberto: false };" +
+        "const caixa = p.getBoundingClientRect();" +
+        "return {" +
+        "  aberto: true," +
+        "  texto: p.textContent," +
+        "  link: Boolean(p.querySelector('.termo-popover-link'))," +
+        "  dentro: caixa.left >= 0 && caixa.right <= window.innerWidth && caixa.top >= 0 && caixa.bottom <= window.innerHeight," +
+        "  caixa: { esq: Math.round(caixa.left), dir: Math.round(caixa.right), topo: Math.round(caixa.top), base: Math.round(caixa.bottom) }," +
+        "  tela: { largura: window.innerWidth, altura: window.innerHeight }" +
+        "};" +
+      "})()");
+      garantir(popover.aberto, "clicar no termo deveria abrir o popover.");
+      garantir(/Exemplo:/.test(popover.texto), "o popover deve trazer a explicação e o exemplo.");
+      garantir(popover.link, "o popover deve ter link para o glossário.");
+      await capturar("termo-popover.png");
+      garantir(popover.dentro, "o popover deveria caber na tela: " + JSON.stringify(popover.caixa) + " em " + JSON.stringify(popover.tela));
+      await avaliar("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); true");
+      await pausa(200);
+      garantir(await avaliar("document.querySelector('#termo-popover').hidden"), "Esc deveria fechar o popover.");
+    });
+
+    await teste("Primeira camada usa linguagem simples", async function () {
+      const jargao = ["GPIO", "PSRAM", "I2C", "SDA", "SCL", "PN532", "LittleFS", "PWM", "pull-up", "firmware", "SPI", "trimpot", "quadratura", "setpoint", "strapping", "relé", "GND", "VCC"];
+      const textos = await avaliar("(() => {" +
+        "const juntar = (sel) => [...document.querySelectorAll(sel)].map((el) => el.textContent).join(' \\n ');" +
+        "return {" +
+        "  estacoes: juntar('#deck-palco .estacao-resumo') + juntar('#deck-palco [data-painel=\"visitante\"] li')," +
+        "  sensores: juntar('#sensores-grade .sensor-explicacao')," +
+        "  demos: juntar('#deck-palco .demo-texto')," +
+        "  capa: juntar('.hero-sub')" +
+        "};" +
+      "})()");
+      const achados = [];
+      jargao.forEach(function (termo) {
+        const re = new RegExp("(^|[^a-z0-9])" + termo.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") + "($|[^a-z0-9])", "i");
+        Object.keys(textos).forEach(function (chave) {
+          if (re.test(textos[chave])) achados.push(chave + ":" + termo);
+        });
+      });
+      garantir(achados.length === 0, "jargão na primeira camada: " + achados.join(", "));
+    });
+
     await teste("Deck navega, atualiza hash e mostra a estação correta", async function () {
       const ordem = await avaliar("([...document.querySelectorAll('#deck-abas .deck-aba-nome')].map(function (el) { return el.textContent; }))");
       garantir(ordem[0] === "O Toque Mágico" && ordem[1] === "O Cérebro", "a visita deveria começar pelo Toque Mágico e seguir pelo Cérebro: " + ordem.join(" → "));
@@ -708,6 +831,35 @@ async function principal() {
 
       await pagina.cdp.enviar("Emulation.clearDeviceMetricsOverride");
       await pausa(400);
+    });
+
+    await teste("Popover de termo cabe no celular", async function () {
+      await pagina.cdp.enviar("Emulation.setDeviceMetricsOverride", { width: 320, height: 568, deviceScaleFactor: 1, mobile: true });
+      await pausa(400);
+      await avaliar("(() => { const bloco = document.querySelector('.dicionario-rapido'); bloco.open = true; " +
+        "bloco.scrollIntoView({ block: 'start' }); return true; })()");
+      await pausa(300);
+      await avaliar("document.querySelector('.dicionario-rapido .termo').click(); true");
+      await pausa(300);
+      const medida = await avaliar("(() => {" +
+        "const p = document.querySelector('#termo-popover');" +
+        "const caixa = p.getBoundingClientRect();" +
+        "return {" +
+        "  aberto: !p.hidden," +
+        "  esq: caixa.left, dir: caixa.right, topo: caixa.top, base: caixa.bottom," +
+        "  largura: window.innerWidth, altura: window.innerHeight," +
+        "  scrollW: document.documentElement.scrollWidth," +
+        "  clientW: document.documentElement.clientWidth" +
+        "};" +
+      "})()");
+      garantir(medida.aberto, "o popover deveria abrir no celular.");
+      garantir(medida.esq >= 0 && medida.dir <= medida.largura + 1, "o popover escapou da largura da tela.");
+      garantir(medida.topo >= 0 && medida.base <= medida.altura + 1, "o popover escapou da altura da tela.");
+      garantir(medida.scrollW <= medida.clientW + 1, "o popover gerou rolagem horizontal em 320px.");
+      await capturar("termo-popover-mobile.png");
+      await avaliar("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); true");
+      await pagina.cdp.enviar("Emulation.clearDeviceMetricsOverride");
+      await pausa(300);
     });
 
     await teste("Captura screenshots (desktop, claro e mobile)", async function () {

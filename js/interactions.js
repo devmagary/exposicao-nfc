@@ -248,7 +248,7 @@
     function feedbackHtml() {
       if (!estado.conferido) {
         return '<p class="gvs-vazio">Escolha uma opção para cada pino e clique em <strong>Conferir</strong>. ' +
-          '<span class="gvs-legenda">G = GND · V = VCC (3,3 V) · S = Sinal lido pelo ESP32.</span></p>';
+          '<span class="gvs-legenda">G = terra · V = energia (3,3 V) · S = sinal que a placa lê.</span></p>';
       }
       var sensor = sensorAtual();
       var linhas = sensor.pinos.map(function (pino, indice) {
@@ -276,7 +276,7 @@
       var sensor = sensorAtual();
       var html = cabecalho(
         "Encaixe na linha certa",
-        "Cada módulo tem três pinos: −, + e S. Descubra em qual linha da placa cada um entra.",
+        "Cada módulo tem três pernas. Descubra qual delas vai na linha de terra, na de energia e na de sinal.",
         "Escolha G, V ou S para cada pino e confira. Você pode corrigir antes de avançar."
       );
 
@@ -443,7 +443,7 @@
       var selecionado = estado.selecionado;
       var html = cabecalho(
         "Toque mágico",
-        "O leitor PN532 acorda o cartão pelo campo de 13,56 MHz e recebe o UID por I2C.",
+        "Aproxime um cartão do leitor: ele acorda só com a proximidade e devolve o número de identidade do cartão.",
         "Escolha um cartão da lista e toque no leitor. O sistema mostra se o acesso é liberado, negado ou bloqueado."
       );
       html += '<div class="demo-corpo"><div class="nfc-grid">' +
@@ -653,7 +653,7 @@
     function montarEstrutura() {
       var html = cabecalho(
         "Semáforo falante",
-        "A roleta sorteia uma cor e revela o estado que o LED RGB representa no firmware.",
+        "Gire a roleta: cada cor conta uma situação do acesso — liberado, negado ou com problema.",
         "Clique em girar, espere a roda parar e leia o estado sorteado."
       );
       html += '<div class="demo-corpo"><div class="roleta-palco">' + conteudoPalco() + '</div>' +
@@ -916,7 +916,7 @@
       var rodada = estado.final ? total : estado.indice + 1;
       var html = cabecalho(
         "Caixa dos Sentidos",
-        "Seis sensores do kit saem da caixa por sorteio. A missão é descobrir se cada um é digital, analógico ou especial.",
+        "Seis sensores do kit saem da caixa por sorteio. Descubra se cada um só liga e desliga, mede uma quantidade ou é especial.",
         "Puxe um sensor, leia a descrição e a ligação e escolha o tipo. As 12 opções da caixa nunca se repetem."
       );
       html += '<div class="demo-corpo"><div class="demo-placar caixa-topo">' +
@@ -1056,7 +1056,7 @@
     function montarEstrutura() {
       var html = cabecalho(
         "A memória que não esquece",
-        "Sete etapas entre o cartão encostado no leitor e o registro no Painel Web.",
+        "Acompanhe o caminho do cartão até virar uma linha no painel — com internet ou sem.",
         "Clique em Simular acesso. Marque “Internet caiu” para ver a consulta local na Flash e o log offline."
       );
       html += '<div class="demo-corpo"><div class="timeline-chave">' +

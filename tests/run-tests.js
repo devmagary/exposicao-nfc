@@ -242,6 +242,87 @@ garantir(appTexto.indexOf("sensor-usos") !== -1, "app.js deve renderizar os modo
 garantir(appTexto.indexOf("Modos de uso") !== -1, "as cartas devem ter o título Modos de uso.");
 
 /* --------------------------------------------------------------------------
+   Linguagem simples: glossário, explicações e nível de leitura
+   -------------------------------------------------------------------------- */
+const JARGAO_BLOQUEADO = [
+  "GPIO", "PSRAM", "I2C", "SDA", "SCL", "PN532", "LittleFS", "PWM", "pull-up",
+  "firmware", "SPI", "trimpot", "quadratura", "setpoint", "strapping", "relé", "GND", "VCC"
+];
+
+function encontrarJargao(texto) {
+  const encontrados = [];
+  JARGAO_BLOQUEADO.forEach(function (termo) {
+    const re = new RegExp("(^|[^a-z0-9])" + termo.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") + "($|[^a-z0-9])", "i");
+    if (re.test(texto)) encontrados.push(termo);
+  });
+  return encontrados;
+}
+
+function frasesLongas(texto, limite) {
+  return String(texto)
+    .split(/(?<=[.!?])\s+/)
+    .filter(function (frase) { return frase.trim().split(/\s+/).length > limite; });
+}
+
+/* Glossário: fonte única das explicações */
+garantir(Array.isArray(dados.glossario), "data.js deve ter o array glossario.");
+garantir(dados.glossario.length >= 18, "o glossário deve ter pelo menos 18 termos, achei " + dados.glossario.length + ".");
+const idsGlossario = dados.glossario.map(function (item) { return item.id; });
+iguais(new Set(idsGlossario).size, idsGlossario.length, "ids do glossário duplicados.");
+const termosGlossario = dados.glossario.map(function (item) { return item.termo; });
+iguais(new Set(termosGlossario).size, termosGlossario.length, "termos do glossário duplicados.");
+dados.glossario.forEach(function (item) {
+  garantir(/^[a-z0-9-]+$/.test(item.id), "glossário: id inválido em " + item.termo + ".");
+  garantir(typeof item.termo === "string" && item.termo.length >= 2, "glossário: termo curto em " + item.id + ".");
+  garantir(typeof item.simples === "string" && item.simples.length >= 30 && item.simples.length <= 140, "glossário: explicação fora do tamanho em " + item.termo + ".");
+  garantir(typeof item.exemplo === "string" && item.exemplo.length >= 20, "glossário: exemplo curto em " + item.termo + ".");
+  garantir(!/"/.test(item.simples + item.exemplo), "glossário: aspas em " + item.termo + ".");
+  garantir(frasesLongas(item.simples + " " + item.exemplo, 28).length === 0, "glossário: frase longa em " + item.termo + ".");
+});
+
+/* Cada sensor abre com uma explicação simples; a descrição técnica fica no nível técnico */
+const explicações = {};
+sensores.forEach(function (sensor) {
+  garantir(typeof sensor.explicacao === "string", "sensor " + sensor.nome + ": falta explicacao.");
+  const explicacao = String(sensor.explicacao || "");
+  garantir(explicacao.length >= 40 && explicacao.length <= 120, "sensor " + sensor.nome + ": explicacao fora do tamanho (" + explicacao.length + ").");
+  garantir(/[.!?]$/.test(explicacao), "sensor " + sensor.nome + ": explicacao deve terminar em ponto.");
+  garantir(!/"/.test(explicacao), "sensor " + sensor.nome + ": explicacao não pode ter aspas.");
+  garantir(explicacao !== sensor.descricao, "sensor " + sensor.nome + ": explicacao deve ser diferente da descricao técnica.");
+  iguais(encontrarJargao(explicacao).length, 0, "sensor " + sensor.nome + ": explicacao usa jargão (" + encontrarJargao(explicacao).join(", ") + ").");
+  garantir(frasesLongas(explicacao, 24).length === 0, "sensor " + sensor.nome + ": explicacao com frase longa.");
+  explicações[sensor.id] = explicacao;
+});
+iguais(Object.keys(explicações).length, 37, "os 37 sensores precisam de explicacao.");
+
+/* Primeira camada das estações: resumo e roteiro do visitante sem jargão */
+dados.estacoes.forEach(function (estacao) {
+  const primeiraCamada = [estacao.resumo].concat(estacao.visitante || []).join(" ");
+  garantir(encontrarJargao(primeiraCamada).length === 0, "estação " + estacao.numero + ": jargão na primeira camada (" + encontrarJargao(primeiraCamada).join(", ") + ").");
+  garantir(frasesLongas(primeiraCamada, 26).length === 0, "estação " + estacao.numero + ": frase longa na primeira camada.");
+});
+
+/* Kit: resumo/aviso leigos; passo a passo continua no nível técnico */
+const primeiraCamadaKit = [dados.kitAoVivo.resumo, dados.kitAoVivo.aviso].join(" ");
+garantir(encontrarJargao(primeiraCamadaKit).length === 0, "kit ao vivo: jargão na primeira camada (" + encontrarJargao(primeiraCamadaKit).join(", ") + ").");
+
+/* HTML: seções e controles do nível de leitura */
+const htmlSimples = ler("index.html");
+garantir(/id="glossario"/.test(htmlSimples), "index.html deve ter a seção #glossario.");
+garantir(/id="glossario-app"/.test(htmlSimples), "index.html deve ter o contêiner #glossario-app.");
+garantir(/id="glossario-rapido-app"/.test(htmlSimples), "index.html deve ter o dicionário rápido.");
+garantir(/id="termo-popover"/.test(htmlSimples), "index.html deve ter o popover de termos.");
+garantir(/data-nivel="simples"/.test(htmlSimples), "index.html deve iniciar no nível simples.");
+garantir(/data-nivel-botao/.test(htmlSimples) && /data-nivel-botao/.test(appTexto), "deve existir botão do nível técnico no HTML e no app.");
+garantir(/feira:v1:nivel/.test(appTexto), "app.js deve persistir o nível em feira:v1:nivel.");
+garantir(/nivel: "simples"/.test(appTexto), "o nível padrão deve ser simples.");
+garantir(appTexto.indexOf("sensor-explicacao") !== -1, "app.js deve renderizar a explicação simples do sensor.");
+garantir(appTexto.indexOf("termo-popover") !== -1, "app.js deve controlar o popover de termos.");
+garantir(/\[data-nivel="simples"\] \.tecnico/.test(ler("css/styles.css")), "styles.css deve esconder .tecnico no nível simples.");
+garantir(/\.termo-popover\s*\{/.test(ler("css/styles.css")), "styles.css deve estilizar o popover de termos.");
+garantir(/\.glossario-grade\s*\{/.test(ler("css/styles.css")), "styles.css deve estilizar o glossário.");
+
+/* --------------------------------------------------------------------------
    Dados: demos
    -------------------------------------------------------------------------- */
 iguais(dados.cartoes.length, 3, "devem existir 3 cartões NFC.");

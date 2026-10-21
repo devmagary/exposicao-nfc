@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-tema="escuro">
+<html lang="pt-BR" data-tema="escuro" data-nivel="simples">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Prévia interativa da Feira de Exposição Mundo Maker: as 5 estações de ESP32-S3, NFC e 37 sensores, a planta da sala, os materiais e o passaporte com selos.">
+  <meta name="description" content="Prévia interativa da Feira de Exposição Mundo Maker: as 5 estações, os 37 sensores, a planta da sala, os materiais e o passaporte com selos, explicados em linguagem simples.">
   <meta name="theme-color" content="#070d19">
   <title>Mundo Maker — Feira de Exposição (prévia interativa)</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -18,6 +18,9 @@
         var tema = localStorage.getItem("feira:v1:tema");
         if (tema === "claro" || tema === "escuro") {
           document.documentElement.setAttribute("data-tema", tema);
+        }
+        if (localStorage.getItem("feira:v1:nivel") === "tecnico") {
+          document.documentElement.setAttribute("data-nivel", "tecnico");
         }
       } catch (erro) { /* armazenamento indisponível: mantém o padrão */ }
     })();
@@ -70,6 +73,7 @@
       <a class="nav-link" href="#planta">Planta</a>
       <a class="nav-link" href="#estacoes">Estações</a>
       <a class="nav-link" href="#sensores">Sensores</a>
+      <a class="nav-link" href="#glossario">Glossário</a>
       <a class="nav-link" href="#materiais">Materiais</a>
       <a class="nav-link" href="#passaporte">Passaporte</a>
     </nav>
@@ -84,8 +88,8 @@
           <p class="eyebrow"><span class="ponto-vivo" aria-hidden="true"></span> Prévia interativa · <span data-meta="creditos">Projeto ProSUB · Thauan</span></p>
           <h1 id="hero-titulo">Mundo Maker <span class="destaque">Feira de Exposição</span></h1>
           <p class="hero-sub">
-            Um passeio visual e interativo pelas <strong>5 estações</strong> de ESP32-S3, NFC e 37 sensores.
-            Veja como a sala vai ficar, o que cada equipe preparou e experimente as interações antes da montagem.
+            Um passeio visual e interativo pelas <strong>5 estações</strong>: aqui o visitante encosta cartões,
+            acende luzes e descobre 37 sensores. Veja como a sala vai ficar e experimente as interações antes da montagem.
           </p>
           <div class="hero-acoes">
             <a class="btn btn--primario" href="#planta">
@@ -143,6 +147,12 @@
             <p>Quem completa as cinco estações recebe o <strong>Certificado de Explorador de Tecnologia</strong>.</p>
           </li>
         </ol>
+
+        <details class="dicionario-rapido">
+          <summary>Dicionário rápido: 8 palavras que aparecem no site</summary>
+          <p class="dicionario-nota">Em qualquer lugar do site, as palavras técnicas aparecem <span class="termo" data-termo="nfc" title="Tecnologia que lê um cartão só de aproximar dele">sublinhadas assim</span> — toque para ver a explicação. A lista completa está em <a href="#glossario">Glossário do maker</a>.</p>
+          <ul id="glossario-rapido-app" class="dicionario-lista"></ul>
+        </details>
 
         <div class="callouts">
           <div class="callout callout--ouro">
@@ -210,6 +220,7 @@
           <div class="deck-acoes">
             <button class="btn btn--fantasma btn--mini" type="button" id="deck-anterior" aria-label="Estação anterior">← Anterior</button>
             <button class="btn btn--fantasma btn--mini" type="button" id="deck-proxima" aria-label="Próxima estação">Próxima →</button>
+            <button class="btn btn--fantasma btn--mini" type="button" data-nivel-botao aria-pressed="false">Ver detalhes técnicos</button>
             <button class="btn btn--fantasma btn--mini" type="button" id="deck-tela-cheia" aria-pressed="false">Tela cheia</button>
           </div>
         </header>
@@ -241,16 +252,19 @@
         <header class="secao-cabeca">
           <p class="eyebrow">Estação 4 · Caixa dos Sentidos</p>
           <h2 id="sensores-titulo">Os 37 sensores do kit</h2>
-          <p class="secao-sub">Busque, filtre e veja a foto real de cada módulo do kit. O padrão é a <strong>foto</strong>; troque para <strong>desenho</strong> quando quiser conferir os pinos G-V-S. Cada carta traz três modos de uso.</p>
+          <p class="secao-sub">Busque, filtre e veja a foto real de cada módulo do kit. O padrão é a <strong>foto</strong>; troque para <strong>desenho</strong> quando quiser conferir como cada sensor se liga. Cada carta traz uma explicação curta, três modos de uso e, em “Detalhes técnicos”, a descrição completa.</p>
         </header>
         <div class="aviso aviso--perigo" role="note">
-          <strong>⛔ Pinos proibidos:</strong> IO35, IO36 e IO37 são ligados à PSRAM no ESP32-S3 N16R8. Nunca ligue nada neles.
+          <strong>⛔ Três pinos são proibidos:</strong> a placa já usa a memória desses pinos, então nunca ligue nada neles.
+          <span class="tecnico">No ESP32-S3 N16R8, os pinos IO35, IO36 e IO37 são ligados à PSRAM.</span>
         </div>
         <p class="sensores-legenda">
           <span><i class="cor-placa" aria-hidden="true"></i> placa azul = módulo (desenho)</span>
           <span><i class="cor-pino" aria-hidden="true"></i> barra dourada = conector G · V · S</span>
-          <span>Modo foto (padrão): imagem real do kit, sem os pinos destacados.</span>
-          <span>Modo desenho: placa azul com os pinos G · V · S em destaque.</span>
+          <span>G = terra · V = energia · S = sinal que a placa lê.</span>
+          <span>Modo foto (padrão): imagem real do kit.</span>
+          <span>Modo desenho: mostra os pinos em destaque.</span>
+          <span class="tecnico">Legenda técnica: G = GND, V = VCC (3,3 V), S = sinal.</span>
         </p>
         <details class="kit-foto">
           <summary>Ver a foto do kit completo (37 módulos)</summary>
@@ -260,6 +274,18 @@
           </figure>
         </details>
         <div id="sensores-app"></div>
+      </div>
+    </section>
+
+    <!-- ================= GLOSSÁRIO ================= -->
+    <section class="secao" id="glossario" aria-labelledby="glossario-titulo">
+      <div class="container">
+        <header class="secao-cabeca">
+          <p class="eyebrow">Dicionário do maker</p>
+          <h2 id="glossario-titulo">Glossário do maker</h2>
+          <p class="secao-sub">As palavras técnicas do site explicadas em uma frase, com um exemplo da feira. Ler isto não é obrigatório para entender a visita — é só para quem ficou curioso.</p>
+        </header>
+        <div id="glossario-app" class="glossario-grade"></div>
       </div>
     </section>
 
@@ -308,6 +334,8 @@
         <ul class="rodape-lista">
           <li><a href="#planta">Planta da sala</a></li>
           <li><a href="#estacoes">Estações</a></li>
+          <li><a href="#sensores">Sensores</a></li>
+          <li><a href="#glossario">Glossário</a></li>
           <li><a href="#materiais">Materiais</a></li>
           <li><a href="#passaporte">Passaporte</a></li>
         </ul>
@@ -322,11 +350,13 @@
   <noscript>
     <div class="noscript">
       <p><strong>Ative o JavaScript para ver o tour interativo.</strong> O site é uma prévia da feira: cinco estações, uma planta da sala, 37 sensores e a lista de materiais. Sem JavaScript, você ainda pode ler o resumo abaixo.</p>
-      <p>1. O Cérebro (ESP32-S3) · 2. O Toque Mágico (NFC) · 3. O Semáforo Falante (LED RGB) · 4. A Caixa dos Sentidos (37 sensores) · 5. A Memória que Não Esquece (Flash e Painel Web).</p>
+      <p>1. O Toque Mágico (cartões por aproximação) · 2. O Cérebro (a placa que decide) · 3. O Semáforo Falante (cores do LED) · 4. A Caixa dos Sentidos (37 sensores) · 5. A Memória que Não Esquece (histórico e LGPD).</p>
+      <p>O glossário com as palavras técnicas fica na seção “Glossário do maker”.</p>
     </div>
   </noscript>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="termo-popover" id="termo-popover" role="dialog" aria-label="Explicação do termo" hidden></div>
 
   <dialog class="dialog" id="planta-dialog" aria-labelledby="planta-dialog-titulo">
     <div class="dialog-cabeca">
