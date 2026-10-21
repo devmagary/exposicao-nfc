@@ -344,6 +344,10 @@ garantir(/<meta[^>]+name="viewport"/i.test(html), "index.html deve ter meta view
 garantir(/<meta[^>]+name="description"/i.test(html), "index.html deve ter meta description.");
 garantir(/<title>[^<]+<\/title>/i.test(html), "index.html deve ter title.");
 garantir(/data-tema="escuro"/i.test(html), "index.html deve iniciar no tema escuro.");
+garantir(!/Prioridade dos materiais/.test(html), "o bloco Prioridade dos materiais não deve existir.");
+garantir(!/itens prioritários/.test(html), "o resumo em números não deve ter itens prioritários.");
+garantir(!/callout--fonte/.test(html), "não deve sobrar callout de fonte no HTML.");
+iguais((html.match(/class="fato"/g) || []).length, 3, "o resumo em números deve ter 3 itens.");
 
 const idsObrigatorios = [
   "inicio", "visao-geral", "planta", "estacoes", "sensores", "materiais", "passaporte",

@@ -401,6 +401,35 @@ async function principal() {
       garantir(/PAINEL/.test(info.textoEspelho), "a Estação 5 deve ter o selo PAINEL.");
     });
 
+    await teste("Removeu blocos redundantes e o vazio da estação", async function () {
+      const removidos = await avaliar("({" +
+        "fatos: document.querySelectorAll('.fatos .fato').length," +
+        "calloutFonte: document.querySelectorAll('.callout--fonte').length," +
+        "texto: (document.querySelector('#visao-geral') || {}).textContent || ''" +
+      "})");
+      garantir(removidos.fatos === 3, "o resumo em números deve ter 3 itens, achei " + removidos.fatos);
+      garantir(removidos.calloutFonte === 0, "não deve sobrar o callout de prioridade dos materiais.");
+      garantir(!/Prioridade dos materiais/.test(removidos.texto), "o bloco Prioridade dos materiais deveria ter saído.");
+      garantir(!/itens prioritários/.test(removidos.texto), "o item 20 itens prioritários deveria ter saído.");
+
+      await irPara("estacoes");
+      const layout = await avaliar("(() => {" +
+        "const slide = document.querySelector('#deck-palco .estacao-slide:not([hidden])');" +
+        "const visual = slide.querySelector('.estacao-visual');" +
+        "const ultimo = visual.lastElementChild;" +
+        "const demo = slide.querySelector(':scope > .demo');" +
+        "return {" +
+        "  folga: Math.round(visual.getBoundingClientRect().bottom - ultimo.getBoundingClientRect().bottom)," +
+        "  demoDireto: Boolean(demo)," +
+        "  demoLargura: demo ? Math.round(demo.getBoundingClientRect().width) : 0," +
+        "  slideLargura: Math.round(slide.getBoundingClientRect().width)" +
+        "};" +
+      "})()");
+      garantir(layout.folga <= 60, "a coluna da ilustração ficou com " + layout.folga + "px de espaço vazio.");
+      garantir(layout.demoDireto, "a demo deve ser filha direta do slide para ocupar a largura toda.");
+      garantir(layout.demoLargura > layout.slideLargura * 0.9, "a demo deveria ocupar a largura do slide (achei " + layout.demoLargura + " de " + layout.slideLargura + ").");
+    });
+
     await teste("Sensores abrem na foto real e alternam com o desenho", async function () {
       await irPara("sensores");
       await avaliar("document.querySelector('#sensores-app').scrollIntoView({ block: 'start' }); true");
@@ -569,6 +598,8 @@ async function principal() {
       await capturar("capa-desktop.png");
 
       await irPara("visao-geral");
+      await pausa(300);
+      await capturar("visao-geral-desktop.png");
       await avaliar("(() => { const el = document.querySelector('#kit-app'); el.scrollIntoView({ block: 'start' }); return true; })()");
       await pausa(300);
       await capturar("kit-desktop.png");
