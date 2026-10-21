@@ -634,7 +634,13 @@ async function principal() {
           "  atalhoH: atalho ? Math.round(atalho.getBoundingClientRect().height) : 0," +
           "  textoH: texto ? Math.round(texto.getBoundingClientRect().height) : 0," +
           "  cardW: card ? Math.round(card.getBoundingClientRect().width) : 0," +
-          "  heroCols: cols('.hero-grid'), deckCols: cols('#deck-palco .estacao-slide:not([hidden])')" +
+          "  heroCols: cols('.hero-grid'), deckCols: cols('#deck-palco .estacao-slide:not([hidden])')," +
+          "  folgaAcoes: (() => {" +
+          "    const acoes = document.querySelector('.header-acoes');" +
+          "    const container = document.querySelector('.header-inner');" +
+          "    if (!acoes || !container) return 0;" +
+          "    return Math.round(container.getBoundingClientRect().right - acoes.getBoundingClientRect().right);" +
+          "  })()" +
           "};" +
         "})()");
       };
@@ -646,6 +652,7 @@ async function principal() {
       garantir(retrato.atalhoH >= 40, "320px: atalho do rodapé com alvo pequeno (" + retrato.atalhoH + "px).");
       garantir(retrato.textoH >= 40, "320px: link de texto com alvo pequeno (" + retrato.textoH + "px).");
       garantir(retrato.cardW <= retrato.clientW, "320px: cartão de sensor mais largo que a tela.");
+      garantir(Math.abs(retrato.folgaAcoes) <= 2, "320px: os botões do cabeçalho deveriam ficar colados na borda direita, folga " + retrato.folgaAcoes + "px.");
       await avaliar("(() => { const el = document.querySelector('.kit-ao-vivo'); el.scrollIntoView({ block: 'start' }); return true; })()");
       await pausa(300);
       await capturar("mobile-320-kit.png");

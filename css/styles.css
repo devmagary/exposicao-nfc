@@ -204,6 +204,7 @@ li { list-style: none; }
 .header-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
   min-height: var(--header-h);
 }
@@ -215,6 +216,7 @@ li { list-style: none; }
   color: var(--texto);
   text-decoration: none;
   flex-shrink: 0;
+  margin-right: auto;
 }
 .marca-icone {
   display: grid;
@@ -257,7 +259,7 @@ li { list-style: none; }
 .nav-link:hover { color: var(--texto); background: color-mix(in srgb, var(--surface-2) 80%, transparent); }
 .nav-link.ativo { color: var(--primario); background: color-mix(in srgb, var(--primario) 10%, transparent); }
 
-.header-acoes { display: flex; align-items: center; gap: 8px; margin-left: 6px; }
+.header-acoes { display: flex; align-items: center; gap: 8px; margin-left: 6px; flex-shrink: 0; }
 
 .icon-btn {
   display: inline-grid;
@@ -1638,6 +1640,7 @@ li { list-style: none; }
 @media (max-width: 960px) {
   .nav-desktop { display: none; }
   .menu-botao { display: inline-grid; }
+  .header-acoes { margin-left: auto; }
   .nav-mobile { display: none; }
   .header-tour { display: none; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
