@@ -280,6 +280,22 @@ dados.glossario.forEach(function (item) {
   garantir(frasesLongas(item.simples + " " + item.exemplo, 28).length === 0, "glossário: frase longa em " + item.termo + ".");
 });
 
+/* Termos marcados no site inteiro: cada item do glossário tem aliases próprios */
+const aliasesDoGlossario = [];
+dados.glossario.forEach(function (item) {
+  garantir(Array.isArray(item.aliases) && item.aliases.length >= 1, "glossário: " + item.id + " precisa de aliases.");
+  item.aliases.forEach(function (alias) {
+    garantir(typeof alias === "string" && alias.trim().length >= 3, "glossário: alias curto em " + item.id + ".");
+    garantir(!/"/.test(alias), "glossário: alias com aspas em " + item.id + ".");
+    aliasesDoGlossario.push(alias.toLowerCase());
+  });
+});
+iguais(new Set(aliasesDoGlossario).size, aliasesDoGlossario.length, "um alias do glossário está repetido em dois termos.");
+garantir(appTexto.indexOf("marcarTermosEm") !== -1, "app.js deve marcar os termos do glossário no site inteiro.");
+garantir(appTexto.indexOf("TERMOS_SKIP") !== -1, "app.js deve ignorar botões, links e títulos ao marcar termos.");
+garantir(/aliases/.test(appTexto), "app.js deve usar os aliases do glossário.");
+garantir(ler("index.html").indexOf("As palavras técnicas sublinhadas") !== -1, "o rodapé deve explicar os termos sublinhados.");
+
 /* Cada sensor abre com uma explicação simples; a descrição técnica fica no nível técnico */
 const explicações = {};
 sensores.forEach(function (sensor) {

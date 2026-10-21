@@ -50,7 +50,7 @@ Não há etapa de instalação: o site não usa npm, bundler, framework, CDN ou 
 | Planta | Vista de cima com a entrada, a circulação em U e as estações na ordem 1 → 2 → 3 → 4 → 5; clique para ver detalhes, ampliar, baixar SVG ou imprimir |
 | Estações | Deck com as 5 equipes, cena ilustrada, abas “Para o visitante / Como montar / Materiais usados”, mapa de pinos na estação 2 e uma demo interativa por estação. A estação 5 fecha a visita com uma nota sobre a LGPD |
 | Sensores | Catálogo dos 37 sensores com busca, filtros, foto real por padrão, explicação curta, 3 modos de uso e a ligação no nível técnico |
-| Glossário | 21 palavras técnicas explicadas em uma frase, cada uma com um exemplo da feira |
+| Glossário | 25 palavras técnicas explicadas em uma frase, cada uma com um exemplo da feira |
 | Materiais | Um guia por estação: material de uso comum + 5 manuais com lista de materiais, montagem e “para que serve”, com checklist persistente |
 | Passaporte | 5 selos, certificado nominal e impressão |
 | Celular | De 320 px a telas grandes: menu hambúrguer, tabelas roláveis, alvos de toque maiores e layout de duas colunas no celular deitado |
@@ -61,7 +61,7 @@ O site foi escrito para quem nunca estudou eletrônica: a primeira camada usa fr
 
 - **Padrão: simples.** Resumos das estações, roteiro do visitante e cartas dos sensores aparecem em linguagem leiga.
 - **Botão “Ver detalhes técnicos”** (na seção Estações, no Kit e em Sensores): mostra descrição do componente, ligação G-V-S, dica da equipe e passo a passo de montagem. O estado fica em `localStorage` na chave `feira:v1:nivel` e vale para o site inteiro.
-- **Termos sublinhados**: clicar (ou usar Enter) em uma palavra técnica abre um popover com a explicação e o exemplo; Esc fecha. As definições vêm de `glossario` em `js/data.js`, então site e seção `#glossario` nunca divergem.
+- **Termos sublinhados no site inteiro**: depois de renderizar, o `app.js` percorre o texto e transforma as palavras do glossário em botões `.termo` (no máximo uma vez por bloco, para não poluir). Clicar (ou usar Enter) abre um popover com a explicação e o exemplo; Esc fecha. As definições e as formas reconhecidas vêm de `glossario` em `js/data.js` (`termo` + `aliases`), então site e seção `#glossario` nunca divergem. Botões, links, títulos, rótulos e o próprio glossário ficam de fora.
 - **Sempre visível**: “Para o visitante”, modos de uso dos sensores, demos e o glossário.
 
 
@@ -136,7 +136,7 @@ Quase tudo está em **`js/data.js`**:
 
 - `meta`: nome da escola, data, créditos.
 - `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica. A ordem do array é a **ordem da visita** (1 → 5); a estação 5 tem o campo `lgpd` com o fechamento sobre proteção de dados. `resumo` e `visitante` são a **primeira camada** (linguagem simples); `montagem`, `materiais` e `dica` são o detalhe técnico.
-- `glossario`: fonte única das explicações (`id`, `termo`, `simples`, `exemplo`). O mesmo texto alimenta a seção Glossário e o popover dos termos sublinhados.
+- `glossario`: fonte única das explicações (`id`, `termo`, `aliases`, `simples`, `exemplo`). O mesmo texto alimenta a seção Glossário, o popover dos termos e a marcação automática no site inteiro. Para um termo novo aparecer sublinhado, basta adicionar `aliases` (formas que devem ser reconhecidas no texto).
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
 - `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.
 - `sensores`: os 37 sensores (nome, categoria, tipo, `explicacao`, descrição, ideia, ligação, `usos`, `visual` e `aparencia`).

@@ -585,6 +585,65 @@ async function principal() {
       garantir(await avaliar("document.querySelector('#termo-popover').hidden"), "Esc deveria fechar o popover.");
     });
 
+    await teste("Termos do glossário aparecem no site inteiro", async function () {
+      const cobertura = await avaliar("(() => {" +
+        "const contar = (sel) => document.querySelectorAll(sel).length;" +
+        "const visivel = [...document.querySelectorAll('.termo')].filter((t) => t.offsetParent !== null).length;" +
+        "return {" +
+        "  total: contar('.termo')," +
+        "  visiveis: visivel," +
+        "  materiais: contar('#materiais-app .termo')," +
+        "  deck: contar('#deck-palco .termo')," +
+        "  sensores: contar('#sensores-grade .termo')," +
+        "  rodape: contar('.rodape .termo')," +
+        "  aninhados: contar('.termo .termo')," +
+        "  comAria: contar('.termo[aria-controls=\"termo-popover\"]')" +
+        "};" +
+      "})()");
+      garantir(cobertura.total >= 20, "esperava pelo menos 20 termos marcados no site, achei " + cobertura.total + ".");
+      garantir(cobertura.visiveis >= 3, "os termos precisam estar visíveis na primeira camada, achei " + cobertura.visiveis + ".");
+      garantir(cobertura.materiais >= 2, "o manual de materiais deve ter termos marcados, achei " + cobertura.materiais + ".");
+      garantir(cobertura.deck >= 2, "as estações devem ter termos marcados, achei " + cobertura.deck + ".");
+      garantir(cobertura.sensores >= 1, "as cartas de sensor devem ter termos no detalhe técnico, achei " + cobertura.sensores + ".");
+      garantir(cobertura.rodape >= 1, "o rodapé deve ter termos marcados, achei " + cobertura.rodape + ".");
+      garantir(cobertura.aninhados === 0, "não deve haver termo dentro de termo.");
+      garantir(cobertura.comAria === cobertura.total, "todo termo precisa apontar para o popover.");
+
+      // Um termo criado automaticamente também abre a explicação certa
+      const alvo = await avaliar("(() => {" +
+        "document.querySelector('#material-toque').scrollIntoView({ block: 'start' });" +
+        "const bloco = document.querySelector('#material-toque .manual-kit');" +
+        "const termos = bloco ? bloco.querySelectorAll('.termo') : [];" +
+        "if (!termos.length) return null;" +
+        "return { total: termos.length, id: termos[0].getAttribute('data-termo'), texto: termos[0].textContent };" +
+      "})()");
+      garantir(alvo, "o manual da Estação 1 deveria ter termos marcados no bloco do kit.");
+      garantir(alvo.total >= 2, "esperava pelo menos 2 termos no bloco do kit, achei " + alvo.total + ".");
+      await pausa(350);
+      await avaliar("document.querySelector('#material-toque .manual-kit .termo').click(); true");
+      await pausa(300);
+      const popover = await avaliar("(() => {" +
+        "const p = document.querySelector('#termo-popover');" +
+        "return {" +
+        "  aberto: p && !p.hidden," +
+        "  texto: p ? p.textContent : ''," +
+        "  termo: p ? (p.querySelector('.termo-popover-termo') || {}).textContent || '' : ''" +
+        "};" +
+      "})()");
+      garantir(popover.aberto, "o termo automático deveria abrir o popover.");
+      garantir(/Exemplo:/.test(popover.texto), "o popover do termo automático deve ter explicação e exemplo.");
+      garantir(popover.termo.length > 1, "o popover deveria mostrar o termo clicado.");
+      await capturar("termos-no-site.png");
+      await avaliar("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); true");
+
+      // Re-render do catálogo (limpar filtros) continua marcando os termos
+      await irPara("sensores");
+      await avaliar("document.querySelector('#sensores-limpar').click(); true");
+      await esperar("document.querySelectorAll('#sensores-grade .sensor-card').length === 37", 5000);
+      const aposFiltro = await avaliar("document.querySelectorAll('#sensores-grade .termo').length");
+      garantir(aposFiltro >= 1, "o catálogo re-renderizado perdeu os termos marcados.");
+    });
+
     await teste("Primeira camada usa linguagem simples", async function () {
       const jargao = ["GPIO", "PSRAM", "I2C", "SDA", "SCL", "PN532", "LittleFS", "PWM", "pull-up", "firmware", "SPI", "trimpot", "quadratura", "setpoint", "strapping", "relé", "GND", "VCC"];
       const textos = await avaliar("(() => {" +

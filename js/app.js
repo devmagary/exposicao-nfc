@@ -226,6 +226,7 @@
         '<ul class="planta-info-lista">' + visitante + '</ul>' +
         '<button class="btn btn--primario btn--mini" type="button" data-ir-estacao="' + esc(estacao.numero) + '">Abrir estação →</button>' +
       '</div>';
+    marcarTermosEm(info);
   }
 
   function abrirPlantaAmpliada() {
@@ -851,6 +852,7 @@
         '</div>' +
       '</article>';
     }).join("");
+    marcarTermosEm(grade);
   }
 
   /* ---------------------------------------------------------------------
@@ -902,6 +904,106 @@
       if (elemento.getAttribute("title")) botao.title = elemento.getAttribute("title");
       elemento.replaceWith(botao);
     });
+  }
+
+  /* ---------------------------------------------------------------------
+     TERMOS NO SITE INTEIRO
+     Percorre o texto renderizado e transforma as palavras do glossário em
+     botões .termo. Um mesmo termo aparece no máximo uma vez por bloco para
+     não poluir a leitura.
+     --------------------------------------------------------------------- */
+  const TERMOS_SKIP = [
+    "script", "style", "noscript", "textarea", "input", "select", "option",
+    "label", "button", "a", "summary", "h1", "h2", "h3", "h4", "h5", "h6",
+    ".termo", "#termo-popover", "#glossario-app", ".glossario-grade",
+    "#glossario-rapido-app", ".sr-only", "#toast", "[aria-hidden=\"true\"]"
+  ].join(",");
+  const TERMOS_BLOCO = "p, li, td, th, dd, figcaption, .card, .callout, .estacao-resumo, .sensor-card, .manual-bloco, .aviso, .fato";
+  let cacheTermos = null;
+
+  function configTermos() {
+    if (cacheTermos) return cacheTermos;
+    const lista = Array.isArray(dados.glossario) ? dados.glossario : [];
+    const pares = [];
+    lista.forEach(function (item) {
+      const formas = Array.isArray(item.aliases) && item.aliases.length ? item.aliases : [item.termo];
+      formas.forEach(function (alias) {
+        pares.push({ alias: alias, id: item.id });
+      });
+    });
+    if (!pares.length) { cacheTermos = false; return cacheTermos; }
+    pares.sort(function (a, b) { return b.alias.length - a.alias.length; });
+    const porTexto = {};
+    pares.forEach(function (par) { porTexto[par.alias.toLowerCase()] = par.id; });
+    const fonte = pares.map(function (par) {
+      return par.alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }).join("|");
+    try {
+      cacheTermos = {
+        expressao: new RegExp("(?<![\\p{L}\\p{N}])(" + fonte + ")(?![\\p{L}\\p{N}])", "giu"),
+        porTexto: porTexto
+      };
+    } catch (erro) {
+      /* navegador sem lookbehind: mantém só os termos escritos à mão */
+      cacheTermos = false;
+    }
+    return cacheTermos;
+  }
+
+  function criarBotaoTermo(id, texto) {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "termo";
+    botao.setAttribute("data-termo", id);
+    botao.setAttribute("aria-expanded", "false");
+    botao.setAttribute("aria-controls", "termo-popover");
+    botao.textContent = texto;
+    return botao;
+  }
+
+  function marcarTermosEm(raiz) {
+    const config = configTermos();
+    if (!config || !raiz) return 0;
+    const nos = [];
+    const caminhante = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (no) {
+        if (!no.nodeValue || !no.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        const pai = no.parentElement;
+        if (!pai || pai.closest(TERMOS_SKIP)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    while (caminhante.nextNode()) nos.push(caminhante.currentNode);
+
+    let total = 0;
+    nos.forEach(function (no) {
+      const pai = no.parentElement;
+      const bloco = pai.closest(TERMOS_BLOCO) || pai;
+      if (!bloco.__termosUsados) bloco.__termosUsados = Object.create(null);
+      const usados = bloco.__termosUsados;
+      const texto = no.nodeValue;
+      config.expressao.lastIndex = 0;
+      let ultimo = 0;
+      let fragmento = null;
+      let achado = config.expressao.exec(texto);
+      while (achado) {
+        const id = config.porTexto[achado[0].toLowerCase()];
+        if (id && !usados[id]) {
+          usados[id] = true;
+          total += 1;
+          if (!fragmento) fragmento = document.createDocumentFragment();
+          fragmento.appendChild(document.createTextNode(texto.slice(ultimo, achado.index)));
+          fragmento.appendChild(criarBotaoTermo(id, achado[0]));
+          ultimo = achado.index + achado[0].length;
+        }
+        achado = config.expressao.exec(texto);
+      }
+      if (fragmento) {
+        fragmento.appendChild(document.createTextNode(texto.slice(ultimo)));
+        no.parentNode.replaceChild(fragmento, no);
+      }
+    });
+    return total;
   }
 
   let termoAberto = null;
@@ -1040,6 +1142,7 @@
     if (imprimirBotao) imprimirBotao.addEventListener("click", function () { imprimir("materiais"); });
     const copiarBotao = $("#materiais-copiar");
     if (copiarBotao) copiarBotao.addEventListener("click", copiarListaMateriais);
+    marcarTermosEm(app);
   }
 
   /* Item de material em lista simples: nome, quantidade e uso */
@@ -1276,6 +1379,7 @@
       }
       imprimir("certificado");
     });
+    marcarTermosEm(app);
   }
 
   /* ---------------------------------------------------------------------
@@ -1453,6 +1557,7 @@
     configurarNavegacao();
     configurarTermos();
     aplicarNivel(estado.nivel, false);
+    marcarTermosEm(document.body);
 
     // Hash inicial
     const indiceInicial = indiceDoHash();

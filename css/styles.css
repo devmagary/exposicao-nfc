@@ -1698,6 +1698,8 @@ li { list-style: none; }
   color: inherit;
   font: inherit;
   text-align: inherit;
+  text-decoration: none;
+  white-space: normal;
   cursor: help;
 }
 .termo:hover,
