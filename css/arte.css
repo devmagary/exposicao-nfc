@@ -61,6 +61,13 @@
   fill: var(--texto);
 }
 
+/* Texto sobre papel: usa a tinta fixa, porque o papel continua claro nos dois temas. */
+.arte-rotulo-tinta {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  fill: var(--arte-tinta);
+}
+
 .arte-sub {
   font-family: var(--fonte);
   font-weight: 500;

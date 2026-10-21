@@ -612,8 +612,8 @@
     var s = [];
     s.push('<g class="arte-campo-grupo" style="color:#10b981">');
     s.push(ret(28, 106, 158, 116, 8, "arte-papel arte-contorno-forte"));
-    s.push(texto(107, 132, "CAMPO", "arte-rotulo", 'font-size="15" text-anchor="middle" letter-spacing="1.4" font-weight="700"'));
-    s.push(texto(107, 154, "MAGNÉTICO", "arte-rotulo", 'font-size="15" text-anchor="middle" letter-spacing="1.4" font-weight="700"'));
+    s.push(texto(107, 132, "CAMPO", "arte-rotulo-tinta", 'font-size="15" text-anchor="middle" letter-spacing="1.4" font-weight="700"'));
+    s.push(texto(107, 154, "MAGNÉTICO", "arte-rotulo-tinta", 'font-size="15" text-anchor="middle" letter-spacing="1.4" font-weight="700"'));
     s.push('<path d="M62 178 A34 18 0 0 0 152 178" class="arte-onda"/>');
     s.push('<path d="M52 188 A46 24 0 0 0 162 188" class="arte-onda" style="animation-delay:-0.8s"/>');
     s.push(texto(107, 210, "acorda a tag", "arte-mono-tinta", 'font-size="12" text-anchor="middle"'));
@@ -774,7 +774,7 @@
       s.push(ret(cartao.x + 12, cartao.y + 15, 30, 24, 3, "arte-sensor-cena"));
       s.push(ret(cartao.x + 18, cartao.y + 21, 18, 3, 1, "arte-sensor-traco"));
       s.push(ret(cartao.x + 18, cartao.y + 27, 12, 3, 1, "arte-sensor-traco"));
-      s.push(texto(cartao.x + 54, cartao.y + 33, cartao.nome, "arte-rotulo", 'font-size="14" font-weight="700" letter-spacing="1"'));
+      s.push(texto(cartao.x + 54, cartao.y + 33, cartao.nome, "arte-rotulo-tinta", 'font-size="14" font-weight="700" letter-spacing="1"'));
       s.push("</g>");
     });
 
