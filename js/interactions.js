@@ -569,7 +569,6 @@
       var cor = String(setor.cor || "");
       return cor.charAt(0).toUpperCase() + cor.slice(1);
     }
-
     function pontoCaminho(raio, anguloGraus) {
       var rad = (anguloGraus * Math.PI) / 180;
       return (Math.cos(rad) * raio).toFixed(3) + " " + (Math.sin(rad) * raio).toFixed(3);
@@ -637,6 +636,7 @@
       }
       var setor = estado.resultado;
       var real = !!setor.real;
+      var luz = setor.luz ? '<span class="roleta-res-luz">' + esc(setor.luz) + '</span>' : "";
       return '<div class="roleta-res" style="--roleta-cor: ' + esc(setor.hex) + '">' +
           '<div class="roleta-res-topo">' +
             '<span class="roleta-led" aria-hidden="true"></span>' +
@@ -644,16 +644,59 @@
             '<span class="roleta-selo ' + (real ? "roleta-selo--real" : "roleta-selo--demo") + '">' +
               (real ? "Estado real do firmware" : "Demonstração de cor") +
             '</span>' +
+            luz +
           '</div>' +
           '<p class="roleta-res-titulo">' + esc(setor.titulo) + '</p>' +
           '<p class="roleta-res-significado">' + esc(setor.significado) + '</p>' +
         '</div>';
     }
 
+    function tabelaEstados() {
+      var lista = dados && Array.isArray(dados.statusLed) ? dados.statusLed : [];
+      var eventos = dados && Array.isArray(dados.eventosLed) ? dados.eventosLed : [];
+      if (!lista.length) return "";
+      var cores = {};
+      setores.forEach(function (setor) { cores[setor.cor] = setor.hex; });
+      var linhas = lista.map(function (item, indice) {
+        var hex = cores[item.cor] || "#94a3b8";
+        return '<tr>' +
+          '<td><span class="led-estados-cor" style="--led-cor: ' + esc(hex) + '">' +
+            '<span class="led-estados-bola" aria-hidden="true"></span>' + esc(item.titulo) +
+          '</span></td>' +
+          '<td data-rotulo="Como a luz se comporta">' + esc(item.detalhe) + '</td>' +
+        '</tr>';
+      }).join("");
+      var linhasEventos = eventos.map(function (item) {
+        var hex = cores[item.cor] || "#94a3b8";
+        return '<tr>' +
+          '<td><span class="led-estados-cor" style="--led-cor: ' + esc(hex) + '">' +
+            '<span class="led-estados-bola" aria-hidden="true"></span>' + esc(item.momento) +
+          '</span></td>' +
+          '<td data-rotulo="O que acontece">' + esc(item.detalhe) + '</td>' +
+          '<td data-rotulo="Duração"><span class="led-estados-luz">' + esc(item.duracao) + '</span></td>' +
+        '</tr>';
+      }).join("");
+      return '<section class="led-estados" aria-labelledby="led-estados-titulo">' +
+        '<h5 class="led-estados-titulo" id="led-estados-titulo">O que cada luz quer dizer</h5>' +
+        '<table class="led-estados-tabela">' +
+          '<caption>Estados contínuos do LED RGB, do mais comum ao mais raro.</caption>' +
+          '<thead><tr><th scope="col">Luz</th><th scope="col">Comportamento</th></tr></thead>' +
+          '<tbody>' + linhas + '</tbody>' +
+        '</table>' +
+        (linhasEventos
+          ? '<table class="led-estados-tabela led-estados-tabela--eventos">' +
+              '<caption>Momentos pontuais</caption>' +
+              '<thead><tr><th scope="col">Momento</th><th scope="col">O que acontece</th><th scope="col">Tempo</th></tr></thead>' +
+              '<tbody>' + linhasEventos + '</tbody>' +
+            '</table>'
+          : "") +
+      '</section>';
+    }
+
     function montarEstrutura() {
       var html = cabecalho(
         "Semáforo falante",
-        "Gire a roleta: cada cor conta uma situação do acesso — liberado, negado ou com problema.",
+        "Gire a roleta: cada cor e cada jeito de piscar conta um estado do LED na feira.",
         "Clique em girar, espere a roda parar e leia o estado sorteado."
       );
       html += '<div class="demo-corpo"><div class="roleta-palco">' + conteudoPalco() + '</div>' +
@@ -663,7 +706,8 @@
         '</div>' +
         '<div class="roleta-resultado demo-resultado demo-resultado--info" id="roleta-resultado" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">' +
           resultadoHtml() +
-        '</div></div>';
+        '</div></div>' +
+        tabelaEstados();
       alvo.innerHTML = html;
 
       refs.palco = pegar(".roleta-palco", alvo);

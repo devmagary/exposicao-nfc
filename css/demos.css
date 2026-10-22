@@ -658,6 +658,15 @@
   text-transform: uppercase;
   color: var(--muted);
 }
+.roleta-res-luz {
+  flex-basis: 100%;
+  font-size: 0.72rem;
+  color: var(--texto-suave);
+}
+.roleta-res-luz::before {
+  content: "▸ ";
+  color: var(--roleta-cor);
+}
 .roleta-selo {
   margin-left: auto;
   padding: 2px 8px;
@@ -691,6 +700,92 @@
   color: var(--texto-suave);
   font-size: 0.8rem;
   line-height: 1.5;
+}
+
+/* Tabela dos 6 estados do LED (firmware atual) */
+.led-estados {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  padding: 14px 16px;
+}
+.led-estados-titulo {
+  margin: 0 0 10px;
+  font-family: var(--fonte-display);
+  font-size: 1rem;
+  color: var(--texto);
+}
+.led-estados-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.led-estados-tabela caption {
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.74rem;
+  padding-bottom: 8px;
+}
+.led-estados-tabela th,
+.led-estados-tabela td {
+  text-align: left;
+  vertical-align: top;
+  padding: 7px 9px 7px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--texto-suave);
+}
+.led-estados-tabela th {
+  color: var(--texto);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.led-estados-tabela tr:last-child td { border-bottom: 0; }
+.led-estados-cor {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  color: var(--texto);
+  white-space: nowrap;
+}
+.led-estados-bola {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--led-cor) 45%, transparent);
+  background: var(--led-cor);
+  box-shadow: 0 0 10px var(--led-cor);
+}
+.led-estados-luz {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+@media (max-width: 640px) {
+  .led-estados-tabela,
+  .led-estados-tabela thead,
+  .led-estados-tabela tbody,
+  .led-estados-tabela tr,
+  .led-estados-tabela th,
+  .led-estados-tabela td {
+    display: block;
+    width: 100%;
+  }
+  .led-estados-tabela thead { position: absolute; left: -9999px; }
+  .led-estados-tabela tr {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .led-estados-tabela tr:last-child { border-bottom: 0; }
+  .led-estados-tabela td { padding: 2px 0; border: 0; }
+  .led-estados-tabela td[data-rotulo]::before {
+    content: attr(data-rotulo) ": ";
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
 }
 
 /* ==========================================================================

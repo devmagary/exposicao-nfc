@@ -47,7 +47,7 @@
       planoB: [
         "Sem tablet ou rede, a Estação 5 continua com o varal de papel e o kit fica só na Estação 1.",
         "Se o Wi-Fi da escola isolar dispositivos, use um roteador portátil ou o modo AP do ESP32.",
-        "Se o PN532 falhar, o LED vermelho piscando indica falha de I2C; confira os fios e as chaves antes de abrir a feira."
+        "Se o PN532 falhar, o LED fica laranja piscando (falha de I2C); confira os fios e as chaves antes de abrir a feira."
       ]
     },
 
@@ -171,15 +171,15 @@
         icone: "led",
         frase: "Uma cor para cada resposta.",
         resumo:
-          "O LED muda de cor para mostrar o que aconteceu no acesso. A roleta sorteia uma cor e o visitante descobre o que ela significa.",
+          "O LED muda de cor e de jeito de piscar para mostrar o que está acontecendo. A roleta sorteia uma cor e o visitante descobre o que ela significa.",
         visitante: [
           "Gira a roleta de papelão com seis setores coloridos.",
           "Descobre o que a cor sorteada significa no sistema.",
           "Aponta a lanterna do celular com celofane atrás do furo e acende o “LED de papel”."
         ],
         montagem: [
-          "Recorte uma roleta com seis setores: ciano, verde, vermelho, laranja, roxo e azul.",
-          "Faça um cartaz para cada estado, com a explicação da cor.",
+          "Recorte uma roleta com seis setores: ciano, verde, vermelho, laranja, roxo e azul — as mesmas cores que o LED mostra na feira.",
+          "Faça um cartaz para cada estado, com a explicação da cor e o jeito da luz (fixa, piscando ou respirando).",
           "Abra um furo na cartolina e cubra com celofane; ilumine por trás para o LED acender.",
           "Combine azul + verde para obter ciano e vermelho + amarelo para obter laranja."
         ],
@@ -191,7 +191,7 @@
         ],
         demo: "roleta",
         dica:
-          "Estados reais do firmware: ciano = standby, verde = liberado, vermelho = negado, amarelo = modo AP, azul = boot e vermelho piscando = falha do PN532."
+          "Estados reais do firmware: ciano respirando = operacional, verde fixo 1,8 s = liberado, vermelho fixo 1,8 s = negado, laranja piscando = falha do leitor, roxo fixo = modo AP e azul piscando = conectando."
       },
       {
         id: "caixa",
@@ -356,49 +356,75 @@
       { ordem: 3, consequencia: "BLOQUEADO", cor: "amarelo", rotulo: "matrícula suspensa", acao: "Negado com aviso de bloqueio no Painel Web." }
     ],
 
+    /* ---------------------------------------------------------------------
+       ROLETA — os 6 estados reais do LED RGB no firmware atual.
+       `luz` descreve o comportamento físico (fixo, piscando, pulsando...).
+       --------------------------------------------------------------------- */
     roleta: [
       {
         cor: "ciano",
         hex: "#22d3ee",
-        titulo: "Tudo pronto",
-        significado: "Wi-Fi conectado e leitor PN532 online. Pode aproximar o cartão.",
+        titulo: "Operacional normal",
+        significado: "Wi-Fi conectado e leitor PN532 online. O LED “respira” em ciano, com brilho 6→22→6, em um ciclo de 2 s.",
+        luz: "Respiração contínua",
+        papel: "Tudo pronto",
         real: true
       },
       {
         cor: "verde",
         hex: "#34d399",
         titulo: "Acesso liberado",
-        significado: "Aluno ativo: o ESP32 aciona o relé e libera a entrada.",
+        significado: "Cartão cadastrado e ativo: verde fixo por 1,8 s, a fechadura abre e depois o LED volta ao ciano.",
+        luz: "Fixo por 1,8 s",
+        papel: "Liberado",
         real: true
       },
       {
         cor: "vermelho",
         hex: "#f87171",
         titulo: "Acesso negado",
-        significado: "Cartão não cadastrado ou aluno bloqueado: a fechadura não abre.",
+        significado: "Cartão fora da lista ou aluno bloqueado: vermelho fixo por 1,8 s e a fechadura não abre.",
+        luz: "Fixo por 1,8 s",
+        papel: "Negado",
         real: true
       },
       {
         cor: "laranja",
         hex: "#fb923c",
-        titulo: "Leitor desconectado",
-        significado: "O PN532 não respondeu no I2C (pinos 8/9). No firmware real, isso aparece como vermelho piscando.",
-        real: false
+        titulo: "Falha do leitor",
+        significado: "O PN532 não respondeu: laranja piscando duas vezes por segundo (130 ms aceso, 110 ms apagado). Confira os fios e as chaves.",
+        luz: "Pisca 2x por segundo",
+        papel: "Leitor",
+        real: true
       },
       {
         cor: "roxo",
         hex: "#a78bfa",
-        titulo: "Mistura RGB",
-        significado: "Vermelho + azul acesos juntos. É demonstração de cor, não um estado do firmware.",
-        real: false
+        titulo: "Modo ponto de acesso",
+        significado: "Sem rede escolhida: o ESP32 cria a rede ControleAcesso-S3 e fica em roxo suave, fixo, até alguém conectar.",
+        luz: "Fixo constante",
+        papel: "Modo AP",
+        real: true
       },
       {
         cor: "azul",
         hex: "#60a5fa",
-        titulo: "Inicializando",
-        significado: "O ESP32 está conectando ao Wi-Fi e montando a Flash durante o boot.",
+        titulo: "Conectando à rede",
+        significado: "Inicializando ou entrando na rede escolhida em /wifi: azul piscando, 350 ms aceso e 350 ms apagado.",
+        luz: "Pisca a cada 0,7 s",
+        papel: "Conectando",
         real: true
       }
+    ],
+
+    /* Momentos pontuais do LED, fora do estado contínuo */
+    eventosLed: [
+      { momento: "Ligar a placa (boot)", cor: "azul", detalhe: "Azul suave (0,30,60) enquanto conecta ao Wi-Fi salvo; depois vira ciano ou roxo.", duracao: "até concluir" },
+      { momento: "Entrar pela página /wifi", cor: "azul", detalhe: "Azul piscando 350 ms aceso / 350 ms apagado até a conexão terminar.", duracao: "até conectar" },
+      { momento: "Wi-Fi conectado pela página /wifi", cor: "verde", detalhe: "Verde fixo de confirmação e a placa reinicia.", duracao: "3 s" },
+      { momento: "Cartão liberado", cor: "verde", detalhe: "Verde vibrante (0,255,0) e a fechadura aciona.", duracao: "1,8 s" },
+      { momento: "Cartão negado ou bloqueado", cor: "vermelho", detalhe: "Vermelho (255,0,0) e a fechadura não abre.", duracao: "1,8 s" },
+      { momento: "Comando do painel web (led_verde, led_vermelho, led_azul)", cor: "azul", detalhe: "Verde, vermelho ou azul (0,80,255) por 5 s; o comando led_off apaga e cancela o aviso.", duracao: "5 s" }
     ],
 
     linhaDoTempo: [
@@ -460,12 +486,12 @@
     sensorQuizIds: [10, 20, 13, 30, 23, 18, 27, 28, 31, 29, 22, 34],
 
     statusLed: [
-      { cor: "ciano", titulo: "Standby normal", detalhe: "Efeito respiração: Wi-Fi conectado e PN532 online." },
-      { cor: "verde", titulo: "Acesso liberado", detalhe: "Aceso por 2 segundos: aluno cadastrado e ativo." },
-      { cor: "vermelho", titulo: "Acesso negado", detalhe: "Aceso por 2 segundos: cartão desconhecido ou aluno bloqueado." },
-      { cor: "vermelho-piscando", titulo: "Falha do PN532", detalhe: "Pisca rápido: módulo solto, desconectado ou sem resposta no I2C." },
-      { cor: "amarelo", titulo: "Modo ponto de acesso", detalhe: "Pulsa devagar: Wi-Fi não encontrado; rede ControleAcesso-S3 ativa." },
-      { cor: "azul", titulo: "Inicializando", detalhe: "Aceso no boot: conectando ao Wi-Fi e montando o sistema de arquivos." }
+      { cor: "ciano", titulo: "Operacional normal", detalhe: "Efeito respiração (brilho 6→22→6, ciclo de 2 s): Wi-Fi conectado e PN532 online." },
+      { cor: "verde", titulo: "Acesso liberado", detalhe: "Verde fixo por 1,8 s: aluno cadastrado e ativo, fechadura acionada." },
+      { cor: "vermelho", titulo: "Acesso negado", detalhe: "Vermelho fixo por 1,8 s: cartão desconhecido ou aluno bloqueado." },
+      { cor: "laranja", titulo: "Falha do leitor", detalhe: "Laranja piscando 2x por segundo (130 ms aceso / 110 ms apagado): PN532 sem resposta no I2C." },
+      { cor: "roxo", titulo: "Modo ponto de acesso", detalhe: "Roxo suave e fixo: sem rede escolhida, a rede ControleAcesso-S3 está ativa." },
+      { cor: "azul", titulo: "Conectando à rede", detalhe: "Azul piscando (350 ms aceso / 350 ms apagado): boot ou conexão pela página /wifi." }
     ],
 
     /* ---------------------------------------------------------------------

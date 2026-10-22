@@ -360,8 +360,36 @@ dados.roleta.forEach(function (setor) {
   garantir(/^#[0-9a-f]{6}$/i.test(setor.hex), "hex inválido na roleta: " + setor.cor);
   garantir(setor.titulo && setor.significado, "setor incompleto: " + setor.cor);
   garantir(typeof setor.real === "boolean", "setor " + setor.cor + " deve indicar se é estado real.");
+  garantir(typeof setor.luz === "string" && setor.luz.length >= 4, "setor " + setor.cor + " sem descrição da luz.");
 });
-garantir(dados.roleta.some(function (setor) { return setor.real === false; }), "a roleta deve ter pelo menos uma demonstração de cor.");
+/* Os 6 setores são os 6 estados reais do firmware atual */
+garantir(dados.roleta.every(function (setor) { return setor.real === true; }), "todos os setores da roleta devem ser estados reais do firmware.");
+const titulosRoleta = dados.roleta.map(function (setor) { return setor.titulo.toLowerCase(); });
+["operacional", "liberado", "negado", "falha do leitor", "ponto de acesso", "conectando"].forEach(function (esperado) {
+  garantir(titulosRoleta.some(function (titulo) { return titulo.indexOf(esperado) !== -1; }), "a roleta deve ter o estado " + esperado + ".");
+});
+garantir(/respira/i.test(dados.roleta[0].significado), "o estado operacional deve descrever o ciano respirando.");
+garantir(/1,8 s/.test(dados.roleta[1].significado) && /1,8 s/.test(dados.roleta[2].significado), "liberado e negado devem durar 1,8 s.");
+
+/* Status do LED: mesmos tempos e cores do firmware */
+iguais(dados.statusLed.length, 6, "statusLed deve ter os 6 estados do LED.");
+const coresStatus = dados.statusLed.map(function (item) { return item.cor; });
+iguais(JSON.stringify(coresStatus), JSON.stringify(["ciano", "verde", "vermelho", "laranja", "roxo", "azul"]), "a ordem das cores do LED deve ser ciano, verde, vermelho, laranja, roxo e azul.");
+const textoStatus = dados.statusLed.map(function (item) { return item.detalhe; }).join(" ");
+garantir(/1,8 s/.test(textoStatus), "o status do LED deve citar a duração de 1,8 s.");
+garantir(/130 ms/.test(textoStatus), "o status do LED deve citar a piscada de 130 ms da falha.");
+garantir(/350 ms/.test(textoStatus), "o status do LED deve citar a piscada de 350 ms da conexão.");
+garantir(/6→22→6|6 a 22/.test(textoStatus), "o status do LED deve citar a respiração 6→22→6.");
+garantir(!/amarelo/i.test(textoStatus), "o status do LED não deve mais citar amarelo: no firmware o modo AP é roxo.");
+
+/* Momentos pontuais do LED */
+garantir(Array.isArray(dados.eventosLed) && dados.eventosLed.length >= 5, "eventosLed deve listar os momentos pontuais do LED.");
+dados.eventosLed.forEach(function (evento) {
+  garantir(evento.momento && evento.detalhe && evento.duracao, "evento do LED incompleto: " + evento.momento);
+  garantir(coresRoleta.indexOf(evento.cor) !== -1, "evento do LED com cor desconhecida: " + evento.cor);
+});
+garantir(dados.eventosLed.some(function (evento) { return /3 s/.test(evento.duracao); }), "falta o verde de 3 s ao conectar pela página /wifi.");
+garantir(dados.eventosLed.some(function (evento) { return /5 s/.test(evento.duracao); }), "falta o feedback de 5 s dos comandos do painel.");
 
 iguais(dados.linhaDoTempo.length, 7, "a linha do tempo deve ter 7 etapas.");
 const textoLinha = dados.linhaDoTempo.map(function (etapa) { return etapa.titulo + " " + etapa.detalhe; }).join(" ");

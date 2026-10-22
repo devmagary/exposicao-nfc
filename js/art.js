@@ -1071,17 +1071,17 @@
     verde: "LIBERADO",
     vermelho: "NEGADO",
     laranja: "LEITOR",
-    roxo: "RGB",
-    azul: "BOOT"
+    roxo: "AP",
+    azul: "CONECTA"
   };
 
   var ROLETA_PADRAO = [
-    { cor: "ciano", hex: "#22d3ee", titulo: "Tudo pronto" },
+    { cor: "ciano", hex: "#22d3ee", titulo: "Operacional normal" },
     { cor: "verde", hex: "#34d399", titulo: "Acesso liberado" },
     { cor: "vermelho", hex: "#f87171", titulo: "Acesso negado" },
-    { cor: "laranja", hex: "#fb923c", titulo: "Leitor desconectado" },
-    { cor: "roxo", hex: "#a78bfa", titulo: "Mistura RGB" },
-    { cor: "azul", hex: "#60a5fa", titulo: "Inicializando" }
+    { cor: "laranja", hex: "#fb923c", titulo: "Falha do leitor" },
+    { cor: "roxo", hex: "#a78bfa", titulo: "Modo ponto de acesso" },
+    { cor: "azul", hex: "#60a5fa", titulo: "Conectando à rede" }
   ];
 
   function hexValido(valor, indice) {
@@ -1132,8 +1132,8 @@
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420" width="100%" class="arte-svg arte-roleta" role="img" ' +
       'aria-label="Roleta de estados com ' + total + ' setores coloridos e ponteiro fixo no topo.">'
     );
-    s.push("<title>Roleta de estados do acesso</title>");
-    s.push("<desc>Seis setores coloridos: ciano, verde, vermelho, laranja, roxo e azul. O setor ciano começa centralizado no topo.</desc>");
+    s.push("<title>Roleta dos estados do LED</title>");
+    s.push("<desc>Seis setores coloridos (" + lista.map(function (setor) { return setor.rotulo.toLowerCase(); }).join(", ") + "). O setor ciano começa centralizado no topo.</desc>");
     s.push(circ(cx, cy, 199, "roleta-aro"));
 
     s.push('<g data-roleta-rotor="" class="roleta-rotor">');

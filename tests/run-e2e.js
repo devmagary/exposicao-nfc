@@ -712,6 +712,41 @@ async function principal() {
       garantir(titulos.some(function (titulo) { return texto.indexOf(titulo) !== -1; }), "resultado da roleta não corresponde a um setor: " + texto.slice(0, 120));
       const transformacao = await avaliar("getComputedStyle(document.querySelector('[data-roleta-rotor]')).transform");
       garantir(transformacao && transformacao !== "none", "o rotor da roleta não recebeu rotação.");
+      garantir(await avaliar("Boolean(document.querySelector('#roleta-resultado .roleta-res-luz'))"), "o resultado deve informar como a luz se comporta.");
+      garantir(/Estado real do firmware/.test(texto), "todos os setores da roleta são estados reais do firmware.");
+      await irPara("estacoes");
+      await pausa(250);
+      await capturar("roleta-estados-led.png");
+    });
+
+    await teste("A estação do LED mostra os estados atuais do firmware", async function () {
+      await ativarEstacao(2);
+      const tabela = await avaliar("(() => {" +
+        "const secao = document.querySelector('#deck-palco .estacao-slide:not([hidden]) .led-estados');" +
+        "if (!secao) return null;" +
+        "const textos = [...secao.querySelectorAll('.led-estados-cor')].map((el) => el.textContent.trim());" +
+        "const corpo = secao.textContent;" +
+        "return {" +
+        "  linhas: textos.length," +
+        "  textos: textos," +
+        "  tabelas: secao.querySelectorAll('.led-estados-tabela').length," +
+        "  corpo: corpo" +
+        "};" +
+      "})()");
+      garantir(tabela, "a demo do LED deve ter a tabela de estados.");
+      garantir(tabela.tabelas >= 2, "devem existir duas tabelas: estados contínuos e momentos pontuais, achei " + tabela.tabelas + ".");
+      garantir(tabela.linhas >= 12, "esperava 6 estados + 6 eventos, achei " + tabela.linhas + ".");
+      const esperados = ["Operacional normal", "Acesso liberado", "Acesso negado", "Falha do leitor", "Modo ponto de acesso", "Conectando à rede"];
+      esperados.forEach(function (nome) {
+        garantir(tabela.textos.some(function (t) { return t.indexOf(nome) !== -1; }), "falta o estado no LED: " + nome);
+      });
+      garantir(/1,8 s/.test(tabela.corpo), "a tabela precisa citar os 1,8 s do cartão.");
+      garantir(/130 ms/.test(tabela.corpo), "a tabela precisa citar a falha em laranja piscando (130 ms).");
+      garantir(/350 ms/.test(tabela.corpo), "a tabela precisa citar o azul piscando (350 ms).");
+      garantir(/6→22→6/.test(tabela.corpo), "a tabela precisa citar a respiração do ciano.");
+      garantir(!/Amarelo/i.test(tabela.corpo), "a tabela não deve citar amarelo: no firmware o modo AP é roxo.");
+      const bolas = await avaliar("document.querySelectorAll('#deck-palco .estacao-slide:not([hidden]) .led-estados-bola').length");
+      garantir(bolas >= 12, "cada linha deve ter a bolinha da cor, achei " + bolas + ".");
     });
 
     await teste("Caixa sorteia, classifica e avança o placar", async function () {
