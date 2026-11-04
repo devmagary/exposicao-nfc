@@ -66,7 +66,7 @@
       { id: "tag", termo: "Tag / cartão NFC", aliases: ["tag NFC","tags NFC","tag","tags"], simples: "O cartão que responde quando chega perto do leitor.", exemplo: "Cada tag tem um número de identidade que nunca muda." },
       { id: "uid", termo: "UID", aliases: ["UID","UIDs"], simples: "O número de identidade da tag, que vem de fábrica e não muda.", exemplo: "É esse número que o painel compara com a lista de alunos." },
       { id: "pn532", termo: "PN532", aliases: ["PN532"], simples: "O chip do kit que lê as tags NFC.", exemplo: "Ele avisa a placa qual identidade acabou de ser lida." },
-      { id: "led", termo: "LED RGB", aliases: ["LED RGB"], simples: "Uma luz que mistura vermelho, verde e azul para formar qualquer cor.", exemplo: "Verde quer dizer liberado e vermelho quer dizer negado." },
+      { id: "led", termo: "LED RGB", aliases: ["LED RGB"], simples: "Uma lâmpada com três luzes dentro: vermelha, verde e azul. Juntas, elas formam qualquer cor.", exemplo: "Verde quer dizer liberado e vermelho quer dizer negado." },
       { id: "pwm", termo: "PWM", aliases: ["PWM"], simples: "Um jeito de variar a intensidade de uma luz sem trocar a cor.", exemplo: "Com PWM a luz pode ficar mais forte ou mais fraca." },
       { id: "digital", termo: "Sensor digital", aliases: ["sensor digital","sensores digitais"], simples: "Um sensor que só responde sim ou não.", exemplo: "O botão diz apenas apertado ou solto." },
       { id: "analogico", termo: "Sensor analógico", aliases: ["sensor analógico","sensores analógicos"], simples: "Um sensor que responde com um valor de 0 a 100, e não só sim ou não.", exemplo: "O sensor de luz indica o quanto o ambiente está claro." },
@@ -134,11 +134,11 @@
         icone: "chip",
         frase: "Onde tudo começa.",
         resumo:
-          "O cérebro da exposição: uma placa pequena que organiza todos os sinais em três linhas coloridas.",
+          "Esta placa pequena é o cérebro: recebe o recado dos sensores e decide o que fazer. Para os fios não virarem bagunça, todo sensor usa o mesmo trio.",
         visitante: [
-          "Observa o cartaz com a placa no centro e os fios organizados em três linhas coloridas.",
-          "Recebe um “sensor de papel” e descobre se ele vai na linha de terra, de energia ou de sinal.",
-          "Encontra a área marcada de vermelho com os três pinos que não podem ser usados."
+          "Olha o cartaz e encontra a placa no centro, com os fios separados por cor.",
+          "Pega um “sensor de papel” e responde: ele precisa de terra, de energia ou só manda recado? Vira a peça e confere.",
+          "Procura a área vermelha: são três buracos já ocupados por dentro. Mexer neles faz a placa esquecer as coisas."
         ],
         montagem: [
           "Desenhe o ESP32-S3 no centro de uma cartolina e a placa de expansão ao redor.",
@@ -171,10 +171,10 @@
         icone: "led",
         frase: "Uma cor para cada resposta.",
         resumo:
-          "O LED muda de cor e de jeito de piscar para mostrar o que está acontecendo. A roleta sorteia uma cor e o visitante descobre o que ela significa.",
+          "Sem tela, o sistema fala por cor: verde quer dizer pode entrar, vermelho quer dizer não pode, e as outras cores pedem atenção. O LED é a carinha da catraca.",
         visitante: [
           "Gira a roleta de papelão com seis setores coloridos.",
-          "Descobre o que a cor sorteada significa no sistema.",
+          "Descobre em qual das três famílias a cor sorteada cai: pode, não pode ou espere.",
           "Aponta a lanterna do celular com celofane atrás do furo e acende o “LED de papel”."
         ],
         montagem: [
@@ -236,12 +236,12 @@
         espelho: true,
         frase: "Offline também funciona.",
         resumo:
-          "A memória que não esquece: o painel da Estação 1 aparece espelhado aqui, em um tablet, e continua funcionando sem internet. No fim, a estação fecha a visita falando de LGPD: a memória que também sabe esquecer.",
+          "Cada acesso fica anotado na memória da própria placa, como num caderno. O tablet só mostra esse caderno, então tudo continua funcionando sem internet.",
         visitante: [
           "Vê o painel da Estação 1 ao vivo, em um notebook ou tablet.",
           "Segue o varal da linha do tempo: do cartão encostado até o registro no painel.",
           "Escreve em um post-it “o que acontece se a internet cair?” e cola na seção “Offline ainda funciona!”.",
-          "Fecha a visita com uma conversa rápida sobre a LGPD: ao concluir a jornada escolar, os dados do aluno são excluídos de todos os bancos."
+          "Fecha a visita com uma conversa rápida sobre a LGPD: o que a escola guarda e quando apaga."
         ],
         montagem: [
           "Deixe um notebook ou tablet rodando o Painel Web do ESP32 que está na Estação 1.",
@@ -260,11 +260,12 @@
         lgpd: {
           titulo: "Quando a memória precisa esquecer",
           resumo:
-            "A Lei Geral de Proteção de Dados (Lei nº 13.709/2018) garante que dados pessoais não ficam guardados para sempre: eles existem enquanto houver uma finalidade.",
+            "A Lei Geral de Proteção de Dados (Lei nº 13.709/2018) diz que dado pessoal não fica guardado para sempre: ele existe enquanto tiver uma finalidade.",
           pontos: [
             "O painel registra só o necessário para o acesso: matrícula, nome e horário.",
             "Quando o aluno conclui toda a jornada escolar, os dados dele são excluídos de todos os bancos de dados.",
-            "Os dados do Passaporte da feira ficam apenas no seu navegador; nada é enviado para a escola."
+            "Os dados do Passaporte da feira ficam apenas no seu navegador; nada é enviado para a escola.",
+            "É como a lista de chamada: serve durante o ano e não precisa ficar para sempre."
           ]
         },
         dica:
@@ -365,8 +366,9 @@
         cor: "ciano",
         hex: "#22d3ee",
         titulo: "Operacional normal",
+        leitura: "Azul-claro que acende e apaga devagar, como respiração: está tudo certo.",
         significado: "Wi-Fi conectado e leitor PN532 online. O LED “respira” em ciano, com brilho 6→22→6, em um ciclo de 2 s.",
-        luz: "Respiração contínua",
+        luz: "Respira devagar",
         papel: "Tudo pronto",
         real: true
       },
@@ -374,8 +376,9 @@
         cor: "verde",
         hex: "#34d399",
         titulo: "Acesso liberado",
+        leitura: "Verde firme por quase 2 segundos: pode entrar.",
         significado: "Cartão cadastrado e ativo: verde fixo por 1,8 s, a fechadura abre e depois o LED volta ao ciano.",
-        luz: "Fixo por 1,8 s",
+        luz: "Firme por uns 2 s",
         papel: "Liberado",
         real: true
       },
@@ -383,8 +386,9 @@
         cor: "vermelho",
         hex: "#f87171",
         titulo: "Acesso negado",
+        leitura: "Vermelho firme: não pode entrar.",
         significado: "Cartão fora da lista ou aluno bloqueado: vermelho fixo por 1,8 s e a fechadura não abre.",
-        luz: "Fixo por 1,8 s",
+        luz: "Firme por uns 2 s",
         papel: "Negado",
         real: true
       },
@@ -392,8 +396,9 @@
         cor: "laranja",
         hex: "#fb923c",
         titulo: "Falha do leitor",
+        leitura: "Laranja piscando rápido, como sirene: o leitor não respondeu.",
         significado: "O PN532 não respondeu: laranja piscando duas vezes por segundo (130 ms aceso, 110 ms apagado). Confira os fios e as chaves.",
-        luz: "Pisca 2x por segundo",
+        luz: "Pisca rápido",
         papel: "Leitor",
         real: true
       },
@@ -401,8 +406,9 @@
         cor: "roxo",
         hex: "#a78bfa",
         titulo: "Modo ponto de acesso",
+        leitura: "Roxo parado: a placa está esperando configuração.",
         significado: "Sem rede escolhida: o ESP32 cria a rede ControleAcesso-S3 e fica em roxo suave, fixo, até alguém conectar.",
-        luz: "Fixo constante",
+        luz: "Parado",
         papel: "Modo AP",
         real: true
       },
@@ -410,8 +416,9 @@
         cor: "azul",
         hex: "#60a5fa",
         titulo: "Conectando à rede",
+        leitura: "Azul piscando devagar: tentando entrar na rede.",
         significado: "Inicializando ou entrando na rede escolhida em /wifi: azul piscando, 350 ms aceso e 350 ms apagado.",
-        luz: "Pisca a cada 0,7 s",
+        luz: "Pisca devagar",
         papel: "Conectando",
         real: true
       }
@@ -419,12 +426,12 @@
 
     /* Momentos pontuais do LED, fora do estado contínuo */
     eventosLed: [
-      { momento: "Ligar a placa (boot)", cor: "azul", detalhe: "Azul suave (0,30,60) enquanto conecta ao Wi-Fi salvo; depois vira ciano ou roxo.", duracao: "até concluir" },
-      { momento: "Entrar pela página /wifi", cor: "azul", detalhe: "Azul piscando 350 ms aceso / 350 ms apagado até a conexão terminar.", duracao: "até conectar" },
-      { momento: "Wi-Fi conectado pela página /wifi", cor: "verde", detalhe: "Verde fixo de confirmação e a placa reinicia.", duracao: "3 s" },
-      { momento: "Cartão liberado", cor: "verde", detalhe: "Verde vibrante (0,255,0) e a fechadura aciona.", duracao: "1,8 s" },
-      { momento: "Cartão negado ou bloqueado", cor: "vermelho", detalhe: "Vermelho (255,0,0) e a fechadura não abre.", duracao: "1,8 s" },
-      { momento: "Comando do painel web (led_verde, led_vermelho, led_azul)", cor: "azul", detalhe: "Verde, vermelho ou azul (0,80,255) por 5 s; o comando led_off apaga e cancela o aviso.", duracao: "5 s" }
+      { momento: "Ligar a placa (boot)", cor: "azul", leitura: "Azul fraquinho enquanto liga; depois muda para azul-claro ou roxo.", detalhe: "Azul suave (0,30,60) enquanto conecta ao Wi-Fi salvo; depois vira ciano ou roxo.", duracao: "até concluir" },
+      { momento: "Entrar pela página /wifi", cor: "azul", leitura: "Azul piscando devagar até a conexão terminar.", detalhe: "Azul piscando 350 ms aceso / 350 ms apagado até a conexão terminar.", duracao: "até conectar" },
+      { momento: "Wi-Fi conectado pela página /wifi", cor: "verde", leitura: "Verde firme de confirmação; a placa reinicia.", detalhe: "Verde fixo de confirmação e a placa reinicia.", duracao: "3 s" },
+      { momento: "Cartão liberado", cor: "verde", leitura: "Verde de semáforo aberto: a fechadura abre.", detalhe: "Verde vibrante (0,255,0) e a fechadura aciona.", duracao: "1,8 s" },
+      { momento: "Cartão negado ou bloqueado", cor: "vermelho", leitura: "Vermelho de placa de pare: a fechadura não abre.", detalhe: "Vermelho (255,0,0) e a fechadura não abre.", duracao: "1,8 s" },
+      { momento: "Comando do painel web (led_verde, led_vermelho, led_azul)", cor: "azul", leitura: "Verde, vermelho ou azul por 5 segundos; o comando de desligar apaga.", detalhe: "Verde, vermelho ou azul (0,80,255) por 5 s; o comando led_off apaga e cancela o aviso.", duracao: "5 s" }
     ],
 
     linhaDoTempo: [
@@ -486,12 +493,12 @@
     sensorQuizIds: [10, 20, 13, 30, 23, 18, 27, 28, 31, 29, 22, 34],
 
     statusLed: [
-      { cor: "ciano", titulo: "Operacional normal", detalhe: "Efeito respiração (brilho 6→22→6, ciclo de 2 s): Wi-Fi conectado e PN532 online." },
-      { cor: "verde", titulo: "Acesso liberado", detalhe: "Verde fixo por 1,8 s: aluno cadastrado e ativo, fechadura acionada." },
-      { cor: "vermelho", titulo: "Acesso negado", detalhe: "Vermelho fixo por 1,8 s: cartão desconhecido ou aluno bloqueado." },
-      { cor: "laranja", titulo: "Falha do leitor", detalhe: "Laranja piscando 2x por segundo (130 ms aceso / 110 ms apagado): PN532 sem resposta no I2C." },
-      { cor: "roxo", titulo: "Modo ponto de acesso", detalhe: "Roxo suave e fixo: sem rede escolhida, a rede ControleAcesso-S3 está ativa." },
-      { cor: "azul", titulo: "Conectando à rede", detalhe: "Azul piscando (350 ms aceso / 350 ms apagado): boot ou conexão pela página /wifi." }
+      { cor: "ciano", titulo: "Operacional normal", leitura: "Azul-claro que respira devagar: está tudo certo.", detalhe: "Efeito respiração (brilho 6→22→6, ciclo de 2 s): Wi-Fi conectado e PN532 online." },
+      { cor: "verde", titulo: "Acesso liberado", leitura: "Verde firme por uns 2 segundos: pode entrar.", detalhe: "Verde fixo por 1,8 s: aluno cadastrado e ativo, fechadura acionada." },
+      { cor: "vermelho", titulo: "Acesso negado", leitura: "Vermelho firme: não pode entrar.", detalhe: "Vermelho fixo por 1,8 s: cartão desconhecido ou aluno bloqueado." },
+      { cor: "laranja", titulo: "Falha do leitor", leitura: "Laranja piscando rápido, como sirene: o leitor não respondeu.", detalhe: "Laranja piscando 2x por segundo (130 ms aceso / 110 ms apagado): PN532 sem resposta no I2C." },
+      { cor: "roxo", titulo: "Modo ponto de acesso", leitura: "Roxo parado: a placa criou uma rede própria e espera configuração.", detalhe: "Roxo suave e fixo: sem rede escolhida, a rede ControleAcesso-S3 está ativa." },
+      { cor: "azul", titulo: "Conectando à rede", leitura: "Azul piscando devagar: tentando entrar na rede.", detalhe: "Azul piscando (350 ms aceso / 350 ms apagado): boot ou conexão pela página /wifi." }
     ],
 
     /* ---------------------------------------------------------------------
@@ -504,7 +511,7 @@
       { id: 2, nome: "Buzzer Ativo", categoria: "Som, áudio e luzes", tipo: "digital", visual: "buzzer-ativo", aparencia: "Cilindro preto igual ao passivo, com um sinal de mais na tampa.", descricao: "Tem oscilador interno e emite um único tom contínuo quando recebe energia.", explicacao: "Um alto-falante pequeno que faz um único apito quando recebe energia.", ideia: "Sirene simples e aviso de porta aberta.", usos: ["Avisar porta aberta ou janela violada.","Soar sirene de emergência em maquetes.","Confirmar o fim de um processo em máquinas simples."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO4" } ] },
       { id: 3, nome: "Emissor Laser", categoria: "Som, áudio e luzes", tipo: "digital", visual: "laser", aparencia: "Cilindro de metal com lente vermelha e um feixe de luz saindo pelo topo.", descricao: "Diodo laser de 650 nm que emite um ponto vermelho concentrado.", explicacao: "Um pontinho de luz vermelha bem fininho, como o de uma mira.", ideia: "Barreira de segurança combinada com LDR.", usos: ["Montar barreira de segurança com LDR.","Contar peças que passam na frente do feixe.","Acender a luz quando alguém cruza a porta."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO5" } ] },
       { id: 4, nome: "LED Infravermelho", categoria: "Som, áudio e luzes", tipo: "digital", visual: "led-ir", aparencia: "LED transparente com um cristal interno e ondas roxas tracejadas.", descricao: "LED IR de 940 nm, invisível a olho nu, igual ao do controle remoto.", explicacao: "Uma luz invisível para os olhos, igual à do controle remoto da TV.", ideia: "Controle remoto universal via Wi-Fi.", usos: ["Emitir comandos para TVs e aparelhos via controle remoto.","Iluminar câmeras de visão noturna.","Fazer barreira invisível com receptor IR."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "S", linha: "S", gpio: "IO6" } ] },
-      { id: 5, nome: "LED RGB 5 mm", categoria: "Som, áudio e luzes", tipo: "especial", visual: "led-rgb", aparencia: "LED transparente com três cristais coloridos e raios vermelho, verde e azul.", descricao: "Três LEDs (R, G, B) no mesmo encapsulamento; misturando as intensidades surgem todas as cores.", explicacao: "Uma luz que mistura vermelho, verde e azul para formar qualquer cor.", ideia: "Semáforo de status e luz de notificação.", usos: ["Indicar estados com cores: verde livre, vermelho ocupado.","Misturar cores em aulas de lógica PWM.","Criar luz de notificação para mensagens."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" }, { rotulo: "B", linha: "S", gpio: "IO4" } ] },
+      { id: 5, nome: "LED RGB 5 mm", categoria: "Som, áudio e luzes", tipo: "especial", visual: "led-rgb", aparencia: "LED transparente com três cristais coloridos e raios vermelho, verde e azul.", descricao: "Três LEDs (R, G, B) no mesmo encapsulamento; misturando as intensidades surgem todas as cores.", explicacao: "Uma lâmpada com três luzes dentro: vermelha, verde e azul. Juntas, elas formam qualquer cor.", ideia: "Semáforo de status e luz de notificação.", usos: ["Indicar estados com cores: verde livre, vermelho ocupado.","Misturar cores em aulas de lógica PWM.","Criar luz de notificação para mensagens."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" }, { rotulo: "B", linha: "S", gpio: "IO4" } ] },
       { id: 6, nome: "LED RGB SMD", categoria: "Som, áudio e luzes", tipo: "especial", visual: "led-rgb-smd", aparencia: "Pastilha quadrada preta com quatro terminais dourados e três cores no centro.", descricao: "Versão plana (SMD 5050) do LED RGB, mais brilhante e com difusão angular maior.", explicacao: "A mesma luz colorida, só que achatada e mais brilhante.", ideia: "Luz piloto de painéis compactos.", usos: ["Iluminar painéis compactos com pouca altura.","Indicar status em placas pequenas.","Criar efeitos de cor em maquetes."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" }, { rotulo: "B", linha: "S", gpio: "IO4" } ] },
       { id: 7, nome: "LED Duas Cores", categoria: "Som, áudio e luzes", tipo: "digital", visual: "led-duas-cores", aparencia: "LED transparente partido ao meio em vermelho e verde.", descricao: "LED de 3 pernas com vermelho e verde; os dois juntos produzem amarelo.", explicacao: "Uma luz que acende vermelho ou verde, e amarelo quando os dois juntos.", ideia: "Indicador de porta livre/ocupada.", usos: ["Mostrar porta livre ou ocupada em banheiros.","Sinalizar ligado ou desligado em painéis.","Simular semáforo de dois estados."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" } ] },
       { id: 8, nome: "LED Bicolor 3 mm", categoria: "Som, áudio e luzes", tipo: "digital", visual: "led-bicolor", aparencia: "LED transparente menor, também com metade vermelha e metade verde.", descricao: "Versão menor do LED bicolor, com resistores integrados na plaquinha.", explicacao: "A versão pequena da luz de duas cores, com brilho mais discreto.", ideia: "Luzes discretas em caixas de comando.", usos: ["Indicar presença em caixas de comando.","Mostrar nível de bateria com duas cores.","Sinalizar erros discretos em equipamentos."], ligacao: [ { rotulo: "−", linha: "G" }, { rotulo: "R", linha: "S", gpio: "IO1" }, { rotulo: "G", linha: "S", gpio: "IO2" } ] },

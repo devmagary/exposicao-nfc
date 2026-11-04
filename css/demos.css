@@ -701,6 +701,11 @@
   font-size: 0.8rem;
   line-height: 1.5;
 }
+.roleta-res-tecnico {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
 
 /* Tabela dos 6 estados do LED (firmware atual) */
 .led-estados {
@@ -763,6 +768,12 @@
   margin-top: 2px;
   color: var(--muted);
   font-size: 0.74rem;
+}
+.led-estados-tecnico {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
 }
 @media (max-width: 640px) {
   .led-estados-tabela,

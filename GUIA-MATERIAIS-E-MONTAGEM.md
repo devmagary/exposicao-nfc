@@ -129,17 +129,19 @@ Fica com o professor e serve às cinco equipes. Separe uma vez só:
 
 ### Estação 3 — O Semáforo Falante
 
-**Para que serve:** traduzir o LED RGB da mesa 1 em cores e significados: standby, liberado, negado, modo AP, boot e falha.
+**Para que serve:** mostrar que o LED da mesa 1 conversa por cor: verde é pode entrar, vermelho é não pode e as outras cores pedem atenção. A roleta traduz cada cor e cada jeito de piscar.
 
 **Materiais próprios (4):** kit de guache, pincéis, papel celofane e lanterna. **Use também o material de uso comum.**
 
 **Montagem**
-1. Recorte a roleta de seis setores: ciano, verde, vermelho, laranja, roxo e azul.
+1. Recorte a roleta de seis setores: azul-claro (ciano), verde, vermelho, laranja, roxo e azul.
 2. Pinte com guache e monte um cartaz para cada estado real do firmware.
 3. Abra um furo na cartolina, cubra com celofane e ilumine por trás com a lanterna.
 4. Deixe claro que “leitor desconectado” é o **vermelho piscando**, igual ao da mesa 1.
 
-**O visitante faz:** gira a roleta, descobre o significado da cor e acende o “LED de papel” com a lanterna.
+**O visitante faz:** gira a roleta, descobre em qual das três famílias a cor cai (pode, não pode ou espere) e acende o “LED de papel” com a lanterna.
+
+**Como ler a cor:** fale o nome da cor, o jeito da luz e o que fazer. Verde firme = pode entrar; laranja piscando = chame a equipe.
 
 **Dica:** sem lanterna, use a luz da janela ou uma luminária; o efeito de cor continua.
 

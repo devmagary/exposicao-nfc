@@ -1133,7 +1133,7 @@
       'aria-label="Roleta de estados com ' + total + ' setores coloridos e ponteiro fixo no topo.">'
     );
     s.push("<title>Roleta dos estados do LED</title>");
-    s.push("<desc>Seis setores coloridos (" + lista.map(function (setor) { return setor.rotulo.toLowerCase(); }).join(", ") + "). O setor ciano começa centralizado no topo.</desc>");
+    s.push("<desc>Seis setores coloridos (" + lista.map(function (setor) { return setor.rotulo.toLowerCase(); }).join(", ") + "). O setor azul-claro começa centralizado no topo.</desc>");
     s.push(circ(cx, cy, 199, "roleta-aro"));
 
     s.push('<g data-roleta-rotor="" class="roleta-rotor">');

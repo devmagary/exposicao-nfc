@@ -567,6 +567,7 @@
 
     function corCurta(setor) {
       var cor = String(setor.cor || "");
+      if (cor === "ciano") return "Azul-claro";
       return cor.charAt(0).toUpperCase() + cor.slice(1);
     }
     function pontoCaminho(raio, anguloGraus) {
@@ -637,6 +638,10 @@
       var setor = estado.resultado;
       var real = !!setor.real;
       var luz = setor.luz ? '<span class="roleta-res-luz">' + esc(setor.luz) + '</span>' : "";
+      var leitura = setor.leitura || setor.significado;
+      var tecnico = setor.leitura && setor.significado
+        ? '<p class="roleta-res-significado roleta-res-tecnico tecnico">Detalhe técnico: ' + esc(setor.significado) + '</p>'
+        : "";
       return '<div class="roleta-res" style="--roleta-cor: ' + esc(setor.hex) + '">' +
           '<div class="roleta-res-topo">' +
             '<span class="roleta-led" aria-hidden="true"></span>' +
@@ -647,7 +652,8 @@
             luz +
           '</div>' +
           '<p class="roleta-res-titulo">' + esc(setor.titulo) + '</p>' +
-          '<p class="roleta-res-significado">' + esc(setor.significado) + '</p>' +
+          '<p class="roleta-res-significado">' + esc(leitura) + '</p>' +
+          tecnico +
         '</div>';
     }
 
@@ -659,33 +665,41 @@
       setores.forEach(function (setor) { cores[setor.cor] = setor.hex; });
       var linhas = lista.map(function (item, indice) {
         var hex = cores[item.cor] || "#94a3b8";
+        var leitura = item.leitura || item.detalhe;
+        var tecnico = item.leitura && item.detalhe
+          ? '<span class="led-estados-tecnico tecnico">' + esc(item.detalhe) + '</span>'
+          : "";
         return '<tr>' +
           '<td><span class="led-estados-cor" style="--led-cor: ' + esc(hex) + '">' +
             '<span class="led-estados-bola" aria-hidden="true"></span>' + esc(item.titulo) +
           '</span></td>' +
-          '<td data-rotulo="Como a luz se comporta">' + esc(item.detalhe) + '</td>' +
+          '<td data-rotulo="Como a luz se comporta">' + esc(leitura) + tecnico + '</td>' +
         '</tr>';
       }).join("");
       var linhasEventos = eventos.map(function (item) {
         var hex = cores[item.cor] || "#94a3b8";
+        var leitura = item.leitura || item.detalhe;
+        var tecnico = item.leitura && item.detalhe
+          ? '<span class="led-estados-tecnico tecnico">' + esc(item.detalhe) + '</span>'
+          : "";
         return '<tr>' +
           '<td><span class="led-estados-cor" style="--led-cor: ' + esc(hex) + '">' +
             '<span class="led-estados-bola" aria-hidden="true"></span>' + esc(item.momento) +
           '</span></td>' +
-          '<td data-rotulo="O que acontece">' + esc(item.detalhe) + '</td>' +
+          '<td data-rotulo="O que acontece">' + esc(leitura) + tecnico + '</td>' +
           '<td data-rotulo="Duração"><span class="led-estados-luz">' + esc(item.duracao) + '</span></td>' +
         '</tr>';
       }).join("");
       return '<section class="led-estados" aria-labelledby="led-estados-titulo">' +
         '<h5 class="led-estados-titulo" id="led-estados-titulo">O que cada luz quer dizer</h5>' +
         '<table class="led-estados-tabela">' +
-          '<caption>Estados contínuos do LED RGB, do mais comum ao mais raro.</caption>' +
-          '<thead><tr><th scope="col">Luz</th><th scope="col">Comportamento</th></tr></thead>' +
+          '<caption>Estados da luz, do mais comum ao mais raro.</caption>' +
+          '<thead><tr><th scope="col">Luz</th><th scope="col">O que a luz faz</th></tr></thead>' +
           '<tbody>' + linhas + '</tbody>' +
         '</table>' +
         (linhasEventos
           ? '<table class="led-estados-tabela led-estados-tabela--eventos">' +
-              '<caption>Momentos pontuais</caption>' +
+              '<caption>Momentos pontuais (quando algo acontece)</caption>' +
               '<thead><tr><th scope="col">Momento</th><th scope="col">O que acontece</th><th scope="col">Tempo</th></tr></thead>' +
               '<tbody>' + linhasEventos + '</tbody>' +
             '</table>'
