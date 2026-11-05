@@ -124,13 +124,29 @@
         dica:
           "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão.",
         argumentos: {
-          resumo: "Duas frentes para defender o projeto: o que ele reaproveita e o que ele protege.",
+          resumo: "A entrada da sala é controlada pela equipe, em grupos de cerca de 8 visitantes. Cada um testa uma tag com nome e, se autorizar, foto.",
+          roteiroTitulo: "Roteiro de atendimento",
           roteiro: [
-            "Comece escolhendo um cartão e pergunte: “o que você acha que vai acontecer?”.",
-            "Encoste no leitor e mostre o LED e a resposta: liberado, negado ou bloqueado.",
-            "Feche dizendo que a decisão aconteceu na placa, sem internet, e que o painel da Estação 5 só mostra o registro."
+            "Receba o visitante e explique: a entrada da sala é controlada pela equipe e o teste é uma simulação.",
+            "Pergunte se ele autoriza uma foto do rosto para o experimento da sala. Deixe claro que é opcional.",
+            "Se autorizar, cadastre no painel o nome e a foto e vincule a tag a esse cadastro; se não, use uma tag de visitante sem foto.",
+            "Encoste a tag no leitor e mostre o sensor funcionando: ela acorda pela proximidade, o LED acende e a resposta aparece.",
+            "Faça uma leitura de liberado e outra de bloqueado para o visitante comparar as respostas.",
+            "Feche com os argumentos da aba (reuso e segurança) e apague a foto no fim da atividade."
           ],
           blocos: [
+            {
+              id: "foto",
+              icone: "📷",
+              titulo: "Foto e consentimento",
+              itens: [
+                "A foto é opcional: quem não quiser participa do mesmo jeito, com uma tag sem foto.",
+                "Pergunte antes: “podemos usar uma foto do seu rosto só neste experimento da sala?”.",
+                "A tag guarda só o número de identidade; nome e foto ficam no cadastro do sistema.",
+                "A foto fica restrita ao experimento e é apagada no fim da atividade.",
+                "Visitante menor de idade: siga a orientação do professor responsável."
+              ]
+            },
             {
               id: "sustentabilidade",
               icone: "🌱",

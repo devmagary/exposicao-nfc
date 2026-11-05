@@ -483,7 +483,7 @@
           (arg.resumo ? '<p class="argumentos-resumo">' + esc(arg.resumo) + '</p>' : "") +
           (arg.roteiro && arg.roteiro.length
             ? '<section class="argumento-roteiro">' +
-                '<h4><span aria-hidden="true">🎤</span> Roteiro de 1 minuto</h4>' +
+                '<h4><span aria-hidden="true">🎤</span> ' + esc(arg.roteiroTitulo || "Roteiro de 1 minuto") + '</h4>' +
                 '<ol>' + arg.roteiro.map(function (passo) {
                   return '<li>' + esc(passo) + '</li>';
                 }).join("") + '</ol>' +

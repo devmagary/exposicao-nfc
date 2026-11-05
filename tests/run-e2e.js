@@ -688,8 +688,13 @@ async function principal() {
         garantir(info, "estação " + (indice + 1) + " sem aba de argumentos.");
         garantir(info.titulo === "Argumentos", "rótulo inesperado na estação " + (indice + 1) + ": " + info.titulo);
         garantir(info.aberto, "a aba de argumentos da estação " + (indice + 1) + " não abriu.");
-        garantir(info.roteiro === 3, "a estação " + (indice + 1) + " precisa de um roteiro com 3 passos.");
+        garantir(info.roteiro >= 3, "a estação " + (indice + 1) + " precisa de um roteiro com pelo menos 3 passos.");
         garantir(info.blocos >= 2, "a estação " + (indice + 1) + " precisa de pelo menos 2 blocos de argumentos.");
+        if (indice === 0) {
+          garantir(info.roteiro >= 6, "o roteiro da Estação 1 deveria cobrir o atendimento completo.");
+          garantir(/consentimento/i.test(info.texto), "a Estação 1 deveria explicar o consentimento da foto.");
+          garantir(/apagada no fim/i.test(info.texto), "a Estação 1 deveria prever apagar a foto no fim.");
+        }
         garantir(new RegExp(palavras[indice], "i").test(info.texto), "a estação " + (indice + 1) + " deveria falar de " + palavras[indice] + ".");
       }
       const total = await avaliar("document.querySelectorAll('#deck-palco [data-aba=\"argumentos\"]').length");
