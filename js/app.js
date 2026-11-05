@@ -481,6 +481,14 @@
         const arg = painel.dados || {};
         corpo = '<div class="argumentos">' +
           (arg.resumo ? '<p class="argumentos-resumo">' + esc(arg.resumo) + '</p>' : "") +
+          (arg.roteiro && arg.roteiro.length
+            ? '<section class="argumento-roteiro">' +
+                '<h4><span aria-hidden="true">🎤</span> Roteiro de 1 minuto</h4>' +
+                '<ol>' + arg.roteiro.map(function (passo) {
+                  return '<li>' + esc(passo) + '</li>';
+                }).join("") + '</ol>' +
+              '</section>'
+            : "") +
           (arg.blocos || []).map(function (bloco) {
             const idTitulo = "arg-" + esc(bloco.id) + "-" + esc(estacao.id);
             return '<section class="argumento-bloco" aria-labelledby="' + idTitulo + '">' +

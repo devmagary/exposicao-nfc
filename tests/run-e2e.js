@@ -665,28 +665,36 @@ async function principal() {
       garantir(achados.length === 0, "jargão na primeira camada: " + achados.join(", "));
     });
 
-    await teste("Estação 1 tem a aba de argumentos de sustentabilidade e segurança", async function () {
+    await teste("Cada estação tem uma aba de argumentos para a apresentação", async function () {
+      const palavras = ["Sustentabilidade", "três linhas", "roleta", "37", "LGPD"];
+      for (let indice = 0; indice < 5; indice++) {
+        await ativarEstacao(indice);
+        const info = await avaliar("(() => {" +
+          "const slide = document.querySelector('#deck-palco .estacao-slide:not([hidden])');" +
+          "if (!slide) return null;" +
+          "const aba = slide.querySelector('[data-aba=\"argumentos\"]');" +
+          "const painel = slide.querySelector('[data-painel=\"argumentos\"]');" +
+          "if (!aba || !painel) return null;" +
+          "aba.click();" +
+          "return {" +
+          "  id: slide.getAttribute('data-estacao')," +
+          "  titulo: aba.textContent," +
+          "  roteiro: painel.querySelectorAll('.argumento-roteiro li').length," +
+          "  blocos: painel.querySelectorAll('.argumento-bloco').length," +
+          "  aberto: !painel.hidden," +
+          "  texto: painel.textContent" +
+          "};" +
+        "})()");
+        garantir(info, "estação " + (indice + 1) + " sem aba de argumentos.");
+        garantir(info.titulo === "Argumentos", "rótulo inesperado na estação " + (indice + 1) + ": " + info.titulo);
+        garantir(info.aberto, "a aba de argumentos da estação " + (indice + 1) + " não abriu.");
+        garantir(info.roteiro === 3, "a estação " + (indice + 1) + " precisa de um roteiro com 3 passos.");
+        garantir(info.blocos >= 2, "a estação " + (indice + 1) + " precisa de pelo menos 2 blocos de argumentos.");
+        garantir(new RegExp(palavras[indice], "i").test(info.texto), "a estação " + (indice + 1) + " deveria falar de " + palavras[indice] + ".");
+      }
+      const total = await avaliar("document.querySelectorAll('#deck-palco [data-aba=\"argumentos\"]').length");
+      garantir(total === 5, "deveria haver uma aba de argumentos por estação, achei " + total + ".");
       await ativarEstacao(0);
-      const abas = await avaliar("([...document.querySelectorAll('#deck-palco .estacao-slide:not([hidden]) .aba-estacao')].map(function (el) { return el.textContent; }))");
-      garantir(abas.indexOf("Argumentos") !== -1, "a Estação 1 deveria ter a aba Argumentos: " + abas.join(", "));
-
-      await avaliar("document.querySelector('#tab-argumentos-toque').click(); true");
-      const painel = await avaliar("(() => {" +
-        "const p = document.querySelector('#painel-argumentos-toque');" +
-        "if (!p || p.hidden) return null;" +
-        "return {" +
-        "  texto: p.textContent," +
-        "  blocos: [...p.querySelectorAll('.argumento-bloco h4')].map(function (b) { return b.textContent; })," +
-        "  alerta: Boolean(p.querySelector('.argumentos-alerta'))," +
-        "  abas: document.querySelectorAll('#deck-palco [data-aba=\"argumentos\"]').length" +
-        "};" +
-      "})()");
-      garantir(painel, "o painel de argumentos deveria abrir.");
-      garantir(painel.blocos.length === 2, "deveria haver dois blocos de argumentos, achei " + (painel ? painel.blocos.length : 0) + ".");
-      garantir(/Sustentabilidade/.test(painel.blocos.join(" ")), "falta o bloco de sustentabilidade.");
-      garantir(/Segurança/.test(painel.blocos.join(" ")), "falta o bloco de segurança.");
-      garantir(painel.alerta && /lixo eletrônico/.test(painel.texto), "o alerta deveria indicar o descarte correto.");
-      garantir(painel.abas === 1, "só a Estação 1 deve ter a aba de argumentos.");
     });
 
     await teste("Deck navega, atualiza hash e mostra a estação correta", async function () {

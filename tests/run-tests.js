@@ -56,6 +56,19 @@ dados.estacoes.forEach(function (estacao) {
   garantir(typeof estacao.resumo === "string" && estacao.resumo.length > 30, "estação " + estacao.numero + ": resumo curto.");
 });
 
+/* Toda estação tem uma aba de argumentos com roteiro e blocos de apoio */
+dados.estacoes.forEach(function (estacao) {
+  const arg = estacao.argumentos;
+  garantir(arg && typeof arg === "object", "estação " + estacao.numero + ": falta a aba de argumentos.");
+  garantir(typeof arg.resumo === "string" && arg.resumo.length > 20, "estação " + estacao.numero + ": resumo dos argumentos curto.");
+  garantir(Array.isArray(arg.roteiro) && arg.roteiro.length >= 3, "estação " + estacao.numero + ": roteiro de apresentação incompleto.");
+  garantir(Array.isArray(arg.blocos) && arg.blocos.length >= 2, "estação " + estacao.numero + ": blocos de argumentos incompletos.");
+  arg.blocos.forEach(function (bloco) {
+    garantir(bloco.titulo && Array.isArray(bloco.itens) && bloco.itens.length >= 2, "estação " + estacao.numero + ": bloco de argumento incompleto.");
+  });
+  garantir(typeof arg.alerta === "string" && arg.alerta.length > 20, "estação " + estacao.numero + ": falta o alerta honesto.");
+});
+
 const kit = dados.kitAoVivo;
 garantir(kit && typeof kit === "object", "kitAoVivo ausente.");
 iguais(kit.aoVivo, "toque", "o kit ao vivo deve ficar na Estação 1 (toque).");

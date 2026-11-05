@@ -812,13 +812,23 @@ li { list-style: none; }
 
 .argumentos { display: grid; gap: 12px; }
 .argumentos-resumo { margin: 0; color: var(--texto-suave); font-size: 0.9rem; }
+.argumento-roteiro {
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--cor-estacao) 35%, var(--border));
+  border-radius: 12px;
+  background: var(--cor-estacao-soft);
+}
+.argumento-roteiro ol { display: grid; gap: 7px; margin: 0; padding-left: 20px; }
+.argumento-roteiro li { color: var(--texto-suave); font-size: 0.86rem; }
+.argumento-roteiro li::marker { color: var(--cor-estacao); font-weight: 700; }
 .argumento-bloco {
   padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: color-mix(in srgb, var(--surface) 60%, transparent);
 }
-.argumento-bloco h4 {
+.argumento-bloco h4,
+.argumento-roteiro h4 {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -826,7 +836,8 @@ li { list-style: none; }
   font-size: 0.9rem;
   color: var(--cor-estacao);
 }
-.argumento-bloco h4 span { font-size: 1rem; }
+.argumento-bloco h4 span,
+.argumento-roteiro h4 span { font-size: 1rem; }
 .argumento-bloco li { font-size: 0.86rem; }
 .argumentos-alerta {
   margin: 0;

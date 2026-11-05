@@ -136,7 +136,7 @@ Quase tudo está em **`js/data.js`**:
 
 - `meta`: nome da escola, data, créditos.
 - `estacoes`: textos das 5 equipes, listas de “Para o visitante”, “Como montar”, materiais e dica. A ordem do array é a **ordem da visita** (1 → 5); a estação 5 tem o campo `lgpd` com o fechamento sobre proteção de dados. `resumo` e `visitante` são a **primeira camada** (linguagem simples); `montagem`, `materiais` e `dica` são o detalhe técnico.
-  - `argumentos` (opcional): blocos de defesa do projeto (sustentabilidade e segurança) que viram uma aba extra no site; hoje só a Estação 1 tem.
+  - `argumentos`: aba “Argumentos” de cada estação, com `roteiro` de 3 passos para a apresentação, `blocos` (por que importa / se perguntarem) e um `alerta` para evitar exageros.
 - `glossario`: fonte única das explicações (`id`, `termo`, `aliases`, `simples`, `exemplo`). O mesmo texto alimenta a seção Glossário, o popover dos termos e a marcação automática no site inteiro. Para um termo novo aparecer sublinhado, basta adicionar `aliases` (formas que devem ser reconhecidas no texto).
 - `materiais.prioritarios`: os 20 itens do Material novo (nome, quantidade, uso).
 - `materiais.extras`: os 11 itens complementares do Material Sugestão; zip e bexigas foram removidos porque não serão usados.

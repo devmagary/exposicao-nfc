@@ -125,6 +125,11 @@
           "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão.",
         argumentos: {
           resumo: "Duas frentes para defender o projeto: o que ele reaproveita e o que ele protege.",
+          roteiro: [
+            "Comece escolhendo um cartão e pergunte: “o que você acha que vai acontecer?”.",
+            "Encoste no leitor e mostre o LED e a resposta: liberado, negado ou bloqueado.",
+            "Feche dizendo que a decisão aconteceu na placa, sem internet, e que o painel da Estação 5 só mostra o registro."
+          ],
           blocos: [
             {
               id: "sustentabilidade",
@@ -188,7 +193,38 @@
         ],
         demo: "gvs",
         dica:
-          "No ESP32-S3 N16R8, os pinos IO35, IO36 e IO37 são ligados à PSRAM. Nunca ligue nada neles."
+          "No ESP32-S3 N16R8, os pinos IO35, IO36 e IO37 são ligados à PSRAM. Nunca ligue nada neles.",
+        argumentos: {
+          resumo: "A ideia para defender: uma placa pequena concentra a inteligência e deixa o projeto crescer.",
+          roteiro: [
+            "Aponte para a placa no centro: “este é o cérebro; ele segue o programa que a equipe gravou”.",
+            "Siga uma linha de cada cor até um sensor e pergunte o que acontece se faltar terra, energia ou sinal.",
+            "Mostre a área vermelha e feche: “três buracos já estão ocupados por dentro; não se liga nada neles”."
+          ],
+          blocos: [
+            {
+              id: "importa",
+              icone: "🎯",
+              titulo: "Por que isso importa",
+              itens: [
+                "Uma placa pequena controla sensores e fechaduras sem precisar de um computador ligado.",
+                "As três linhas coloridas evitam ligação errada e facilitam a manutenção.",
+                "O projeto cresce: é só plugar mais sensores nos pinos certos."
+              ]
+            },
+            {
+              id: "perguntas",
+              icone: "❓",
+              titulo: "Se perguntarem",
+              itens: [
+                "“Isso é um computador?” É um computador minúsculo, sem tela, feito para controlar coisas.",
+                "“Por que três fios?” Um devolve a corrente, um traz energia e o terceiro leva o recado.",
+                "“Posso ligar qualquer coisa?” Nos pinos seguros, sensores compatíveis; nos três vermelhos, não."
+              ]
+            }
+          ],
+          alerta: "Não prometa que “qualquer sensor funciona”: cada modelo pede uma tensão e um ajuste próprios. Na dúvida, chame a equipe."
+        }
       },
       {
         id: "semaforo",
@@ -220,7 +256,38 @@
         ],
         demo: "roleta",
         dica:
-          "Estados reais do firmware: ciano respirando = operacional, verde fixo 1,8 s = liberado, vermelho fixo 1,8 s = negado, laranja piscando = falha do leitor, roxo fixo = modo AP e azul piscando = conectando."
+          "Estados reais do firmware: ciano respirando = operacional, verde fixo 1,8 s = liberado, vermelho fixo 1,8 s = negado, laranja piscando = falha do leitor, roxo fixo = modo AP e azul piscando = conectando.",
+        argumentos: {
+          resumo: "A ideia para defender: a cor é uma interface que qualquer pessoa entende sem ler uma tela.",
+          roteiro: [
+            "Comece cobrindo o LED ou apagando a luz: “sem tela, a catraca fala por cor”.",
+            "Gire a roleta e peça ao visitante para dizer se a cor é “pode”, “não pode” ou “espere”.",
+            "Feche mostrando o LED real: “a cor do papel é a mesma que a placa acende”."
+          ],
+          blocos: [
+            {
+              id: "importa",
+              icone: "🎯",
+              titulo: "Por que isso importa",
+              itens: [
+                "A resposta é instantânea e não depende de ler uma tela.",
+                "Funciona para criança, visitante apressado e quem lê com dificuldade.",
+                "Cada cor tem um significado fixo: não é decoração."
+              ]
+            },
+            {
+              id: "perguntas",
+              icone: "❓",
+              titulo: "Se perguntarem",
+              itens: [
+                "“E quem não distingue cores?” O painel também escreve LIBERADO ou NEGADO; a cor é um reforço.",
+                "“Por que às vezes pisca?” O piscar indica conexão ou problema; o fixo indica uma resposta pronta.",
+                "“O que é o roxo?” A placa criou uma rede própria para ser configurada."
+              ]
+            }
+          ],
+          alerta: "Não diga que a cor resolve tudo: sozinha, ela não atende quem tem daltonismo. O texto ao lado é essencial."
+        }
       },
       {
         id: "caixa",
@@ -252,7 +319,38 @@
         ],
         demo: "caixa",
         dica:
-          "As três colunas do guia são: Digitais (botão, reed, tilt...), Analógicos (LDR, joystick, hall linear...) e Especiais (DS18B20, DHT11, IR 38 kHz, NFC)."
+          "As três colunas do guia são: Digitais (botão, reed, tilt...), Analógicos (LDR, joystick, hall linear...) e Especiais (DS18B20, DHT11, IR 38 kHz, NFC).",
+        argumentos: {
+          resumo: "A ideia para defender: sensores são a ponte entre o mundo físico e o programa.",
+          roteiro: [
+            "Peça ao visitante para tirar um sensor da caixa sem olhar.",
+            "Pergunte se ele só liga e desliga, mede uma quantidade ou é especial.",
+            "Confira no painel e feche: “o mundo físico vira números para a placa”."
+          ],
+          blocos: [
+            {
+              id: "importa",
+              icone: "🎯",
+              titulo: "Por que isso importa",
+              itens: [
+                "Sem sensores, a placa não sabe o que acontece no mundo real.",
+                "Classificar ajuda a escolher o componente certo para cada problema.",
+                "Muitos são baratos e comuns: botão, luz, temperatura, ímã."
+              ]
+            },
+            {
+              id: "perguntas",
+              icone: "❓",
+              titulo: "Se perguntarem",
+              itens: [
+                "“Qual é o melhor?” Depende do que você quer medir.",
+                "“Dá para ligar os 37 juntos?” Nem todos: alguns usam os mesmos pinos.",
+                "“Analógico é mais preciso?” Não necessariamente; ele só entrega uma faixa de valores."
+              ]
+            }
+          ],
+          alerta: "Não afirme que os 37 estão ligados ao mesmo tempo: a caixa é um catálogo, não um circuito completo."
+        }
       },
       {
         id: "memoria",
@@ -298,7 +396,38 @@
           ]
         },
         dica:
-          "Use o mesmo ESP32 da Estação 1: tablet e placa na mesma rede local (IP ou nfc.local). O painel atualiza em ~1,2 s e continua local quando a internet cai."
+          "Use o mesmo ESP32 da Estação 1: tablet e placa na mesma rede local (IP ou nfc.local). O painel atualiza em ~1,2 s e continua local quando a internet cai.",
+        argumentos: {
+          resumo: "A ideia para defender: guardar na própria placa é o que faz a portaria não parar.",
+          roteiro: [
+            "Encoste uma tag na Estação 1 e peça ao visitante para acompanhar a linha nova no painel.",
+            "Avise que a internet caiu e mostre que o acesso continua sendo decidido.",
+            "Feche com a LGPD: “guardar o necessário e saber apagar também é proteger”."
+          ],
+          blocos: [
+            {
+              id: "importa",
+              icone: "🎯",
+              titulo: "Por que isso importa",
+              itens: [
+                "A portaria não para quando a rede cai.",
+                "O registro permite conferir quem entrou e quando.",
+                "Os dados são mínimos e têm prazo para acabar."
+              ]
+            },
+            {
+              id: "perguntas",
+              icone: "❓",
+              titulo: "Se perguntarem",
+              itens: [
+                "“E se a internet cair?” A decisão é local; o registro sobe quando a rede volta.",
+                "“E se alguém clonar a tag?” Clonar é possível; por isso a escola bloqueia tags perdidas e confere o histórico.",
+                "“Onde ficam os dados?” Na memória da placa e na plataforma da escola, com acesso restrito."
+              ]
+            }
+          ],
+          alerta: "Offline não é instantâneo: o painel pode demorar para atualizar. O que não para é a decisão na placa."
+        }
       }
     ],
 
