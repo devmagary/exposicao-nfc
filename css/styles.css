@@ -810,6 +810,34 @@ li { list-style: none; }
 .painel-estacao .lista-materiais li { padding: 0; }
 .painel-estacao .lista-materiais li::before { display: none; }
 
+.argumentos { display: grid; gap: 12px; }
+.argumentos-resumo { margin: 0; color: var(--texto-suave); font-size: 0.9rem; }
+.argumento-bloco {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+.argumento-bloco h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 9px;
+  font-size: 0.9rem;
+  color: var(--cor-estacao);
+}
+.argumento-bloco h4 span { font-size: 1rem; }
+.argumento-bloco li { font-size: 0.86rem; }
+.argumentos-alerta {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--amber);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--amber) 8%, transparent);
+  color: var(--texto-suave);
+  font-size: 0.83rem;
+}
+
 .estacao-dica {
   display: flex;
   gap: 10px;

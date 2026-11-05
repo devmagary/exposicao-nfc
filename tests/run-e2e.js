@@ -665,6 +665,30 @@ async function principal() {
       garantir(achados.length === 0, "jargão na primeira camada: " + achados.join(", "));
     });
 
+    await teste("Estação 1 tem a aba de argumentos de sustentabilidade e segurança", async function () {
+      await ativarEstacao(0);
+      const abas = await avaliar("([...document.querySelectorAll('#deck-palco .estacao-slide:not([hidden]) .aba-estacao')].map(function (el) { return el.textContent; }))");
+      garantir(abas.indexOf("Argumentos") !== -1, "a Estação 1 deveria ter a aba Argumentos: " + abas.join(", "));
+
+      await avaliar("document.querySelector('#tab-argumentos-toque').click(); true");
+      const painel = await avaliar("(() => {" +
+        "const p = document.querySelector('#painel-argumentos-toque');" +
+        "if (!p || p.hidden) return null;" +
+        "return {" +
+        "  texto: p.textContent," +
+        "  blocos: [...p.querySelectorAll('.argumento-bloco h4')].map(function (b) { return b.textContent; })," +
+        "  alerta: Boolean(p.querySelector('.argumentos-alerta'))," +
+        "  abas: document.querySelectorAll('#deck-palco [data-aba=\"argumentos\"]').length" +
+        "};" +
+      "})()");
+      garantir(painel, "o painel de argumentos deveria abrir.");
+      garantir(painel.blocos.length === 2, "deveria haver dois blocos de argumentos, achei " + (painel ? painel.blocos.length : 0) + ".");
+      garantir(/Sustentabilidade/.test(painel.blocos.join(" ")), "falta o bloco de sustentabilidade.");
+      garantir(/Segurança/.test(painel.blocos.join(" ")), "falta o bloco de segurança.");
+      garantir(painel.alerta && /lixo eletrônico/.test(painel.texto), "o alerta deveria indicar o descarte correto.");
+      garantir(painel.abas === 1, "só a Estação 1 deve ter a aba de argumentos.");
+    });
+
     await teste("Deck navega, atualiza hash e mostra a estação correta", async function () {
       const ordem = await avaliar("([...document.querySelectorAll('#deck-abas .deck-aba-nome')].map(function (el) { return el.textContent; }))");
       garantir(ordem[0] === "O Toque Mágico" && ordem[1] === "O Cérebro", "a visita deveria começar pelo Toque Mágico e seguir pelo Cérebro: " + ordem.join(" → "));

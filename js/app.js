@@ -459,6 +459,9 @@
       { id: "montagem", rotulo: "Como montar", itens: estacao.montagem, tipo: "lista" },
       { id: "materiais", rotulo: "Materiais usados", itens: estacao.materiais, tipo: "chips" }
     ];
+    if (estacao.argumentos) {
+      paineis.splice(1, 0, { id: "argumentos", rotulo: "Argumentos", tipo: "argumentos", dados: estacao.argumentos });
+    }
     if (estacao.id === "cerebro" && typeof art.mapaPinos === "function") {
       const mapa = art.mapaPinos(dados.pinos);
       if (mapa) paineis.push({ id: "pinos", rotulo: "Mapa de pinos", html: mapa });
@@ -474,6 +477,23 @@
       let corpo = "";
       if (painel.html) {
         corpo = '<div class="mapa-pinos">' + painel.html + '</div>';
+      } else if (painel.tipo === "argumentos") {
+        const arg = painel.dados || {};
+        corpo = '<div class="argumentos">' +
+          (arg.resumo ? '<p class="argumentos-resumo">' + esc(arg.resumo) + '</p>' : "") +
+          (arg.blocos || []).map(function (bloco) {
+            const idTitulo = "arg-" + esc(bloco.id) + "-" + esc(estacao.id);
+            return '<section class="argumento-bloco" aria-labelledby="' + idTitulo + '">' +
+              '<h4 id="' + idTitulo + '">' +
+                (bloco.icone ? '<span aria-hidden="true">' + esc(bloco.icone) + '</span> ' : "") + esc(bloco.titulo) +
+              '</h4>' +
+              '<ul>' + (bloco.itens || []).map(function (item) {
+                return '<li>' + esc(item) + '</li>';
+              }).join("") + '</ul>' +
+            '</section>';
+          }).join("") +
+          (arg.alerta ? '<p class="argumentos-alerta"><span aria-hidden="true">⚠️</span> ' + esc(arg.alerta) + '</p>' : "") +
+        '</div>';
       } else if (painel.tipo === "chips") {
         corpo = '<ul class="lista-materiais">' + (painel.itens || []).map(function (item) {
           return '<li class="chip">' + esc(item) + '</li>';

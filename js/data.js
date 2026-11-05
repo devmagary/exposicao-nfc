@@ -122,7 +122,36 @@
         ],
         demo: "nfc",
         dica:
-          "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão."
+          "No PN532 em I2C: chave 1 ON, chave 2 OFF; SDA no IO8 e SCL no IO9. Tags comuns têm UID fixo: cadastre o UID real no painel e atualize a etiqueta do cartão.",
+        argumentos: {
+          resumo: "Duas frentes para defender o projeto: o que ele reaproveita e o que ele protege.",
+          blocos: [
+            {
+              id: "sustentabilidade",
+              icone: "🌱",
+              titulo: "Sustentabilidade e reuso",
+              itens: [
+                "A tag não tem bateria: não gera pilha velha nem precisa de tomada.",
+                "A mesma tag pode ser reaproveitada em outra turma ou outra feira: basta atualizar a lista no painel.",
+                "Um cartão resolve o que antes era lista de papel, fila e conferência manual.",
+                "O cartão de papel da dinâmica é cenário; as três tags reais voltam para a caixa no fim."
+              ]
+            },
+            {
+              id: "seguranca",
+              icone: "🔒",
+              titulo: "Segurança na entrada",
+              itens: [
+                "Só entra quem tem uma tag cadastrada pela escola; tag desconhecida é negada.",
+                "A lista de alunos fica na própria placa: a portaria decide mesmo sem internet.",
+                "Cada leitura fica registrada com nome e horário para a escola conferir depois.",
+                "Tag perdida pode ser bloqueada na hora, sem trocar a fechadura.",
+                "O sistema guarda só o necessário (nome, matrícula e horário) e apaga ao fim da jornada."
+              ]
+            }
+          ],
+          alerta: "Sem greenwashing: a tag é reutilizável e sem bateria, mas não é reciclável na coleta comum. O descarte certo é o ponto de lixo eletrônico."
+        }
       },
       {
         id: "cerebro",
