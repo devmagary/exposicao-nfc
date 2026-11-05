@@ -406,9 +406,9 @@ garantir(dados.eventosLed.some(function (evento) { return /5 s/.test(evento.dura
 
 iguais(dados.linhaDoTempo.length, 7, "a linha do tempo deve ter 7 etapas.");
 const textoLinha = dados.linhaDoTempo.map(function (etapa) { return etapa.titulo + " " + etapa.detalhe; }).join(" ");
-garantir(/PN532/i.test(textoLinha), "a linha do tempo deve citar o PN532.");
-garantir(/cartoes\.json/i.test(textoLinha), "a linha do tempo deve citar cartoes.json.");
-garantir(/Flash/i.test(textoLinha), "a linha do tempo deve citar a Flash.");
+garantir(/leitora/i.test(textoLinha) && /lista/i.test(textoLinha) && /fechadura/i.test(textoLinha), "a linha do tempo deve falar de leitora, lista e fechadura em linguagem simples.");
+garantir(!/UID|Flash|LittleFS|I2C|PN532|cartoes\.json/i.test(textoLinha), "a linha do tempo deve evitar termos técnicos (UID, Flash, LittleFS, I2C, PN532, cartoes.json).");
+garantir(encontrarJargao(textoLinha).length === 0, "a linha do tempo deve evitar jargão: " + encontrarJargao(textoLinha).join(", "));
 
 iguais(dados.pinos.proibidos.join(","), "IO35,IO36,IO37", "os pinos proibidos devem ser IO35, IO36 e IO37.");
 garantir(dados.pinos.seguros.indexOf("IO8") !== -1 && dados.pinos.seguros.indexOf("IO9") !== -1, "IO8/IO9 devem estar entre os pinos seguros.");

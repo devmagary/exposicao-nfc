@@ -1080,18 +1080,18 @@
 
     function detalheDoPasso(indice) {
       if (estado.offline && indice === 2) {
-        return "Sem internet: o UID é procurado na lista local gravada na Flash — a decisão acontece aqui mesmo.";
+        return "Sem internet: a placa procura o número do cartão na lista que está guardada nela — a decisão acontece aqui mesmo.";
       }
       if (estado.offline && indice === 5) {
-        return "Offline: o log é gravado na Flash e entra na fila para sincronizar quando a internet voltar.";
+        return "Sem internet: o acesso fica anotado na placa e entra na fila para enviar quando a conexão voltar.";
       }
       return passos[indice].detalhe;
     }
 
     function seloDoPasso(indice) {
       if (!estado.offline) return "";
-      if (indice === 2) return "consulta local na Flash";
-      if (indice === 5) return "log local; sincroniza depois";
+      if (indice === 2) return "decisão tomada na placa";
+      if (indice === 5) return "guardado na placa; envia depois";
       return "";
     }
 
@@ -1114,8 +1114,8 @@
     function montarEstrutura() {
       var html = cabecalho(
         "A memória que não esquece",
-        "Acompanhe o caminho do cartão até virar uma linha no painel — com internet ou sem.",
-        "Clique em Simular acesso. Marque “Internet caiu” para ver a consulta local na Flash e o log offline."
+        "Acompanhe o caminho do cartão até aparecer no painel — com internet ou sem.",
+        "Toque em Simular acesso. Ligue “Internet caiu” para ver a placa decidir sozinha e o acesso ficar guardado para depois."
       );
       html += '<div class="demo-corpo"><div class="timeline-chave">' +
           '<label class="timeline-switch" for="timeline-offline">' +
@@ -1123,7 +1123,7 @@
             '<span class="timeline-switch-trilho" aria-hidden="true"><span class="timeline-switch-bolinha"></span></span>' +
             '<span class="timeline-switch-texto">' +
               '<strong>Internet caiu</strong>' +
-              '<small>O ESP32 continua decidindo com a lista local na Flash.</small>' +
+              '<small>A placa continua liberando ou bloqueando com a lista que já está guardada nela.</small>' +
             '</span>' +
           '</label>' +
         '</div>' +
@@ -1179,10 +1179,10 @@
         var ultimo = estado.registros[estado.registros.length - 1];
         return "Acesso concluído: Lucas Silva — LIBERADO." +
           (ultimo && ultimo.offline
-            ? " Log gravado na Flash; será sincronizado quando a internet voltar."
-            : " Registro sincronizado com o Painel Web.");
+            ? " O acesso ficou guardado na placa e será enviado quando a internet voltar."
+            : " O acesso já apareceu no painel.");
       }
-      return "Pressione Simular acesso para acompanhar o caminho do cartão, do leitor ao Painel Web.";
+      return "Toque em Simular acesso para acompanhar o caminho do cartão até aparecer no painel.";
     }
 
     function renderizarPainel() {
@@ -1193,7 +1193,7 @@
             '<span class="timeline-registro-quem">Lucas Silva</span>' +
             '<span class="timeline-registro-status">LIBERADO</span>' +
             '<span class="timeline-registro-nota">' +
-              (registro.offline ? "Offline: log na Flash; sincroniza depois" : "Sincronizado com a nuvem") +
+              (registro.offline ? "Sem internet: guardado na placa" : "Enviado para a nuvem") +
             '</span>' +
           '</li>';
       }).join("");

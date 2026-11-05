@@ -652,6 +652,7 @@ async function principal() {
         "  estacoes: juntar('#deck-palco .estacao-resumo') + juntar('#deck-palco [data-painel=\"visitante\"] li')," +
         "  sensores: juntar('#sensores-grade .sensor-explicacao')," +
         "  demos: juntar('#deck-palco .demo-texto')," +
+        "  linhaDoTempo: juntar('#deck-palco .timeline-detalhe') + juntar('#deck-palco .timeline-selo')," +
         "  capa: juntar('.hero-sub')" +
         "};" +
       "})()");

@@ -609,13 +609,13 @@
     ],
 
     linhaDoTempo: [
-      { icone: "card", titulo: "Cartão encostado", detalhe: "O visitante aproxima o cartão (ou a tag) do leitor." },
-      { icone: "nfc", titulo: "PN532 lê o UID", detalhe: "O campo de 13,56 MHz acorda o cartão; o UID chega por I2C (SDA IO8, SCL IO9)." },
-      { icone: "flash", titulo: "ESP32 consulta a Flash", detalhe: "O UID é procurado em cartoes.json no LittleFS. Sem internet, é aqui que a decisão acontece." },
-      { icone: "check", titulo: "Decisão", detalhe: "Ativo? Libera. Não cadastrado ou bloqueado? Nega." },
-      { icone: "led", titulo: "LED e relé", detalhe: "Verde acende e o relé abre a fechadura; vermelho acende e nada acontece." },
-      { icone: "log", titulo: "Log e Painel Web", detalhe: "O acesso é gravado e aparece no painel. Offline, o log fica na Flash." },
-      { icone: "cloud", titulo: "Sincronização", detalhe: "Quando a internet volta, o ESP32 sincroniza com a nuvem e atualiza a lista." }
+      { icone: "card", titulo: "Cartão encostado", detalhe: "A pessoa aproxima o cartão (ou a tag) da leitora." },
+      { icone: "nfc", titulo: "A leitora reconhece o cartão", detalhe: "A leitora acorda o cartão e recebe o número de identificação dele." },
+      { icone: "flash", titulo: "A placa procura na lista", detalhe: "A placa procura esse número na lista de cartões que guarda dentro dela. Sem internet, é aqui que a decisão acontece." },
+      { icone: "check", titulo: "Decisão", detalhe: "Cartão liberado: a entrada é permitida. Fora da lista ou bloqueado: a entrada é negada." },
+      { icone: "led", titulo: "Luz e fechadura", detalhe: "Luz verde: a fechadura abre. Luz vermelha: nada acontece." },
+      { icone: "log", titulo: "Registro do acesso", detalhe: "O acesso é anotado e aparece no painel. Sem internet, a anotação fica guardada na placa." },
+      { icone: "cloud", titulo: "Quando a internet volta", detalhe: "A placa envia as anotações guardadas e atualiza a lista de cartões." }
     ],
 
     pinos: {
